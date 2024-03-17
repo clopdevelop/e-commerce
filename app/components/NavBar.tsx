@@ -12,6 +12,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { CommandMenu } from "./ComandMenu";
 
+import { signOut } from '@/auth';
+
+
 export function NavBar() {
   return (
     <>
@@ -37,6 +40,15 @@ export function NavBar() {
           </div>
           
         </MenubarMenu>
+        <form
+          action={async () => {
+            'use server';
+            await signOut();
+          }}
+          
+        >
+          <input type="submit" value="Log out"></input>
+          </form>
       </Menubar>
       <h1 className="flex flex-col items-center justify-between p-24">
         Press Ctrl+K

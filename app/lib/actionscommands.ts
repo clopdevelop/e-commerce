@@ -1,6 +1,10 @@
 'use server'
 
-import {prisma} from '@/lib/prisma'
+import prisma from "@/lib/prisma"
+import { redirect } from "next/navigation";
+
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
 
 
 
@@ -27,10 +31,32 @@ export async function addUser(formData : FormData){
                 
             },
         });
-        return newUser;
+        redirect('/')
     } catch (error) {
         console.error('Error al añadir usuario:', error);
-        throw error; // Es mejor lanzar el error original para no perder información.
+        throw error;
     }
 }
 
+/**
+ * Loguea a un usuario
+ * @param formData 
+ */
+export async function authenticate(
+    prevState: string | undefined,
+    formData: FormData,
+  ) {
+    try {
+      await signIn('credentials', formData);
+    } catch (error) {
+      if (error instanceof AuthError) {
+        switch (error.type) {
+          case 'CredentialsSignin':
+            return 'Invalid credentials.';
+          default:
+            return 'Something went wrong.';
+        }
+      }
+      throw error;
+    }
+  }
