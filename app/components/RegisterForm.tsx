@@ -1,8 +1,9 @@
 "use client";
-
+// todo Investigar como mover la logica de validacion al action
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { userSchema } from "@/lib/definitions";
 
 import { Button } from "@/components/ui/button";
 
@@ -18,27 +19,48 @@ import {
 import { Input } from "@/components/ui/input";
 import { addUser } from "@/lib/actionscommands";
 
-const formSchema = z.object({
-  first_name: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  email: z.string().email("Must be a valid email."),
-  password: z.string().min(6, "Password must be at least 6 characters."),
+export const UserRegisterFormSchema = userSchema.pick({
+  first_name: true,
+  email: true,
+  password: true,
+  confirmPassword: true,
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Las contraseñas deben coincidir",
+  path: ["confirmPassword"],
 });
+
 export function ProfileForm() {
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof UserRegisterFormSchema>>({
+    resolver: zodResolver(UserRegisterFormSchema),
     defaultValues: {
       first_name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof UserRegisterFormSchema>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values)
+    const formData = new FormData();
+  
+    Object.keys(values).forEach(key => {
+      const value = values[key as keyof typeof values];
+      if (value) {
+        formData.append(key, value);
+      }
+    });
+
+    addUser(formData)
+  }
+  
   return (
     <Form {...form}>
-      <form action={addUser} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-8">
         <FormField
           control={form.control}
           name="first_name"
@@ -62,7 +84,7 @@ export function ProfileForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="Usuario@mail.com" {...field} />
+                  <Input type="email" placeholder="Usuario@mail.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -77,7 +99,22 @@ export function ProfileForm() {
               <FormItem>
                 <FormLabel>Contraseña</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input type="password" placeholder="" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <>
+              <FormItem>
+                <FormLabel>Repite la Contraseña</FormLabel>
+                <FormControl>
+                  <Input type="password" placeholder="" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
