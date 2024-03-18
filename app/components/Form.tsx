@@ -28,11 +28,6 @@ const UserLogInFormSchema = userSchema.pick({
 
 export default function LoginForm() {
   const form = useForm<z.infer<typeof UserLogInFormSchema>>({
-    resolver: zodResolver(UserLogInFormSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
   });
   
   function onSubmit(values: z.infer<typeof UserLogInFormSchema>) {
@@ -96,6 +91,17 @@ export default function LoginForm() {
           )}
         />
         <LoginButton></LoginButton>
+        <div
+          className="flex h-8 items-end space-x-1"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {errorMessage && (
+            <>
+              <p className="text-[0.8rem] font-medium text-destructive">{errorMessage}</p>
+            </>
+          )}
+        </div>
       </form>
     </Form>
   );
