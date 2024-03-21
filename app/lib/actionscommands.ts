@@ -60,3 +60,44 @@ export async function authenticate(
       throw error;
     }
   }
+  
+/**
+ * añadir un producto al carrito
+ * @param id_product 
+ * @param name 
+ * @param description 
+ * @param price 
+ * @returns 
+ */
+export async function addProductToCart(userId: number, id_product: number, quantity: number) {
+  let cart = await prisma.cart.findFirst({
+    where: { id_user: userId },
+  });
+
+  if (!cart) {
+    cart = await prisma.cart.create({
+      data: {
+        id_user: userId,
+      },
+    });
+  }
+
+  const cartDetail = await prisma.cartDetail.upsert({
+    where: {
+      id_cart_id_product: {
+        id_cart: cart.id_cart,
+        id_product: id_product,
+      },
+    },
+    update: {
+      quantity: { increment: quantity },
+    },
+    create: {
+      id_cart: cart.id_cart,
+      id_product: id_product,
+      quantity: quantity,
+    },
+  });
+
+  return cartDetail;
+}
