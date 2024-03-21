@@ -46,21 +46,23 @@ export function NavBar() {
               <MenubarSeparator />
               <MenubarItem>Share</MenubarItem>
               <MenubarSeparator />
-              <MenubarItem>Exit</MenubarItem>
+              <MenubarItem>
+                  <form
+                action={async () => {
+                  "use server";
+                  await signOut();
+                }}
+              >
+                <input type="submit" value="Log out"></input>
+              </form> 
+            </MenubarItem>
             </MenubarContent>
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
 
-            <form
-              action={async () => {
-                "use server";
-                await signOut();
-              }}
-            >
-              <input type="submit" value="Log out"></input>
-            </form>
+            
           </div>
         </MenubarMenu>
       </Menubar>
