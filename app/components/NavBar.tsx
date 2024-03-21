@@ -39,13 +39,17 @@ export function NavBar() {
           <div className="flex gap-2 p-2 items-center">
             <MenubarTrigger>Menu</MenubarTrigger>
             <MenubarContent>
-              <MenubarItem>
-                <Link href={"/"}>Principal</Link>
+              <Link href={"/"}>
+                <MenubarItem>
+                  Principal
                 <MenubarShortcut>⌘T</MenubarShortcut>
-              </MenubarItem>
-              <MenubarItem>
-                <Link href={"/catalogo"}>Tienda</Link>
-              </MenubarItem>
+                </MenubarItem>
+              </Link>
+              <Link href={"/catalogo"}>
+                <MenubarItem>
+                  Tienda
+                </MenubarItem>
+              </Link>
               <MenubarSeparator />
               <MenubarItem>Share</MenubarItem>
               <MenubarSeparator />
