@@ -8,6 +8,8 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
+import Cart from '@/components/Cart'
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { CommandMenu } from "./ComandMenu";
@@ -38,7 +40,8 @@ export function NavBar() {
             <MenubarTrigger>Menu</MenubarTrigger>
             <MenubarContent>
               <MenubarItem>
-                <Link href={"/"}>Principal</Link><MenubarShortcut>⌘T</MenubarShortcut>
+                <Link href={"/"}>Principal</Link>
+                <MenubarShortcut>⌘T</MenubarShortcut>
               </MenubarItem>
               <MenubarItem>
                 <Link href={"/catalogo"}>Tienda</Link>
@@ -47,22 +50,17 @@ export function NavBar() {
               <MenubarItem>Share</MenubarItem>
               <MenubarSeparator />
               <MenubarItem>
-                  <form
-                action={async () => {
-                  "use server";
-                  await signOut();
-                }}
-              >
-                <input type="submit" value="Log out"></input>
-              </form> 
-            </MenubarItem>
+                <form
+                  action={async () => {
+                    "use server";
+                    await signOut();
+                  }}
+                >
+                  <input type="submit" value="Log out"></input>
+                </form>
+              </MenubarItem>
             </MenubarContent>
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-
-            
+            <Cart></Cart>
           </div>
         </MenubarMenu>
       </Menubar>
