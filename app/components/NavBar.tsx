@@ -10,14 +10,21 @@ import {
 
 import Cart from '@/components/Cart'
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { CommandMenu } from "./ComandMenu";
 
 import { signOut } from "@/auth";
 import Link from "next/link";
 
-export function NavBar() {
+import { getCartDetailsByUserId } from '@/lib/data'
+
+export async function NavBar() {
+  const products = await getCartDetailsByUserId(1); 
+
+  if (!products) {
+    return '<p>El carrito está vacío.</p>';
+  }
+
   return (
     <>
       <Menubar className="py-10 px-3 flex justify-between items-center">
@@ -64,7 +71,7 @@ export function NavBar() {
                 </form>
               </MenubarItem>
             </MenubarContent>
-            <Cart></Cart>
+            <Cart products={products}></Cart>
           </div>
         </MenubarMenu>
       </Menubar>

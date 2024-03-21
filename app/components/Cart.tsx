@@ -12,7 +12,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import Link from "next/link";
 
-function Cart() {
+import { CartProps } from "@/lib/definitions";
+
+function Cart({ products }: CartProps) {
   return (
     <MenubarMenu>
       <MenubarTrigger>
@@ -29,7 +31,18 @@ function Cart() {
         </MenubarItem>
         <MenubarSeparator />
         <MenubarItem>
-            
+          <div>
+            {products.map((item) => (
+              <div key={item.id_product}>
+                <h2>{item.product.name}</h2>
+                <p>Cantidad: {item.quantity}</p>
+                <p>Precio: {item.product.price}</p>
+                {item.product.description && (
+                  <p>Descripción: {item.product.description}</p>
+                )}
+              </div>
+            ))}
+          </div>
         </MenubarItem>
       </MenubarContent>
     </MenubarMenu>

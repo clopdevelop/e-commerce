@@ -27,3 +27,19 @@ export type User = {
     confirmPassword: z.string().min(1, "La confirmación de la contraseña es obligatoria"),
     created_at: z.date(),
   });
+
+
+
+  export type ProductDetail = {
+    id_product: number;
+    quantity: number;
+    product: {
+      name: string;
+      description: string | null;
+      price: number;
+    };
+  };
+  
+  export type CartProps = {
+    products: ProductDetail[];
+  };
