@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 
 import { CartProps } from "@/lib/definitions";
+import { Button } from "./ui/button";
 
 function Cart({ products }: CartProps) {
   return (
@@ -30,9 +31,9 @@ function Cart({ products }: CartProps) {
           <Link href={"/catalogo"}>Card:</Link>
         </MenubarItem>
         <MenubarSeparator />
-        <MenubarItem>
           <div>
             {products.map((item) => (
+              <><MenubarItem className="flex justify-between gap-10">
               <div key={item.id_product}>
                 <h2>{item.product.name}</h2>
                 <p>Cantidad: {item.quantity}</p>
@@ -40,10 +41,9 @@ function Cart({ products }: CartProps) {
                 {item.product.description && (
                   <p>Descripción: {item.product.description}</p>
                 )}
-              </div>
+              </div><Button>Eliminar</Button></MenubarItem><MenubarSeparator /></>
             ))}
           </div>
-        </MenubarItem>
       </MenubarContent>
     </MenubarMenu>
   );
