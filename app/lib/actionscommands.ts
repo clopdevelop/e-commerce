@@ -63,20 +63,102 @@ export async function addUser(formData : FormData){
 //   }
 
 export async function authenticate(
-  prevState: string | undefined,
-  formData: FormData,
-) {
-  try {
-    await auth();
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case 'CredentialsSignin':
-          return 'Invalid credentials.';
-        default:
-          return 'Something went wrong.';
+    prevState: string | undefined,
+    formData: FormData,
+  ) {
+    try {
+      await signIn('credentials', formData);
+    } catch (error) {
+      if (error instanceof AuthError) {
+        switch (error.type) {
+          case 'CredentialsSignin':
+            return 'Invalid credentials.';
+          default:
+            return 'Something went wrong.';
+        }
       }
+      throw error;
     }
-    throw error;
   }
+  
+/**
+ * añadir un producto al carrito
+ * @param id_product 
+ * @param name 
+ * @param description 
+ * @param price 
+ * @returns 
+ */
+export async function addProductToCart(userId: number, id_product: number, quantity: number) {
+  let cart = await prisma.cart.findFirst({
+    where: { id_user: userId },
+  });
+
+  if (!cart) {
+    cart = await prisma.cart.create({
+      data: {
+        id_user: userId,
+      },
+    });
+  }
+
+  const cartDetail = await prisma.cartDetail.upsert({
+    where: {
+      id_cart_id_product: {
+        id_cart: cart.id_cart,
+        id_product: id_product,
+      },
+    },
+    update: {
+      quantity: { increment: quantity },
+    },
+    create: {
+      id_cart: cart.id_cart,
+      id_product: id_product,
+      quantity: quantity,
+    },
+  });
+
+  return cartDetail;
+}
+
+/**
+ * eliminar un producto al carrito
+ * @param id_product 
+ * @param name 
+ * @param description 
+ * @param price 
+ * @returns 
+ */
+export async function deleteProductToCart(userId: number, id_product: number, quantity: number) {
+  let cart = await prisma.cart.findFirst({
+    where: { id_user: userId },
+  });
+
+  if (!cart) {
+    cart = await prisma.cart.create({
+      data: {
+        id_user: userId,
+      },
+    });
+  }
+
+  const cartDetail = await prisma.cartDetail.upsert({
+    where: {
+      id_cart_id_product: {
+        id_cart: cart.id_cart,
+        id_product: id_product,
+      },
+    },
+    update: {
+      quantity: { increment: quantity },
+    },
+    create: {
+      id_cart: cart.id_cart,
+      id_product: id_product,
+      quantity: quantity,
+    },
+  });
+
+  return cartDetail;
 }
