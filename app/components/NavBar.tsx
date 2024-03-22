@@ -8,21 +8,21 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
-import Cart from '@/components/Cart'
-
+import Cart from "@/components/Cart";
 
 import { CommandMenu } from "./ComandMenu";
 
 import { signOut } from "@/auth";
 import Link from "next/link";
 
-import { getCartDetailsByUserId } from '@/lib/data'
+import { getCartDetailsByUserId } from "@/lib/data";
+import { Input } from "./ui/input";
 
 export async function NavBar() {
-  const products = await getCartDetailsByUserId(1); 
+  const products = await getCartDetailsByUserId(1);
 
   if (!products) {
-    return '<p>El carrito está vacío.</p>';
+    return "<p>El carrito está vacío.</p>";
   }
 
   return (
@@ -49,27 +49,24 @@ export async function NavBar() {
               <Link href={"/"}>
                 <MenubarItem>
                   Principal
-                <MenubarShortcut>⌘T</MenubarShortcut>
+                  <MenubarShortcut>⌘T</MenubarShortcut>
                 </MenubarItem>
               </Link>
               <Link href={"/catalogo"}>
-                <MenubarItem>
-                  Tienda
-                </MenubarItem>
+                <MenubarItem>Tienda</MenubarItem>
               </Link>
               <MenubarSeparator />
               <MenubarItem>Share</MenubarItem>
               <MenubarSeparator />
-              <MenubarItem>
-                <form
-                  action={async () => {
-                    "use server";
-                    await signOut();
-                  }}
-                >
-                  <input type="submit" value="Log out"></input>
-                </form>
-              </MenubarItem>
+              <form
+                action={async () => {
+                  "use server";
+                  console.log("signout");
+                  await signOut();
+                }}
+              >
+                <input type="submit" value="Log out"></input>
+              </form>
             </MenubarContent>
             <Cart products={products}></Cart>
           </div>

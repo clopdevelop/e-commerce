@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma"
 import { redirect } from "next/navigation";
 
 // import { signIn } from '@/auth';
-import { auth } from '@/auth';
+import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 
 
@@ -39,10 +39,26 @@ export async function addUser(formData : FormData){
     }
 }
 
-/**
- * Loguea a un usuario
- * @param formData 
- */
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+    
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
+}
+
 // export async function authenticate(
 //     prevState: string | undefined,
 //     formData: FormData,
@@ -61,25 +77,6 @@ export async function addUser(formData : FormData){
 //       throw error;
 //     }
 //   }
-
-export async function authenticate(
-    prevState: string | undefined,
-    formData: FormData,
-  ) {
-    try {
-      await signIn('credentials', formData);
-    } catch (error) {
-      if (error instanceof AuthError) {
-        switch (error.type) {
-          case 'CredentialsSignin':
-            return 'Invalid credentials.';
-          default:
-            return 'Something went wrong.';
-        }
-      }
-      throw error;
-    }
-  }
   
 /**
  * añadir un producto al carrito

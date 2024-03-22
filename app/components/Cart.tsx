@@ -31,19 +31,20 @@ function Cart({ products }: CartProps) {
           <Link href={"/catalogo"}>Card:</Link>
         </MenubarItem>
         <MenubarSeparator />
-          <div>
-            {products.map((item) => (
-              <><MenubarItem className="flex justify-between gap-10">
-              <div key={item.id_product}>
+            {products.map((item) => ( <>
+            <MenubarItem key={item.id_product} className="flex justify-between gap-10">
+              <div>
                 <h2>{item.product.name}</h2>
                 <p>Cantidad: {item.quantity}</p>
                 <p>Precio: {item.product.price}</p>
                 {item.product.description && (
                   <p>Descripción: {item.product.description}</p>
                 )}
-              </div><Button>Eliminar</Button></MenubarItem><MenubarSeparator /></>
+              </div>
+              <Button>Eliminar</Button>
+              </MenubarItem>
+              <MenubarSeparator /></>
             ))}
-          </div>
       </MenubarContent>
     </MenubarMenu>
   );

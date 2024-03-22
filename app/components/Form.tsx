@@ -1,5 +1,5 @@
 "use client";
-
+// todo Investigar como mover la logica de validacion al action
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,44 +19,44 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-const UserLogInFormSchema = userSchema.pick({
-  first_name: true,
+export const UserLogInFormSchema = userSchema.pick({
   email: true,
   password: true,
 });
 
+export function LoginForm() {
+  const [errorMessage, dispatch] = useFormState(authenticate, undefined);
 
-export default function LoginForm() {
   const form = useForm<z.infer<typeof UserLogInFormSchema>>({
+    resolver: zodResolver(UserLogInFormSchema), // Asegúrate de habilitar esto
   });
-  
+
   function onSubmit(values: z.infer<typeof UserLogInFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+    console.log(values); // Mostrar datos del formulario en la consola para depuración
+
     const formData = new FormData();
-  
-    Object.keys(values).forEach(key => {
+
+    Object.keys(values).forEach((key) => {
       const value = values[key as keyof typeof values];
       if (value) {
         formData.append(key, value);
       }
     });
 
-    dispatch(formData)
-  }
+    dispatch(formData);
+  };
 
-  const [errorMessage, dispatch] = useFormState(authenticate, undefined);  
 
+  // Ajustar el componente de botón para manejar el envío
   function LoginButton() {
-    const { pending } = useFormStatus();
-  
+    const { isSubmitting } = form.formState;
     return (
-      <Button aria-disabled={pending}>
-        Log in 
+      <Button type="submit" aria-disabled={isSubmitting}>
+        Log in
       </Button>
     );
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-8">
@@ -68,7 +68,11 @@ export default function LoginForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="Usuario@mail.com" {...field} />
+                  <Input
+                    type="email"
+                    placeholder="Usuario@mail.com"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -90,18 +94,7 @@ export default function LoginForm() {
             </>
           )}
         />
-        <LoginButton></LoginButton>
-        <div
-          className="flex h-8 items-end space-x-1"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {errorMessage && (
-            <>
-              <p className="text-[0.8rem] font-medium text-destructive">{errorMessage}</p>
-            </>
-          )}
-        </div>
+        <Button type="submit">Submit</Button>
       </form>
     </Form>
   );
