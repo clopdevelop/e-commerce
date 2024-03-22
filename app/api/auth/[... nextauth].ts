@@ -1,10 +1,20 @@
-import NextAuth from 'next-auth';
+// import NextAuth from "next-auth"
+// import GoogleProvider from "next-auth/providers/google"
+// import { authConfig } from "@/auth.config"
+
+
+// export default NextAuth({ providers: [ GoogleProvider({...authConfig
+//     //   clientId: process.env.GOOGLE_CLIENT_ID as string,
+//   //   clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+//   }) ] })
+  
+  import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { authConfig } from './auth.config';
+import { authConfig } from '@/auth.config';
 import { z } from 'zod';
 import type { User } from '@/lib/definitions';
 // import bcrypt from 'bcrypt';
-import prisma from './lib/prisma';
+import prisma from '@/lib/prisma';
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
  

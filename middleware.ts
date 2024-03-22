@@ -9,3 +9,6 @@ export const config = {
   // matcher: ['/about/:path*', '/dashboard/:path*'],
 
 };
+
+export const { auth: middleware } = NextAuth(authConfig)
+
