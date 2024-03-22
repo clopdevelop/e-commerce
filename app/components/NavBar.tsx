@@ -8,14 +8,23 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Cart from '@/components/Cart'
+
 
 import { CommandMenu } from "./ComandMenu";
 
 import { signOut } from "@/auth";
 import Link from "next/link";
 
-export function NavBar() {
+import { getCartDetailsByUserId } from '@/lib/data'
+
+export async function NavBar() {
+  const products = await getCartDetailsByUserId(1); 
+
+  if (!products) {
+    return '<p>El carrito está vacío.</p>';
+  }
+
   return (
     <>
       <Menubar className="py-10 px-3 flex justify-between items-center">
@@ -37,32 +46,32 @@ export function NavBar() {
           <div className="flex gap-2 p-2 items-center">
             <MenubarTrigger>Menu</MenubarTrigger>
             <MenubarContent>
-              <MenubarItem>
-                <Link href={"/"}>Principal</Link><MenubarShortcut>⌘T</MenubarShortcut>
-              </MenubarItem>
-              <MenubarItem>
-                <Link href={"/catalogo"}>Tienda</Link>
-              </MenubarItem>
+              <Link href={"/"}>
+                <MenubarItem>
+                  Principal
+                <MenubarShortcut>⌘T</MenubarShortcut>
+                </MenubarItem>
+              </Link>
+              <Link href={"/catalogo"}>
+                <MenubarItem>
+                  Tienda
+                </MenubarItem>
+              </Link>
               <MenubarSeparator />
               <MenubarItem>Share</MenubarItem>
               <MenubarSeparator />
               <MenubarItem>
-                  <form
-                action={async () => {
-                  "use server";
-                  await signOut();
-                }}
-              >
-                <input type="submit" value="Log out"></input>
-              </form> 
-            </MenubarItem>
+                <form
+                  action={async () => {
+                    "use server";
+                    await signOut();
+                  }}
+                >
+                  <input type="submit" value="Log out"></input>
+                </form>
+              </MenubarItem>
             </MenubarContent>
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-
-            
+            <Cart products={products}></Cart>
           </div>
         </MenubarMenu>
       </Menubar>
