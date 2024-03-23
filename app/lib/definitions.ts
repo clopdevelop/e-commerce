@@ -43,3 +43,10 @@ export type User = {
   export type CartProps = {
     products: ProductDetail[];
   };
+
+  export type Product = {
+    id_product: number;
+    name: string;
+    description: string | null;
+    price: number;
+  }

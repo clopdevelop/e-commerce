@@ -10,6 +10,7 @@ import {
 import { Button } from "./ui/button";
 import { addProductToCart } from "@/lib/actionscommands";
 import { Toaster, toast } from "sonner"
+import { Product } from "@/lib/definitions";
 
 export default function ProductsTable({
   filteredProducts
@@ -17,7 +18,7 @@ export default function ProductsTable({
     filteredProducts: any[];
   }) {
     
-  async function AñadirCarrito(product: { id_product: number; }) {
+  async function addProduct(product: { id_product: number; }) {
       try {
         const { id_product } = product;
         //todo recuperar el USERID
@@ -29,6 +30,29 @@ export default function ProductsTable({
         alert('No se pudo agregar el producto al carrito.');
       }
     }
+    async function BuyProduct(product: Product) {
+      try {
+          const res = await fetch('api/checkout', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ product: product })
+          });
+  
+          const session = await res.json()
+  
+          if (res) {
+              window.location = session.url;
+          } else {
+              throw new Error('Invalid session data');
+          }
+      } catch (error:any) {
+          console.error("Error buying product:", error);
+          toast("error: " + error.message)
+      }
+  }
+  
     return (
         <>
         <div className="flex flex-row justify-center">
@@ -51,8 +75,11 @@ export default function ProductsTable({
               <CardFooter className='flex justify-between '>
                 <p>{product.price}€</p>
                 <div className="flex gap-2 ">
-                <Button onClick={() => AñadirCarrito(product)}  className="text-white"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg></Button>
-                <Button className="text-white">Comprar</Button>
+                  <Button onClick={() => addProduct(product)}  className="text-white">
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  
+                    strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
+                  </Button>
+                  <Button className="text-white" onClick={() => BuyProduct(product)} >Comprar</Button>
                 </div>
               </CardFooter>
             </Card>
