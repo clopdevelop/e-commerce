@@ -1,14 +1,12 @@
 import NextAuth from 'next-auth';
 import { authConfig } from './auth.config';
+import GoogleProvider from 'next-auth/providers/google'
 // import bcrypt from 'bcrypt';
 
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 import type { User } from '@/lib/definitions';
 import prisma from '@/lib/prisma';
-
-// Inicialización básica
-// export const { handlers: { GET, POST } , auth } = NextAuth({...authConfig})
 
 // Inicialización diferida (avanzada)
 // export const { handlers:  { GET, POST }, auth } = NextAuth(req => {
@@ -32,7 +30,7 @@ async function getUser(email: string): Promise<User | null> {
   }
 }
 //  Inicializacion básica:
-export const { auth, signIn, signOut } = NextAuth({
+export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [ 
     Credentials({
@@ -58,11 +56,11 @@ export const { auth, signIn, signOut } = NextAuth({
       return null;
     },
   })
-  // ,
-  // GoogleProvider({
-  //   //   clientId: process.env.GOOGLE_CLIENT_ID as string,
-  // //   clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-  // })
+  ,
+  GoogleProvider({
+      clientId: process.env.AUTH_GOOGLE_ID as string,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
+  })
   , ],
 });
  
