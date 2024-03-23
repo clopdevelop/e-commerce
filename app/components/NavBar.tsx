@@ -8,14 +8,13 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
-
 import { CommandMenu } from "./ComandMenu";
 
 import Link from "next/link";
 
 import { auth } from "@/auth";
 
-import Profile from "@/components/Profile"
+import Profile from "@/components/Profile";
 
 export async function NavBar() {
   const account = await auth();
@@ -53,10 +52,15 @@ export async function NavBar() {
                 <MenubarItem>Tienda</MenubarItem>
               </Link>
               <MenubarSeparator />
-              <MenubarItem>Share</MenubarItem>
+              <Link href={"/entrada"}>
+                <MenubarItem>Iniciar sesión</MenubarItem>
+              </Link>
+              <MenubarSeparator />
+              <Link href={"/registro"}>
+                <MenubarItem>Registrate</MenubarItem>
+              </Link>
             </MenubarContent>
             {account && <Profile email={email}></Profile>}
-            
           </div>
         </MenubarMenu>
       </Menubar>
