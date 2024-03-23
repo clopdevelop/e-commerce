@@ -8,22 +8,19 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 
-import Cart from "@/components/Cart";
 
 import { CommandMenu } from "./ComandMenu";
 
-import { signOut } from "@/auth";
 import Link from "next/link";
 
-import { getCartDetailsByUserId } from "@/lib/data";
-import { Input } from "./ui/input";
+import { auth } from "@/auth";
+
+import Profile from "@/components/Profile"
 
 export async function NavBar() {
-  const products = await getCartDetailsByUserId(1);
-
-  if (!products) {
-    return "<p>El carrito está vacío.</p>";
-  }
+  const account = await auth();
+  //todo no funciona con el id y no funciona con google auth a
+  const email = account ? account.user?.email ?? "" : "";
 
   return (
     <>
@@ -57,18 +54,9 @@ export async function NavBar() {
               </Link>
               <MenubarSeparator />
               <MenubarItem>Share</MenubarItem>
-              <MenubarSeparator />
-              <form
-                action={async () => {
-                  "use server";
-                  console.log("signout");
-                  await signOut();
-                }}
-              >
-                <input type="submit" value="Log out"></input>
-              </form>
             </MenubarContent>
-            <Cart products={products}></Cart>
+            {account && <Profile email={email}></Profile>}
+            
           </div>
         </MenubarMenu>
       </Menubar>

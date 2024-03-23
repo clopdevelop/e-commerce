@@ -53,7 +53,7 @@ export async function fetchProductsPages(query : string, productsOnPage = 1) {
  * @param userId 
  * @returns 
  */
-export async function getCartDetailsByUserId(userId: number) {
+export async function getCartDetailsByUserId(userId: number ) {
   const cart = await prisma.cart.findFirst({
     where: {
       id_user: userId,
@@ -85,3 +85,38 @@ export async function getCartDetailsByUserId(userId: number) {
   return cart.cartDetails;
 }
 
+export async function getCartDetailsByEmail(email: string) {
+  const cart = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+    select: {
+      Cart: {
+        select: {
+          cartDetails: {
+            select: {
+              id_product: true,
+              quantity: true,
+              product: {
+                select: {
+                  name: true,
+                  price: true,
+                  description: true,
+                  // Agrega aquí más campos según sea necesario
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // Si no se encuentra el usuario, su carrito o no hay detalles, devuelve un array vacío
+  if (!cart || cart.Cart.length === 0 || !cart.Cart[0].cartDetails) {
+    return [];
+  }
+
+  // De lo contrario, devuelve los detalles del primer carrito encontrado
+  return cart.Cart[0].cartDetails;
+}
