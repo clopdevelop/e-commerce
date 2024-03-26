@@ -1,18 +1,4 @@
 import { z } from "zod";
-
-
-export type User = {
-    id_user: number;
-    first_name: string;
-    id_address?: number | null;
-    postcode?: string | null;
-    phone?: string | null;
-    email: string;
-    password: string;
-    created_at: Date;
-  }
-  
-
   
   export const userSchema = z.object({
     id: z.number(),
@@ -28,7 +14,56 @@ export type User = {
     created_at: z.date(),
   });
 
+  export const addressSchema = z.object({
+    id_address: z.number(),
+    address: z.string(),
+    id_city: z.number(),
+    last_update: z.date(),
+  });
+  
+  export const citySchema = z.object({
+    id_city: z.number(),
+    city: z.string(),
+    id_province: z.number(),
+  });
+  
+  export const provinceSchema = z.object({
+    id_province: z.number(),
+    iso_code: z.string().max(2, "ISO code must be 2 characters."),
+    province: z.string(),
+    id_country: z.number(),
+  });
+  
+  export const countrySchema = z.object({
+    id_country: z.number(),
+    iso_code: z.string().max(2, "ISO code must be 2 characters."),
+    country: z.string(),
+  });
+  
+  export const productSchema = z.object({
+    id_product: z.number(),
+    name: z.string(),
+    description: z.string().optional().nullable(),
+    price: z.number(),
+  });
+  
+  export const cartDetailSchema = z.object({
+    id_cart: z.number(),
+    id_product: z.number(),
+    quantity: z.number(),
+  });
+  
 
+  export type User = {
+    id_user: number;
+    first_name: string;
+    id_address?: number | null;
+    postcode?: string | null;
+    phone?: string | null;
+    email: string;
+    password: string;
+    created_at: Date;
+  };
 
   export type ProductDetail = {
     id_product: number;
@@ -46,7 +81,55 @@ export type User = {
 
   export type Product = {
     id_product: number;
+    code?: string | null;
     name: string;
-    description: string | null;
+    description?: string | null;
+    id_brand?: number | null; 
+    id_provider?: number | null;
+    id_category?: number | null;
+    thumbnail?: string | null;
     price: number;
-  }
+    discount: number; 
+    created_at: Date;
+    last_update?: Date | null;
+  };
+
+  export type Cart = {
+    id_cart: number;
+    id_user: number;
+    last_update: Date;
+  };
+  
+  export type CartDetail = {
+    id_cart: number;
+    id_product: number;
+    quantity: number;
+  };
+  
+
+  export type Address = {
+    id_address: number;
+    address: string;
+    id_city: number;
+    last_update: Date;
+  };
+  
+  export type City = {
+    id_city: number;
+    city: string;
+    id_province: number;
+  };
+  
+  export type Province = {
+    id_province: number;
+    iso_code: string;
+    province: string;
+    id_country: number;
+  };
+  
+  export type Country = {
+    id_country: number;
+    iso_code: string;
+    country: string;
+  };
+  

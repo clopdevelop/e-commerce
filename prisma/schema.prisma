@@ -1,96 +1,98 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
+generator client {
+  provider = "prisma-client-js"
+}
+
 model Address {
-  id_address  Int       @id @default(autoincrement())
+  id_address  Int        @id @default(autoincrement())
   address     String
+  city        City       @relation(fields: [id_city], references: [id_city])
   id_city     Int
-  last_update DateTime @default(now()) @updatedAt
+  last_update DateTime   @default(now()) @updatedAt
+  User        User[]
+  Provider    Provider[]
 }
 
 model City {
-  id_city     Int    @id @default(autoincrement())
+  id_city     Int        @id @default(autoincrement())
   city        String
+  province    Province   @relation(fields: [id_province], references: [id_province])
   id_province Int
+  Address     Address[]
 }
 
 model Province {
-  id_province Int    @id @default(autoincrement())
-  iso_code    String @unique
+  id_province Int        @id @default(autoincrement())
+  iso_code    String     @unique
   province    String
+  country     Country    @relation(fields: [id_country], references: [id_country])
   id_country  Int
+  City        City[]
 }
 
 model Country {
-  id_country Int    @id @default(autoincrement())
-  iso_code   String @unique
+  id_country Int        @id @default(autoincrement())
+  iso_code   String     @unique
   country    String
+  Province   Province[]
 }
 
-
 model User {
-  id_user    Int        @id @default(autoincrement())
-  first_name String
-  id_address Int?
-  postcode   String?
-  phone      String?
-  email      String     @unique
-  password   String
-  created_at DateTime   @default(now())
-  Favorite   Favorite[]
-  Cart       Cart[]
-
+  id_user     Int          @id @default(autoincrement())
+  first_name  String
+  address     Address?     @relation(fields: [id_address], references: [id_address])
+  id_address  Int?
+  postcode    String?
+  phone       String?
+  email       String       @unique
+  password    String
+  created_at  DateTime     @default(now())
+  Favorite    Favorite[]
+  Cart        Cart[]
+  Order       Order[]
   @@index([email], name: "idx_email")
 }
 
 model Favorite {
   id_user    Int
   id_product Int
-  user       User    @relation(fields: [id_user], references: [id_user])
-  product    Product @relation(fields: [id_product], references: [id_product])
-
+  user       User       @relation(fields: [id_user], references: [id_user])
+  product    Product    @relation(fields: [id_product], references: [id_product])
   @@id([id_user, id_product])
 }
 
 model Product {
-  id_product          Int          @id @default(autoincrement())
+  id_product          Int           @id @default(autoincrement())
   code                String?
   name                String
   description         String?
-  id_brand            Int
-  id_country          Int
-  id_provider         Int
-  id_category         Int
+  brand               Brand?        @relation(fields: [id_brand], references: [id_brand])
+  id_brand            Int?
+  provider            Provider?     @relation(fields: [id_provider], references: [id_provider])
+  id_provider         Int?
+  category            Category?     @relation(fields: [id_category], references: [id_category])
+  id_category         Int?
   thumbnail           String?
   price               Float
-  discount            Int          @default(0)
-  created_at          DateTime     @default(now())
-  last_update         DateTime?    @updatedAt
+  discount            Int?           @default(0)
+  created_at          DateTime      @default(now())
+  last_update         DateTime?     @updatedAt
   favorites           Favorite[]
   cartDetails         CartDetail[]
   stock               Stock?
-  Category            Category?    @relation(fields: [categoryId_category], references: [id_category])
-  categoryId_category Int?
-  Brand               Brand?       @relation(fields: [brandId_brand], references: [id_brand])
-  brandId_brand       Int?
-
+  orderDetails OrderDetail[]
   @@index([name], name: "idx_name")
 }
 
 model Cart {
-  id_cart     Int          @id @default(autoincrement())
+  id_cart     Int         @id @default(autoincrement())
   id_user     Int
-  last_update DateTime     @default(now()) @updatedAt
-  user        User         @relation(fields: [id_user], references: [id_user])
+  last_update DateTime    @default(now()) @updatedAt
+  user        User        @relation(fields: [id_user], references: [id_user])
   cartDetails CartDetail[]
 }
 
@@ -98,122 +100,103 @@ model CartDetail {
   id_cart    Int
   id_product Int
   quantity   Int
-  cart       Cart    @relation(fields: [id_cart], references: [id_cart])
-  product    Product @relation(fields: [id_product], references: [id_product])
-
+  cart       Cart       @relation(fields: [id_cart], references: [id_cart])
+  product    Product    @relation(fields: [id_product], references: [id_product])
   @@id([id_cart, id_product])
 }
 
 model Category {
-  id_category Int       @id @default(autoincrement())
+  id_category Int        @id @default(autoincrement())
   category    String
-  description String
+  description String?
   products    Product[]
 }
 
 model Brand {
-  id_brand Int       @id @default(autoincrement())
-  brand    String
-  products Product[]
+  id_brand   Int        @id @default(autoincrement())
+  brand      String
+  products   Product[]
 }
 
 model Provider {
-  id_provider Int      @id @default(autoincrement())
+  id_provider Int       @id @default(autoincrement())
   cuit        String
   name        String
-  id_address  Int
+  address     Address?  @relation(fields: [id_address], references: [id_address])
+  id_address  Int?
   postcode    String
   phone       String?
   email       String
-  created_at  DateTime @default(now())
+  created_at  DateTime  @default(now())
+  products    Product[]
 }
 
 model Stock {
   id_product  Int
-  stock       Int      @default(0)
-  last_update DateTime @updatedAt
-  product     Product  @relation(fields: [id_product], references: [id_product])
-
+  stock       Int       @default(0)
+  last_update DateTime  @updatedAt
+  product     Product   @relation(fields: [id_product], references: [id_product])
   @@id([id_product])
 }
 
-
 model Order {
-  id_order    Int       @id @default(autoincrement())
+  id_order    Int            @id @default(autoincrement())
   id_user     Int
-  id_delivery Int
-  status      String    // Enum values represented as strings
-  paid        Boolean   @default(false)
-  created_at  DateTime  @default(now())
+  user         User         @relation(fields: [id_user], references: [id_user])
+  deliveryType DeliveryType @relation(fields: [id_delivery], references: [id_delivery])
+  id_delivery  Int
+  status       String       // Considera usar un enum aquí si tienes valores fijos para el status
+  paid         Boolean      @default(false)
+  created_at   DateTime     @default(now())
+  orderDetails OrderDetail[]
+  invoice      Invoice[]
 }
 
 model OrderDetail {
-  id_order   Int     @id
+  id_order   Int
+  order      Order      @relation(fields: [id_order], references: [id_order])
+  product    Product    @relation(fields: [id_product], references: [id_product])
   id_product Int
   quantity   Int
   unit_price Float
-  discount   Int     @default(0)
+  discount   Int        @default(0)
+  @@id([id_order, id_product])
 }
 
 model DeliveryType {
   id_delivery   Int    @id @default(autoincrement())
   delivery_type String
+  Order         Order[]
 }
 
 model Invoice {
-  id_invoice     Int     @id @default(autoincrement())
-  invoice_n      String  @unique
-  type           String  // Enum "A", "B" as string
-  id_order       Int     @unique
-  id_date        Int
-  amount         Float
-  id_p_method    Int
+  id_invoice    Int       @id @default(autoincrement())
+  invoice_n     String    @unique
+  type          String    // Considera usar un enum aquí para "A", "B"
+  order         Order     @relation(fields: [id_order], references: [id_order])
+  id_order      Int
+  date          Date      @relation(fields: [id_date], references: [id_date])
+  id_date       Int
+  amount        Float
+  paymentMethod PaymentMethod @relation(fields: [id_p_method], references: [id_p_method])
+  id_p_method   Int
 }
 
 model PaymentMethod {
-  id_p_method   Int    @id @default(autoincrement())
+  id_p_method    Int           @id @default(autoincrement())
   payment_method String
+  Invoice        Invoice[]
 }
 
 model Date {
-  id_date   Int    @id @default(autoincrement())
-  date      DateTime @unique
+  id_date   Int       @id @default(autoincrement())
+  date      DateTime  @unique
   d_number  Int
   d_name    String
   m_number  Int
   m_name    String
   trimester Int
   year      Int
-  holiday   Boolean @default(false)
+  holiday   Boolean   @default(false)
+  Invoice   Invoice[]
 }
-
-
-
-// model TableManipulationLog {
-//   table_name String
-//   operation  String
-//   date       DateTime
-//   user       String
-//   @@id([table_name, date, user])
-// }
-
-// model ProductPriceUpdate {
-//   id_product   Int       @id
-//   name         String
-//   old_price    Float
-//   old_discount Int
-//   new_price    Float
-//   new_discount Int
-//   updated      DateTime?
-//   user         String
-// }
-
-
-// model Post {
-//   id        Int     @id @default(autoincrement())
-//   title     String
-//   content   String?
-//   published Boolean @default(false)
-//   author    User    @relation(fields: [authorId], references: [id])
-//   authorId  Int
-// }

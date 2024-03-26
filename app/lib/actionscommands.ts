@@ -37,7 +37,12 @@ export async function addUser(formData : FormData){
         throw error;
     }
 }
-
+/**
+ * Autenticar un usuario
+ * @param prevState 
+ * @param formData 
+ * @returns 
+ */
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
@@ -58,26 +63,34 @@ export async function authenticate(
     throw error;
   }
 }
-
-// export async function authenticate(
-//     prevState: string | undefined,
-//     formData: FormData,
-//   ) {
-//     try {
-//       await signIn('credentials', formData);
-//     } catch (error) {
-//       if (error instanceof AuthError) {
-//         switch (error.type) {
-//           case 'CredentialsSignin':
-//             return 'Invalid credentials.';
-//           default:
-//             return 'Something went wrong.';
-//         }
-//       }
-//       throw error;
-//     }
-//   }
   
+/**
+ * PERFIL
+ */
+
+// async function updateUserAddress(id_user: number, newAddress: string, id_city: number): Promise<void> {
+//   const user = await prisma.user.findUnique({
+//     where: { id_user },
+//     include: { : true },
+//   });
+
+//   if (user && user.id_address) {
+//     await prisma.address.update({
+//       where: {
+//         id_address: user.id_address,
+//       },
+//       data: {
+//         address: newAddress,
+//         id_city,
+//       },
+//     });
+//   } else {
+//     console.log("El usuario no tiene una dirección asociada.");
+//   }
+// }
+
+
+
 /**
  * añadir un producto al carrito
  * @param id_product 
