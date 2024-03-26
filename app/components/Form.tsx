@@ -28,12 +28,10 @@ export function LoginForm() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
 
   const form = useForm<z.infer<typeof UserLogInFormSchema>>({
-    resolver: zodResolver(UserLogInFormSchema), // Asegúrate de habilitar esto
+    resolver: zodResolver(UserLogInFormSchema), 
   });
 
   function onSubmit(values: z.infer<typeof UserLogInFormSchema>) {
-    console.log(values); // Mostrar datos del formulario en la consola para depuración
-
     const formData = new FormData();
 
     Object.keys(values).forEach((key) => {
@@ -47,15 +45,6 @@ export function LoginForm() {
   };
 
 
-  // Ajustar el componente de botón para manejar el envío
-  function LoginButton() {
-    const { isSubmitting } = form.formState;
-    return (
-      <Button type="submit" aria-disabled={isSubmitting}>
-        Log in
-      </Button>
-    );
-  }
 
   return (
     <Form {...form}>
