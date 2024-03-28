@@ -81,19 +81,19 @@ import { z } from "zod";
 
   export type Product = {
     id_product: number;
-    code?: string | null;
+    code: string | null;
     name: string;
-    description?: string | null;
-    id_brand?: number | null; 
-    id_provider?: number | null;
-    id_category?: number | null;
-    thumbnail?: string | null;
+    description: string | null;
+    id_brand: number | null;
+    id_provider: number | null;
+    id_category: number | null;
+    thumbnail: string | null;
     price: number;
-    discount: number; 
-    created_at: Date;
-    last_update?: Date | null;
-  };
-
+    discount: number | null;
+    created_at: any;
+    last_update: any;
+  }
+  
   export type Cart = {
     id_cart: number;
     id_user: number;

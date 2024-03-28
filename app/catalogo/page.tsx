@@ -4,6 +4,7 @@ import MyPagination from "@/components/myPagination";
 
 import { fetchFilteredProducts } from "@/lib/data";
 import { fetchProductsPages } from '@/lib/data';
+import { auth, getUser } from "@/auth";
 
 export default async function Home({
   searchParams,
@@ -21,6 +22,12 @@ export default async function Home({
 
   const totalPages = await fetchProductsPages(query);
 
+  //Recuperar el USERID
+  const authentication = await auth()
+  console.log(authentication)
+  const user = String(authentication?.user?.email)
+  const completeUser = await getUser(user);
+  const id_user = Number(completeUser?.id_user)
 
   return (
     <>
@@ -29,7 +36,7 @@ export default async function Home({
         <Search placeholder="Buscar productos..." />
       </div>
       <ProductsTable 
-       filteredProducts={filteredProducts} />
+       filteredProducts={filteredProducts} id_user={id_user} />
       <div className="mt-5 flex w-full justify-center">
           <MyPagination totalPages={totalPages} currentPage={currentPage}></MyPagination>
       </div>

@@ -16,7 +16,7 @@ import prisma from '@/lib/prisma';
 //   return { ...authConfig }
 //  })
 
-async function getUser(email: string): Promise<User | null> {
+export async function getUser(email: string): Promise<User | null> {
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -29,6 +29,7 @@ async function getUser(email: string): Promise<User | null> {
     throw new Error('Failed to fetch user.');
   }
 }
+
 //  Inicializacion básica:
 export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
   ...authConfig,
