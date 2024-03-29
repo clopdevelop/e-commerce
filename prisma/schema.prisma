@@ -175,8 +175,7 @@ model Invoice {
   type          String    // Considera usar un enum aquí para "A", "B"
   order         Order     @relation(fields: [id_order], references: [id_order])
   id_order      Int
-  date          Date      @relation(fields: [id_date], references: [id_date])
-  id_date       Int
+  created_at    DateTime     @default(now())
   amount        Float
   paymentMethod PaymentMethod @relation(fields: [id_p_method], references: [id_p_method])
   id_p_method   Int
@@ -198,5 +197,4 @@ model Date {
   trimester Int
   year      Int
   holiday   Boolean   @default(false)
-  Invoice   Invoice[]
 }

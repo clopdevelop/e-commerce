@@ -14,32 +14,36 @@ import {
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-import { Payment } from "@/lib/definitions";
+import { Order } from "@/lib/definitions";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "status",
     header: "Status",
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "paid",
+    header: "Pagado",
+  },
+  {
+    accessorKey: "created_at",
+    
   },
   {
     accessorKey: "amount",
     header: () => <div className="text-right">Amount</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"));
-      const formatted = new Intl.NumberFormat("en-US", {
+      const formatted = new Intl.NumberFormat("es-ES", {
         style: "currency",
-        currency: "USD",
+        currency: "eur",
       }).format(amount);
 
       return <div className="text-right font-medium">{formatted}</div>;
     },
-  },
-  {
+  }
+  ,{
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -57,7 +61,7 @@ export const columns: ColumnDef<Payment>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
+                // onClick={() => navigator.clipboard.writeText(payment.id)}
               >
                 Copy payment ID
               </DropdownMenuItem>

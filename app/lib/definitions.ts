@@ -133,10 +133,85 @@ import { z } from "zod";
     country: string;
   };
   
-  export type Payment = {
-    id: string
-    amount: number
-    status: "pending" | "processing" | "success" | "failed"
-    email: string
+  enum OrderStatus {
+    // Define aquí tus estados posibles, por ejemplo:
+    PENDING = "PENDING",
+    SHIPPED = "SHIPPED",
+    DELIVERED = "DELIVERED",
+    CANCELLED = "CANCELLED",
   }
   
+  enum InvoiceType {
+    // Suponiendo que los tipos son "A" y "B"
+    A = "A",
+    B = "B",
+  }
+  
+  // export type Order = {
+  //   id_order: number;
+  //   id_user: number;
+  //   user: User;
+  //   deliveryType: DeliveryType;
+  //   id_delivery: number;
+  //   status: OrderStatus; // Usando el enum aquí
+  //   paid: boolean;
+  //   created_at: Date;
+  //   orderDetails: OrderDetail[];
+  //   invoice: Invoice[];
+  // }
+  export type Order = {
+    id_order: number;
+    id_user: number;
+    id_delivery: number;
+    status: string;
+    paid: boolean;
+    created_at: Date;
+    amount: number | undefined; 
+}
+  
+  export type OrderDetail = {
+    id_order: number;
+    order: Order;
+    product: Product;
+    id_product: number;
+    quantity: number;
+    unit_price: number;
+    discount: number;
+  }
+  
+  export type DeliveryType = {
+    id_delivery: number;
+    delivery_type: string;
+    Order: Order[];
+  }
+  
+  export type Invoice = {
+    id_invoice: number;
+    invoice_n: string;
+    type: InvoiceType; // Usando el enum aquí
+    order: Order;
+    id_order: number;
+    created_at: Date;
+    amount: number;
+    paymentMethod: PaymentMethod;
+    id_p_method: number;
+  }
+  
+  export type PaymentMethod = {
+    id_p_method: number;
+    payment_method: string;
+    Invoice: Invoice[];
+  }
+  
+  
+  export type Date = {
+    id_date: number;
+    date: Date; 
+    d_number: number;
+    d_name: string;
+    m_number: number;
+    m_name: string;
+    trimester: number;
+    year: number;
+    holiday: boolean;
+  };

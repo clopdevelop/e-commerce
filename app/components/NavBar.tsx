@@ -44,8 +44,7 @@ export async function NavBar() {
             <MenubarContent>
               <Link href={"/"}>
                 <MenubarItem>
-                  Principal
-                  <MenubarShortcut>⌘T</MenubarShortcut>
+                  Inicio
                 </MenubarItem>
               </Link>
               <Link href={"/catalogo"}>
