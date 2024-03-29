@@ -18,7 +18,7 @@ import Profile from "@/components/Profile";
 
 export async function NavBar() {
   const account = await auth();
-  //todo no funciona con el id y no funciona con google auth a
+  //todo si lo hago  con el id no funciona google auth 
   const email = account ? account.user?.email ?? "" : "";
 
   return (
@@ -64,10 +64,6 @@ export async function NavBar() {
           </div>
         </MenubarMenu>
       </Menubar>
-      <h1 className="flex flex-col items-center justify-between p-24">
-        Press Ctrl+K
-      </h1>
-      <CommandMenu></CommandMenu>
     </>
   );
 }

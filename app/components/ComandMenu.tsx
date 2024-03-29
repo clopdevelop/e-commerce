@@ -12,34 +12,27 @@ import {
     CommandShortcut,
   } from "@/components/ui/command";
 import React from "react";
+import { Button } from "@/components/ui/button";
   
 
 export function CommandMenu() {
     const [open, setOpen] = React.useState(false)
   
-    React.useEffect(() => {
-      const down = (e: KeyboardEvent) => {
-        if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-          e.preventDefault()
-          setOpen((open) => !open)
-        }
-      }
-      document.addEventListener("keydown", down)
-      return () => document.removeEventListener("keydown", down)
-    }, [])
-  
     return (
+      <>
+      <Button className="mb-10" onClick={() => setOpen(true)}>Abrir Menú de Comandos</Button> {/* Botón para abrir el diálogo */}
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
+        {/* <CommandInput placeholder="Type a command or search..." /> */}
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
-            <CommandItem>Calendar</CommandItem>
-            <CommandItem>Search Emoji</CommandItem>
-            <CommandItem>Calculator</CommandItem>
+          {/* <CommandEmpty>No results found.</CommandEmpty> */}
+          <CommandGroup heading="Opciones">
+            <a href="/dashboard/profile"><CommandItem>Configuración del Perfil</CommandItem></a>
+            <a href="/dashboard/order"><CommandItem>Ver Pedidos</CommandItem></a>
+            {/* <CommandItem></CommandItem> */}
           </CommandGroup>
         </CommandList>
       </CommandDialog>
+      </>
     )
   }
   

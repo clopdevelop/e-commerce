@@ -10,23 +10,19 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import Link from "next/link";
-
-import { CartProps } from "@/lib/definitions";
-import { Button } from "./ui/button";
-
 import { getCartDetailsByEmail } from "@/lib/data";
 
 import Cart from "@/components/Cart";
 
 import { signOut } from "@/auth";
+import Link from "next/link";
 
 interface ProfileProps {
   email: string;
 }
 
 async function Profile({ email }: ProfileProps) {
-  //todo no funciona con el id y no funciona con google auth a
+  //todo no funciona con google auth a
   const products = await getCartDetailsByEmail(email);
 
   return (
@@ -38,15 +34,19 @@ async function Profile({ email }: ProfileProps) {
         </Avatar>
       </MenubarTrigger>
       <MenubarContent>
-        <form
-          action={async () => {
-            "use server";
-            console.log("signout");
-            await signOut();
-          }}
-        >
-          <input type="submit" value="Log out"></input>
-        </form>
+      {/*No funciona con <MenubarItem> porque no se ejecuta la lógica del formulario*/}
+          <form
+            action={async () => {
+              "use server";
+              console.log("signout");
+              await signOut();
+            }}
+          >
+            <input type="submit" value="Log out"></input>
+          </form>
+        <Link href={"/dashboard"}>
+            <MenubarItem>Perfil</MenubarItem>
+        </Link>
         <Cart products={products}></Cart>
       </MenubarContent>
     </MenubarMenu>
