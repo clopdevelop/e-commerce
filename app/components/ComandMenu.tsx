@@ -26,9 +26,11 @@ export function CommandMenu() {
         <CommandList>
           {/* <CommandEmpty>No results found.</CommandEmpty> */}
           <CommandGroup heading="Opciones">
-            <a href="/dashboard/profile"><CommandItem>Configuración del Perfil</CommandItem></a>
+            <a href="/dashboard">
+            <CommandItem>Principal</CommandItem>
+            </a>
+            <a href="/dashboard/profile"><CommandItem>Configuración</CommandItem></a>
             <a href="/dashboard/order"><CommandItem>Ver Pedidos</CommandItem></a>
-            {/* <CommandItem></CommandItem> */}
           </CommandGroup>
         </CommandList>
       </CommandDialog>

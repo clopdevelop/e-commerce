@@ -9,13 +9,23 @@ import {
 } from "@/components/ui/menubar";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 import { getCartDetailsByEmail } from "@/lib/data";
 
 import Cart from "@/components/Cart";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 
 import { signOut } from "@/auth";
 import Link from "next/link";
+import { Button } from "./ui/button";
 
 interface ProfileProps {
   email: string;
@@ -47,7 +57,23 @@ async function Profile({ email }: ProfileProps) {
         <Link href={"/dashboard"}>
             <MenubarItem>Perfil</MenubarItem>
         </Link>
-        <Cart products={products}></Cart>
+        <Sheet>
+          <SheetTrigger>Carrito</SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Opciones</SheetTitle>
+              <SheetDescription>
+                Este es tu carrito de compra
+              </SheetDescription>
+            </SheetHeader>
+            <Cart products={products}></Cart>
+            <SheetFooter className="pt-5">
+              <SheetClose asChild>
+                <Button className="p-5 text-lg font-bold" type="submit">Comprar</Button>
+              </SheetClose>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
       </MenubarContent>
     </MenubarMenu>
   );

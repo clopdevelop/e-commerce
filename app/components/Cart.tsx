@@ -12,14 +12,11 @@ import Link from "next/link";
 
 import { CartProps } from "@/lib/definitions";
 import { Button } from "./ui/button";
-
+//todo hacer que el carrito se rerenderice al hacer una operacion en el
 function Cart({ products }: CartProps) {
   return (
     <>
-      <MenubarSeparator />
-      <Link href={"/carrito"}>
-        <MenubarItem>Card:</MenubarItem>
-      </Link>
+      <p className="text-sm pt-4">Productos:</p>
       <MenubarSeparator />
       {products.map((item) => (
         <>
@@ -35,7 +32,8 @@ function Cart({ products }: CartProps) {
                 <p>Descripción: {item.product.description}</p>
               )}
             </div>
-            <Button>Eliminar</Button>
+            {/* todo añadir funcionalidad para eliminar productos del carrito */}
+            <Button className="text-sm font- bg-destructive hover:bg-destructive">Eliminar</Button>
           </MenubarItem>
           <MenubarSeparator />
         </>
