@@ -1,17 +1,25 @@
+"use client"
 import { CommandMenu } from "@/components/ComandMenu";
+import { usePathname } from 'next/navigation';
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
+  const pathname = usePathname();
+  
+  const isBaseRoute = pathname === "/dashboard";
+
   return (
     <>
-      <h1 className="flex flex-col items-center justify-between p-24">
-        Esta es la página de tu perfil de usuario.
-      </h1>
-      <CommandMenu></CommandMenu>
-      {children}
+      {isBaseRoute ? (
+        <>
+          {children}
+          <CommandMenu></CommandMenu>
+        </>
+      ) : (
+        <>
+          <CommandMenu></CommandMenu>
+          {children}
+        </>
+      )}
     </>
   );
 }
