@@ -8,6 +8,7 @@ const stripe = new Stripe(stripeSecretKey) ?? ''
 
 const endpointSecret = "whsec_qA8l7RPVLD3TX7K8FUoUS8cOnUHUjXZo"
 
+// todo Soportar pedidos con varios productos
 export async function POST(request: Request) {
   const body = await request.text();
   const headersList = headers();
@@ -27,8 +28,10 @@ export async function POST(request: Request) {
     case "checkout.session.completed":
       const checkoutSessionCompleted = event.data.object;
 
-      //todo guardar en una base de datos
-      await addOrder(checkoutSessionCompleted);
+      const lineItems = await stripe.checkout.sessions.listLineItems(checkoutSessionCompleted.id, { limit: 100 });
+
+
+      await addOrder(checkoutSessionCompleted,lineItems.data);
 
       console.log(
         "precio total: ",

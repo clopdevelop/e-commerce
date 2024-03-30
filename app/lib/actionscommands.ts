@@ -178,34 +178,63 @@ export async function deleteProductToCart(
 
   return cartDetail;
 }
-export default async function addOrder(session: Stripe.Checkout.Session) {
-  // Extracción de datos de la sesión de Stripe aquí
-  // Por ejemplo: const { amount_total, customer_details, line_items } = session;
 
+export default async function addOrder(session: Stripe.Checkout.Session,lineItems: Stripe.LineItem[]) {
+  const { amount_total, status, metadata } = session;
+  
+  if (!status  || !amount_total || !metadata) {
+    console.error("Sesión incompleta: falta status o line_items");
+    return;
+  }
+
+
+  // Asume que siempre procesarás el primer line_item como el producto comprado
+  const item = lineItems[0];
+  const id_product = Number(metadata?.id_product); 
+  const quantity = item.quantity ?? 1;
+  const unit_price = item.price?.unit_amount ?? 0;
+
+  //todo En produccion se creará una secuencia cuando se migre a Postgree para crear un codigo de factura
+  const lastInvoice = await prisma.invoice.findFirst({
+    orderBy: {
+      id_invoice: 'desc',
+    },
+    select: {
+      invoice_n: true,
+    },
+  });
+
+  const nextInvoiceNumber = lastInvoice
+    ? parseInt(lastInvoice.invoice_n.replace('INV', '')) + 1
+    : 1;
+
+  const formattedInvoiceNumber = `INV${nextInvoiceNumber.toString().padStart(4, '0')}`;
+
+  // Crear la orden con detalles y factura en la base de datos.
   try {
     const newOrder = await prisma.order.create({
       data: {
-        // Asume extracción de id_user basada en información de la sesión o algún mecanismo de autenticación
-        id_user: 1, 
-        id_delivery: 1, // Este valor debería ser determinado basado en la lógica de tu aplicación
-        status: "pending",
-        paid: false,
+        id_user: Number(metadata.id_user),
+        id_delivery: 1, 
+        status: status,
         orderDetails: {
-          create: [
-            // Suponiendo extracción de detalles de productos de la sesión de Stripe
-          ],
+          create: [{
+            id_product: id_product,
+            quantity: quantity,
+            unit_price: unit_price,
+            discount: 0, 
+          }],
         },
         invoice: {
           create: [
             {
-              invoice_n: "INV0005", // Asegúrate de generar un valor único aquí
+              invoice_n: formattedInvoiceNumber,
               type: "A",
-              amount: 200.0, // Asume extracción del total de la sesión de Stripe
-              // Ajusta la siguiente línea si es necesario para coincidir con tu esquema y tipos generados
-              id_p_method:1,
+              amount: amount_total,
+              id_p_method: 1, 
             },
           ],
-        }
+        },
       },
       include: {
         orderDetails: true,
@@ -213,9 +242,8 @@ export default async function addOrder(session: Stripe.Checkout.Session) {
       },
     });
 
-    console.log("Order guardada:", newOrder);
+    console.log("Orden guardada:", newOrder);
   } catch (error) {
     console.error("Error guardando la orden en la base de datos:", error);
-    // Ajusta el manejo de error según el contexto de tu aplicación
   }
 }

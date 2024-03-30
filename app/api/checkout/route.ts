@@ -8,9 +8,13 @@ const stripe = new Stripe(stripeSecretKey) ?? '';
 
 
 export async function POST(request: NextRequest) {
-    const {product} = await request.json();
+    const {product, id_user} = await request.json();
     console.log(product)
     const session = await stripe.checkout.sessions.create({
+      metadata: {
+        id_product: product.id_product,
+        id_user: id_user
+      },
       line_items: [{
         price_data: {
           currency: "eur",
