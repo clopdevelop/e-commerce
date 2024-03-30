@@ -1,6 +1,4 @@
 import { auth, getUser } from "@/auth";
-import { UserSettingsForm } from "@/components/UserSettingsForm";
-import { Button } from "@/components/ui/button";
 
 export default async function Home() {
   const authentication = await auth();
