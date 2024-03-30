@@ -1,3 +1,4 @@
+import addOrder from '@/lib/actionscommands';
 import { headers } from 'next/headers';
 import Stripe from 'stripe'
 
@@ -5,7 +6,7 @@ const stripeSecretKey: string = process.env.STRIPE_SECRET_KEY ?? '';
 
 const stripe = new Stripe(stripeSecretKey) ?? ''
 
-const endpointSecret = "whsec_O8d7oCBtb8tLa78bGxfZaIDEnF8BLzEk"
+const endpointSecret = "whsec_qA8l7RPVLD3TX7K8FUoUS8cOnUHUjXZo"
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -27,12 +28,16 @@ export async function POST(request: Request) {
       const checkoutSessionCompleted = event.data.object;
 
       //todo guardar en una base de datos
+      await addOrder(checkoutSessionCompleted);
+
       console.log(
         "precio total: ",
         checkoutSessionCompleted.amount_total
       );
 
       console.log({ checkoutSessionCompleted });
+
+      
       break;
     default:
       console.log(`Evento no manejado: ${event.type}`);

@@ -40,12 +40,20 @@ import { z } from "zod";
     country: z.string(),
   });
   
+
   export const productSchema = z.object({
-    id_product: z.number(),
-    name: z.string(),
-    description: z.string().optional().nullable(),
-    price: z.number(),
-  });
+  id_product: z.number(),
+  code: z.string().nullable().optional(),
+  name: z.string(),
+  description: z.string().nullable().optional(),
+  marca: z.number().nullable().optional(),
+  provider: z.number().nullable().optional(),
+  category: z.number().nullable().optional(),
+  thumbnail: z.string().nullable().optional(),
+  price: z.number(),
+  discount: z.number().nullable().optional(),
+});
+
   
   export const cartDetailSchema = z.object({
     id_cart: z.number(),
@@ -147,27 +155,18 @@ import { z } from "zod";
     B = "B",
   }
   
-  // export type Order = {
-  //   id_order: number;
-  //   id_user: number;
-  //   user: User;
-  //   deliveryType: DeliveryType;
-  //   id_delivery: number;
-  //   status: OrderStatus; // Usando el enum aquí
-  //   paid: boolean;
-  //   created_at: Date;
-  //   orderDetails: OrderDetail[];
-  //   invoice: Invoice[];
-  // }
   export type Order = {
     id_order: number;
     id_user: number;
+    user: User;
+    deliveryType: DeliveryType;
     id_delivery: number;
-    status: string;
+    status: OrderStatus; // Usando el enum aquí
     paid: boolean;
     created_at: Date;
-    amount: number | undefined; 
-}
+    orderDetails: OrderDetail[];
+    invoice: Invoice[];
+  }
   
   export type OrderDetail = {
     id_order: number;
