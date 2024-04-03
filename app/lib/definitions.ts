@@ -1,65 +1,4 @@
-import { z } from "zod";
-  
-  export const userSchema = z.object({
-    id: z.number(),
-    first_name: z.string().min(2, {
-      message: "Username must be at least 2 characters.",
-    }),
-    id_address: z.number(),
-    postcode: z.string(),
-    phone: z.string(),
-    email: z.string().email("Must be a valid email."),
-    password: z.string().min(6, "Password must be at least 6 characters."),
-    confirmPassword: z.string().min(1, "La confirmación de la contraseña es obligatoria"),
-    created_at: z.date(),
-  });
 
-  export const addressSchema = z.object({
-    id_address: z.number(),
-    address: z.string(),
-    id_city: z.number(),
-    last_update: z.date(),
-  });
-  
-  export const citySchema = z.object({
-    id_city: z.number(),
-    city: z.string(),
-    id_province: z.number(),
-  });
-  
-  export const provinceSchema = z.object({
-    id_province: z.number(),
-    iso_code: z.string().max(2, "ISO code must be 2 characters."),
-    province: z.string(),
-    id_country: z.number(),
-  });
-  
-  export const countrySchema = z.object({
-    id_country: z.number(),
-    iso_code: z.string().max(2, "ISO code must be 2 characters."),
-    country: z.string(),
-  });
-  
-
-  export const productSchema = z.object({
-  id_product: z.number(),
-  code: z.string().nullable().optional(),
-  name: z.string(),
-  description: z.string().nullable().optional(),
-  marca: z.number().nullable().optional(),
-  provider: z.number().nullable().optional(),
-  category: z.number().nullable().optional(),
-  thumbnail: z.string().nullable().optional(),
-  price: z.number(),
-  discount: z.number().nullable().optional(),
-});
-
-  
-  export const cartDetailSchema = z.object({
-    id_cart: z.number(),
-    id_product: z.number(),
-    quantity: z.number(),
-  });
   
 
   export type User = {
@@ -142,7 +81,6 @@ import { z } from "zod";
   };
   
   enum OrderStatus {
-    // Define aquí tus estados posibles, por ejemplo:
     PENDING = "PENDING",
     SHIPPED = "SHIPPED",
     DELIVERED = "DELIVERED",
@@ -155,13 +93,17 @@ import { z } from "zod";
     B = "B",
   }
   
+  export type UserOrder= { amount: number | undefined; id_order: number; id_user: number; id_delivery: number; status: string; paid: boolean; created_at: any;    orderDetails: OrderDetail[];
+  }
+
+
   export type Order = {
     id_order: number;
     id_user: number;
     user: User;
     deliveryType: DeliveryType;
     id_delivery: number;
-    status: OrderStatus; // Usando el enum aquí
+    status: OrderStatus; 
     paid: boolean;
     created_at: Date;
     orderDetails: OrderDetail[];
