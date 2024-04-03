@@ -1,7 +1,8 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { City, Province, userSchema } from "@/lib/definitions";
+import { City, Province } from "@/lib/definitions";
+import { userSchema } from "@/lib/schemas";
 import {
   Form,
   FormControl,

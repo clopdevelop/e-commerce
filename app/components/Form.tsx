@@ -1,9 +1,8 @@
 "use client";
-// todo Investigar como mover la logica de validacion al action
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { userSchema } from "@/lib/definitions";
+import { UserLogInFormSchema, userSchema } from "@/lib/schemas";
 
 import { Button } from "@/components/ui/button";
 import { useFormState, useFormStatus } from "react-dom";
@@ -19,10 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-export const UserLogInFormSchema = userSchema.pick({
-  email: true,
-  password: true,
-});
+
 
 export function LoginForm() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);

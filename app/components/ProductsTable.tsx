@@ -14,17 +14,15 @@ import { Product } from "@/lib/definitions";
 
 export default function ProductsTable({
   filteredProducts,
-  id_user
+  id_user,
 }: {
-  filteredProducts: Product[]; 
+  filteredProducts: Product[];
   id_user: number;
 }) {
-  
   async function addProduct(product: { id_product: number }) {
     try {
       //todo no funciona con google auth a
-      
-      
+
       await addProductToCart(id_user, product.id_product, 1);
       toast("Producto agregado al carrito!");
     } catch (error) {
@@ -39,7 +37,7 @@ export default function ProductsTable({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ product: product }),
+        body: JSON.stringify({ product: product, id_user },),
       });
 
       const session = await res.json();
@@ -77,35 +75,76 @@ export default function ProductsTable({
             <CardFooter className="flex justify-between ">
               <p>{product.price}€</p>
               <div className="flex gap-2 ">
-                <Button
-                  onClick={() => addProduct(product)}
-                  className="text-white"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                    <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                    <path d="M17 17h-11v-14h-2" />
-                    <path d="M6 5l14 1l-1 7h-13" />
-                  </svg>
-                </Button>
-                <Button
-                  className="text-white"
-                  onClick={() => BuyProduct(product)}
-                >
-                  Comprar
-                </Button>
+                {/* todo arreglar: como no existe el id user con el google auth no funciona con este */}
+                <>
+                  {id_user ? (
+                    <>
+                      <Button
+                        onClick={() => addProduct(product)}
+                        className="text-white"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                          <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                          <path d="M17 17h-11v-14h-2" />
+                          <path d="M6 5l14 1l-1 7h-13" />
+                        </svg>
+                      </Button>
+                      <Button
+                        className="text-white"
+                        onClick={() => BuyProduct(product)}
+                      >
+                        Comprar
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        disabled
+                        onClick={() => addProduct(product)}
+                        className="text-white"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                          <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                          <path d="M17 17h-11v-14h-2" />
+                          <path d="M6 5l14 1l-1 7h-13" />
+                        </svg>
+                      </Button>
+                      <Button
+                        disabled
+                        className="text-white"
+                        onClick={() => BuyProduct(product)}
+                      >
+                        Comprar
+                      </Button>
+                    </>
+                  )}
+                </>
               </div>
             </CardFooter>
           </Card>
