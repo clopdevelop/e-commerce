@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import Stripe from 'stripe'
 
+import { responseSchema } from '@/lib/schemas'
+
+
 const stripeSecretKey: string = process.env.STRIPE_SECRET_KEY ?? '';
 
 const stripe = new Stripe(stripeSecretKey) ?? '';
@@ -10,6 +13,7 @@ const stripe = new Stripe(stripeSecretKey) ?? '';
 export async function POST(request: NextRequest) {
     const {product, id_user} = await request.json();
     console.log(product)
+    const result = responseSchema.safeParse(product);
     const session = await stripe.checkout.sessions.create({
       metadata: {
         id_product: product.id_product,
