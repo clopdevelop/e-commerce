@@ -10,9 +10,9 @@ import {
     CommandList,
     CommandSeparator,
     CommandShortcut,
-  } from "@/components/ui/command";
+  } from "@/components/shadcn/command";
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shadcn/button";
   
 
 export function CommandMenu() {

@@ -1,5 +1,5 @@
 "use client"
-import { CommandMenu } from "@/components/ComandMenu";
+import { CommandMenu } from "@/components/utils/ComandMenu";
 import { usePathname } from 'next/navigation';
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {

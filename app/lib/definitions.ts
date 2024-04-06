@@ -23,7 +23,7 @@
   };
   
   export type CartProps = {
-    products: ProductDetail[];
+    initialProducts: ProductDetail[];
   };
 
   export type Product = {

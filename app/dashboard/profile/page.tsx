@@ -1,5 +1,5 @@
 import { auth, getUser } from '@/auth';
-import {UserSettingsForm} from '@/components/UserSettingsForm'
+import {UserSettingsForm} from '@/components/form/UserSettingsForm'
 
 export default async function Home() {
   const authentication = await auth()

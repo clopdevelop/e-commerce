@@ -1,7 +1,23 @@
 "use server"
 import prisma from "@/lib/prisma";
 
+/**
+ * Devuelve todos los Productos
+ * @param query 
+ * @param currentPage 
+ * @returns 
+ */
+export async function fetchProducts(currentPage: number) {
+  const productsOnPage = 1; 
+  const productsToSkip = (currentPage - 1) * productsOnPage;
 
+  const Products = await prisma.product.findMany({
+    take: productsOnPage,
+    skip: productsToSkip, 
+  });
+
+  return Products;
+}
   
 /**
  * Filtrar Productos por nombre
@@ -121,6 +137,8 @@ export async function getCartDetailsByEmail(email: string) {
   return cart.Cart[0].cartDetails;
 }
 
+
+
 export async function fetchOrdersByUserId(userId: number) {
   try {
     const orders = await prisma.order.findMany({
@@ -136,9 +154,6 @@ export async function fetchOrdersByUserId(userId: number) {
 }
 
 export async function fetchInvoicesByUserId(userId: number) {
-  // Utiliza el cliente Prisma para realizar la consulta a la base de datos.
-  // Asumiendo que hay una relación entre el User y sus Invoices
-  // a través de Orders (User -> Order -> Invoice).
   return await prisma.invoice.findMany({
     where: {
       order: {
@@ -148,7 +163,29 @@ export async function fetchInvoicesByUserId(userId: number) {
       },
     },
     include: {
-      order: true, // Incluye detalles del pedido asociado a la factura
+      order: true, 
     },
   });
+}
+
+
+export async function fetchProductsByOrder(orderId: number) {
+  try {
+    const orders = await prisma.order.findMany({
+      where: {
+        id_order: orderId,
+      },
+      include: {
+        orderDetails: {
+          include:{
+            product:true,
+          }
+        }
+      }
+    });
+    return orders;
+  } catch (error) {
+    console.error('Error fetching orders by user ID:', error);
+    throw error;
+  }
 }

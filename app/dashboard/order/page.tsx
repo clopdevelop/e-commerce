@@ -5,7 +5,11 @@ import { auth, getUser } from "@/auth";
 import { DataTable } from "./data-table"
 import { fetchOrdersByUserId, fetchInvoicesByUserId } from "@/lib/data";
 
-async function getData(): Promise<Order[]> {
+import {UserOrder} from '@/lib/definitions'
+
+async function getData(): Promise<UserOrder[]> {
+
+  // todo abstraer esta lógica para obtener el usuario logueado
   const authentication = await auth();
   const user = String(authentication?.user?.email);
   const completeUser = await getUser(user);
@@ -14,14 +18,14 @@ async function getData(): Promise<Order[]> {
   let orders = await fetchOrdersByUserId(id);
   const invoices = await fetchInvoicesByUserId(id);
   
-    // Asumiendo que quieres añadir la propiedad `amount` a cada objeto del array
     let updatedOrders = orders.map(order => {
       // Encuentra la factura correspondiente al pedido actual por id_order
       const invoice = invoices.find(invoice => invoice.id_order === order.id_order);
-  
+      
       return {
-        ...order, // Copia todas las propiedades existentes del objeto
-        amount: invoice ? invoice.amount : undefined, // Añade o modifica la propiedad `amount` con el valor encontrado, o undefined si no hay factura correspondiente
+        ...order,
+    // añadir la propiedad `amount` a cada objeto del array
+        amount: invoice ? invoice.amount : undefined, 
       };
     });
   

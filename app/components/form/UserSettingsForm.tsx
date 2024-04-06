@@ -11,17 +11,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"; 
+} from "@/components/shadcn/form"; 
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/shadcn/select";
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/components/shadcn/input";
+import { Button } from "@/components/shadcn/button";
 import { useState, useEffect } from "react";
 
 export function UserSettingsForm() {

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { UserLogInFormSchema, userSchema } from "@/lib/schemas";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shadcn/button";
 import { useFormState, useFormStatus } from "react-dom";
 import { authenticate } from "@/lib/actionscommands";
 import {
@@ -15,8 +15,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/components/shadcn/form";
+import { Input } from "@/components/shadcn/input";
 
 
 

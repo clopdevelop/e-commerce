@@ -1,4 +1,4 @@
-import { ProfileForm } from "@/components/RegisterForm";
+import { ProfileForm } from "@/components/form/RegisterForm";
 
 export default function Home() {
   return (
