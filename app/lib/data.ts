@@ -8,6 +8,8 @@ import prisma from "@/lib/prisma";
  * @returns 
  */
 export async function fetchProducts(currentPage: number) {
+  await new Promise((resolve) => setTimeout(resolve,3000));
+
   const productsOnPage = 1; 
   const productsToSkip = (currentPage - 1) * productsOnPage;
 
