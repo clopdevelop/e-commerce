@@ -22,24 +22,22 @@
     };
   };
   
-  export type CartProps = {
-    initialProducts: ProductDetail[];
-  };
 
   export type Product = {
     id_product: number;
     code: string | null;
     name: string;
     description: string | null;
+    state: string | null;
     id_brand: number | null;
     id_provider: number | null;
     id_category: number | null;
-    thumbnail: string | null;
     price: number;
     discount: number | null;
-    created_at: any;
-    last_update: any;
-  }
+    created_at: Date;
+    last_update: Date | null; 
+  };
+  
   
   export type Cart = {
     id_cart: number;
@@ -48,8 +46,10 @@
   };
   
   export type CartDetail = {
-    id_cart: number;
+    id: number;
     id_product: number;
+    name: string;
+    unit_price: number;
     quantity: number;
   };
   
@@ -86,73 +86,66 @@
     DELIVERED = "DELIVERED",
     CANCELLED = "CANCELLED",
   }
-  
-  enum InvoiceType {
-    // Suponiendo que los tipos son "A" y "B"
-    A = "A",
-    B = "B",
-  }
-  
-  export type UserOrder= { amount: number | undefined; id_order: number; id_user: number; id_delivery: number; status: string; paid: boolean; created_at: any;    orderDetails: OrderDetail[];
+
+  enum DeliveryTypes {
+    Standard = 'Standard',
+    Express = 'Express',
+    Free = 'Free',
+    InShop = 'InShop'
   }
 
 
   export type Order = {
     id_order: number;
     id_user: number;
-    user: User;
-    deliveryType: DeliveryType;
-    id_delivery: number;
-    status: OrderStatus; 
+    delivery_type: string;
+    status: string;
     paid: boolean;
     created_at: Date;
-    orderDetails: OrderDetail[];
-    invoice: Invoice[];
-  }
-  
-  export type OrderDetail = {
-    id_order: number;
-    order: Order;
-    product: Product;
-    id_product: number;
-    quantity: number;
-    unit_price: number;
-    discount: number;
-  }
-  
-  export type DeliveryType = {
-    id_delivery: number;
-    delivery_type: string;
-    Order: Order[];
-  }
+    user?: string;
+  };
   
   export type Invoice = {
     id_invoice: number;
     invoice_n: string;
-    type: InvoiceType; // Usando el enum aquí
-    order: Order;
+    type: string;
     id_order: number;
     created_at: Date;
     amount: number;
-    paymentMethod: PaymentMethod;
+    state: string;
     id_p_method: number;
+    order: Order;
+  };
+  
+
+
+  export type OrderDetail = {
+    order: string;
+    product: Product;
+    id_product: number; 
+    quantity: number;
+    price: number;
+    discount: number | null;
+  };
+  
+  
+  
+  export type DeliveryType = {
+    id_delivery: number;
+    delivery_type: DeliveryTypes;
   }
   
+  export type Category = {
+    id_category: number;
+    category: string;
+    description?: string;
+    state?: string;
+    products: Product[];
+  };
+
   export type PaymentMethod = {
     id_p_method: number;
     payment_method: string;
     Invoice: Invoice[];
   }
   
-  
-  export type Date = {
-    id_date: number;
-    date: Date; 
-    d_number: number;
-    d_name: string;
-    m_number: number;
-    m_name: string;
-    trimester: number;
-    year: number;
-    holiday: boolean;
-  };

@@ -1,9 +1,25 @@
+import { CartProvider } from "./context/CartProvider";
+'use client'
+import { useSearchParams } from 'next/navigation';
 
+export default function Home() { // Obtiene el parámetro `success` de la URL
+  const searchParams = useSearchParams();
+  const success = searchParams.get('success')
 
-export default function Home() {
   return (
+    <CartProvider>
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1>Hola Mundo</h1>
+      {success ? (
+        <>
+          <h1>SUCCESS</h1>
+        </>
+      ): (
+        <>
+          <h1>WELCOME</h1>
+        </>
+      )}
     </main>
+    </CartProvider>
+    
   );
 }

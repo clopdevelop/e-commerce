@@ -1,9 +1,6 @@
 import { auth, getUser } from "@/auth";
 
-// import {getServerSession} from 'next-auth' <-- obtener los datos de la sesion desde el servidor
-
 export default async function Home() {
-  // const session = await getServerSession()
 
   const authentication = await auth();
   console.log(authentication);
