@@ -70,13 +70,13 @@ model Product {
   code                String?
   name                String
   description         String?
+  state               String?
   brand               Brand?        @relation(fields: [id_brand], references: [id_brand])
   id_brand            Int?
   provider            Provider?     @relation(fields: [id_provider], references: [id_provider])
   id_provider         Int?
   category            Category?     @relation(fields: [id_category], references: [id_category])
   id_category         Int?
-  thumbnail           String?
   price               Float
   discount            Int?           @default(0)
   created_at          DateTime      @default(now())
@@ -109,6 +109,7 @@ model Category {
   id_category Int        @id @default(autoincrement())
   category    String
   description String?
+  state       String?
   products    Product[]
 }
 
@@ -143,13 +144,20 @@ model Order {
   id_order    Int            @id @default(autoincrement())
   id_user     Int
   user         User         @relation(fields: [id_user], references: [id_user])
-  deliveryType DeliveryType @relation(fields: [id_delivery], references: [id_delivery])
-  id_delivery  Int
-  status       String       // Considera usar un enum aquí si tienes valores fijos para el status
+  deliveryType DeliveryType @relation(fields: [delivery_type], references: [delivery_type])
+  delivery_type  String
+  status       String       
   paid         Boolean      @default(false)
+  discount   Int        @default(0)
   created_at   DateTime     @default(now())
   orderDetails OrderDetail[]
   invoice      Invoice[]
+}
+
+model DeliveryType {
+  id_delivery   Int    @id @default(autoincrement())
+  delivery_type String @unique
+  Order         Order[]
 }
 
 model OrderDetail {
@@ -159,24 +167,18 @@ model OrderDetail {
   id_product Int
   quantity   Int
   unit_price Float
-  discount   Int        @default(0)
   @@id([id_order, id_product])
-}
-
-model DeliveryType {
-  id_delivery   Int    @id @default(autoincrement())
-  delivery_type String
-  Order         Order[]
 }
 
 model Invoice {
   id_invoice    Int       @id @default(autoincrement())
   invoice_n     String    @unique
-  type          String    // Considera usar un enum aquí para "A", "B"
+  type          String    
   order         Order     @relation(fields: [id_order], references: [id_order])
   id_order      Int
   created_at    DateTime     @default(now())
   amount        Float
+  state         String
   paymentMethod PaymentMethod @relation(fields: [id_p_method], references: [id_p_method])
   id_p_method   Int
 }
@@ -187,14 +189,3 @@ model PaymentMethod {
   Invoice        Invoice[]
 }
 
-model Date {
-  id_date   Int       @id @default(autoincrement())
-  date      DateTime  @unique
-  d_number  Int
-  d_name    String
-  m_number  Int
-  m_name    String
-  trimester Int
-  year      Int
-  holiday   Boolean   @default(false)
-}
