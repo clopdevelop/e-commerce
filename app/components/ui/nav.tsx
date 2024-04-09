@@ -28,6 +28,7 @@ import {
 } from "@/components/shadcn/sheet"
 import { Button } from "../shadcn/button";
 import { usePathname } from "next/navigation";
+import Cart from "@/components/cart/Cart";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -70,11 +71,18 @@ const components: { title: string; href: string; description: string }[] = [
 export function NavigationMenuDemo() {
   const pathname = usePathname();
   return (
-    <NavigationMenu className="hidden md:block ">
+    <NavigationMenu className="hidden sm:block ">
       <NavigationMenuList>
         <NavigationMenuItem>
+          <Link href="/dashboard" legacyBehavior passHref>
+          <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${pathname.startsWith('/dashboard') ? '!bg-pink-400' : ''}`}>
+              Principal
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
           <Link href="/catalogo" legacyBehavior passHref>
-            <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${pathname === '/catalogo' ? 'bg-accent' : ''}`}>
+            <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${pathname === '/catalogo' ? '!bg-pink-400' : ''}`}>
               Tienda
             </NavigationMenuLink>
           </Link>
@@ -89,7 +97,7 @@ export function NavigationMenuDemo() {
                 Este es tu carrito de compra
               </SheetDescription>
             </SheetHeader>
-           
+              <Cart></Cart>
             <SheetFooter className="pt-5">
               <SheetClose asChild>
                 <Button className="p-5 text-lg font-bold" type="submit">Comprar</Button>
@@ -97,11 +105,10 @@ export function NavigationMenuDemo() {
             </SheetFooter>
           </SheetContent>
         </Sheet>
-          {/* <Cart></Cart> */}
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href="/contacto" legacyBehavior passHref>
-            <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${pathname === '/contacto' ? 'bg-accent' : ''}`}>
+            <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${pathname === '/contacto' ? '!bg-pink-400' : ''}`}>
               Contacto
             </NavigationMenuLink>
           </Link>

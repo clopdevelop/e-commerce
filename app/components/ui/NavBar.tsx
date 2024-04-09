@@ -32,7 +32,7 @@ export async function NavBar() {
   return (
     <>
       <Menubar className="py-10 px-3 flex items-center justify-between">
-      <svg className="block text-white w-36"
+        <svg className="block text-white w-36"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 330 87"
