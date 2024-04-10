@@ -12,7 +12,7 @@ export default async function Home() {
     <>
       {completeUser ? (
         <>
-          <h1>Hola {completeUser.first_name}</h1>
+          <h1>Hola {completeUser.name}</h1>
         </>
       ) : (
         <>
