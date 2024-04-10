@@ -42,81 +42,44 @@ model Country {
 }
 
 model User {
-  id_user     Int          @id @default(autoincrement())
-  first_name  String
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String       @unique
+  phone       String?
+  password    String
   address     Address?     @relation(fields: [id_address], references: [id_address])
   id_address  Int?
   postcode    String?
-  phone       String?
-  email       String       @unique
-  password    String
   created_at  DateTime     @default(now())
-  Favorite    Favorite[]
-  Cart        Cart[]
+  
   Order       Order[]
-  @@index([email], name: "idx_email")
-}
-
-model Favorite {
-  id_user    Int
-  id_product Int
-  user       User       @relation(fields: [id_user], references: [id_user])
-  product    Product    @relation(fields: [id_product], references: [id_product])
-  @@id([id_user, id_product])
 }
 
 model Product {
-  id_product          Int           @id @default(autoincrement())
+  id                  Int           @id @default(autoincrement())
   code                String?
   name                String
   description         String?
   state               String?
-  brand               Brand?        @relation(fields: [id_brand], references: [id_brand])
-  id_brand            Int?
+  price               Float         @default(0)
+  discount            Int?          @default(0)
+  created_at          DateTime      @default(now())
+  last_update         DateTime?     @updatedAt
+  stock               Int
+  
   provider            Provider?     @relation(fields: [id_provider], references: [id_provider])
   id_provider         Int?
   category            Category?     @relation(fields: [id_category], references: [id_category])
   id_category         Int?
-  price               Float
-  discount            Int?           @default(0)
-  created_at          DateTime      @default(now())
-  last_update         DateTime?     @updatedAt
-  favorites           Favorite[]
-  cartDetails         CartDetail[]
-  stock               Stock?
-  orderDetails OrderDetail[]
-  @@index([name], name: "idx_name")
-}
 
-model Cart {
-  id_cart     Int         @id @default(autoincrement())
-  id_user     Int
-  last_update DateTime    @default(now()) @updatedAt
-  user        User        @relation(fields: [id_user], references: [id_user])
-  cartDetails CartDetail[]
-}
-
-model CartDetail {
-  id_cart    Int
-  id_product Int
-  quantity   Int
-  cart       Cart       @relation(fields: [id_cart], references: [id_cart])
-  product    Product    @relation(fields: [id_product], references: [id_product])
-  @@id([id_cart, id_product])
+  OrderItem           OrderItem[]
 }
 
 model Category {
   id_category Int        @id @default(autoincrement())
-  category    String
-  description String?
+  name        String     @unique
   state       String?
-  products    Product[]
-}
-
-model Brand {
-  id_brand   Int        @id @default(autoincrement())
-  brand      String
-  products   Product[]
+  Product    Product[]
 }
 
 model Provider {
@@ -132,25 +95,20 @@ model Provider {
   products    Product[]
 }
 
-model Stock {
-  id_product  Int
-  stock       Int       @default(0)
-  last_update DateTime  @updatedAt
-  product     Product   @relation(fields: [id_product], references: [id_product])
-  @@id([id_product])
-}
-
 model Order {
-  id_order    Int            @id @default(autoincrement())
-  id_user     Int
-  user         User         @relation(fields: [id_user], references: [id_user])
-  deliveryType DeliveryType @relation(fields: [delivery_type], references: [delivery_type])
-  delivery_type  String
+  id           Int            @id @default(autoincrement())
+  total        Float
   status       String       
   paid         Boolean      @default(false)
-  discount   Int        @default(0)
+  discount     Float        @default(0)
   created_at   DateTime     @default(now())
-  orderDetails OrderDetail[]
+
+  user         User         @relation(fields: [id_user], references: [id])
+  id_user      Int
+  deliveryType DeliveryType @relation(fields: [delivery_type], references: [delivery_type])
+  delivery_type  String
+
+  OrderItem    OrderItem[]
   invoice      Invoice[]
 }
 
@@ -160,14 +118,15 @@ model DeliveryType {
   Order         Order[]
 }
 
-model OrderDetail {
-  id_order   Int
-  order      Order      @relation(fields: [id_order], references: [id_order])
-  product    Product    @relation(fields: [id_product], references: [id_product])
-  id_product Int
+model OrderItem {
+  id         Int        @id @default(autoincrement())        
   quantity   Int
   unit_price Float
-  @@id([id_order, id_product])
+
+  order      Order      @relation(fields: [id_order], references: [id])
+  id_order   Int
+  product    Product    @relation(fields: [id_product], references: [id])
+  id_product Int
 }
 
 model Invoice {
