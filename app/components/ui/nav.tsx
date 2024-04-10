@@ -14,7 +14,6 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/shadcn/navigation-menu";
-// import Cart from "../Cart";
 
 import {
   Sheet,
@@ -74,14 +73,14 @@ export function NavigationMenuDemo() {
     <NavigationMenu className="hidden sm:block ">
       <NavigationMenuList>
         <NavigationMenuItem>
-          <Link href="/dashboard" legacyBehavior passHref>
-          <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${pathname.startsWith('/dashboard') ? '!bg-pink-400' : ''}`}>
+          <Link href="/dashboard">
+          <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${pathname.startsWith('/dashboard') ? '!bg-pink-400' : ''} ${pathname.startsWith('/entrada') ? '!bg-pink-400' : ''}`}>
               Principal
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/catalogo" legacyBehavior passHref>
+          <Link href="/catalogo">
             <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${pathname === '/catalogo' ? '!bg-pink-400' : ''}`}>
               Tienda
             </NavigationMenuLink>
@@ -107,7 +106,7 @@ export function NavigationMenuDemo() {
         </Sheet>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/contacto" legacyBehavior passHref>
+          <Link href="/contacto">
             <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${pathname === '/contacto' ? '!bg-pink-400' : ''}`}>
               Contacto
             </NavigationMenuLink>

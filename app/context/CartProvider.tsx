@@ -1,9 +1,9 @@
-import { CartDetail } from '@/lib/definitions';
+import { CartItem } from '@/lib/definitions';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type CartContextType = {
-  items: CartDetail[];
-  addItem: (item: CartDetail) => void;
+  items: CartItem[];
+  addItem: (item: CartItem) => void;
   removeItem: (itemId: number) => void;
 };
 
@@ -14,9 +14,9 @@ type CartProviderProps = {
 };
 
 export const CartProvider = ({ children }: CartProviderProps) => {
-  const [items, setItems] = useState<CartDetail[]>([]);
+  const [items, setItems] = useState<CartItem[]>([]);
 
-  const addItem = (item: CartDetail) => {
+  const addItem = (item: CartItem) => {
     // todo Implementación para agregar un item al carrito
     setItems((prevItems) => [...prevItems, item]);
   };

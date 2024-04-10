@@ -17,7 +17,6 @@ import { auth } from "@/auth";
 import Profile from "@/components/utils/Profile";
 
 import { NavigationMenuDemo } from "@/components/ui/nav";
-import { getCartDetailsByEmail } from "@/lib/data";
 
 
 export async function NavBar() {
@@ -26,7 +25,6 @@ export async function NavBar() {
   //todo si lo hago  con el id no funciona google auth
   const email = account ? account.user?.email ?? "" : "";
 
-  const products = await getCartDetailsByEmail(email);
 
 
   return (

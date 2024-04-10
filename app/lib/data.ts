@@ -65,79 +65,7 @@ export async function fetchProductsPages(query : string, productsOnPage = 1) {
 
   return totalPages;
 }
-  
-/**
- * Obtener productos del carrito por id usuario
- * @param userId 
- * @returns 
- */
-export async function getCartDetailsByUserId(userId: number ) {
-  const cart = await prisma.cart.findFirst({
-    where: {
-      id_user: userId,
-    },
-    select: {
-      cartDetails: {
-        select: {
-          id_product: true,
-          quantity: true,
-          product: {
-            select: {
-              name: true,
-              price: true,
-              description: true,
-              // Agrega aquí más campos según sea necesario
-            },
-          },
-        },
-      },
-    },
-  });
 
-  // Si no se encuentra el carrito o no hay detalles, devuelve un array vacío
-  if (!cart || !cart.cartDetails) {
-    return [];
-  }
-
-  // De lo contrario, devuelve los detalles del carrito
-  return cart.cartDetails;
-}
-
-export async function getCartDetailsByEmail(email: string) {
-  const cart = await prisma.user.findUnique({
-    where: {
-      email: email,
-    },
-    select: {
-      Cart: {
-        select: {
-          cartDetails: {
-            select: {
-              id_product: true,
-              quantity: true,
-              product: {
-                select: {
-                  name: true,
-                  price: true,
-                  description: true,
-                  // Agrega aquí más campos según sea necesario
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
-
-  // Si no se encuentra el usuario, su carrito o no hay detalles, devuelve un array vacío
-  if (!cart || cart.Cart.length === 0 || !cart.Cart[0].cartDetails) {
-    return [];
-  }
-
-  // De lo contrario, devuelve los detalles del primer carrito encontrado
-  return cart.Cart[0].cartDetails;
-}
 
 
 
@@ -158,14 +86,14 @@ export async function fetchOrdersByUserId(userId: number) {
 export async function fetchInvoicesByUserId(userId: number) {
   return await prisma.invoice.findMany({
     where: {
-      order: {
+      Order: {
         user: {
-          id_user: userId,
+          id: userId,
         },
       },
     },
     include: {
-      order: true, 
+      Order: true, 
     },
   });
 }
@@ -175,10 +103,10 @@ export async function fetchProductsByOrder(orderId: number) {
   try {
     const orders = await prisma.order.findMany({
       where: {
-        id_order: orderId,
+        id: orderId,
       },
       include: {
-        orderDetails: {
+        OrderItem: {
           include:{
             product:true,
           }

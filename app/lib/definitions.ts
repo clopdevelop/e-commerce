@@ -9,7 +9,7 @@ export type User = {
   id_address?: number | null;
   postcode?: string | null;
   created_at: Date;
-  Order: Order[];
+  Order?: Order[] | null;
 }
 
 export type Product = {
@@ -103,3 +103,11 @@ export type PaymentMethod = {
 export type Address = {
   // Assuming Address is another model not defined here. Properties would need to be filled in.
 }
+
+export type CartItem = {
+  id: number;
+  id_product: number;
+  name: string;
+  unit_price: number;
+  quantity: number;
+};
