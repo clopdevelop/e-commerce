@@ -1,5 +1,6 @@
-import { CartProvider } from "./context/CartProvider";
 'use client'
+
+import { CartProvider } from "./context/CartProvider";
 import { useSearchParams } from 'next/navigation';
 
 export default function Home() { // Obtiene el parámetro `success` de la URL

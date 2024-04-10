@@ -1,109 +1,77 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const product1 = await prisma.product.create({
-    data: {
-      name: "Laptop Gaming",
-      description:
-        "Una laptop gaming de alto rendimiento para los juegos más exigentes.",
-      price: 1500.0,
-      // Asegúrate de añadir o quitar campos según tu esquema
-    },
-  });
-
-
-  const product2 = await prisma.product.create({
-    data: {
-      name: "Smartphone 5G",
-      description: "Última generación de smartphone con conectividad 5G.",
-      price: 800.0,
-      // Asegúrate de añadir o quitar campos según tu esquema
-    },
-  });
-
-
-  // Creación de un usuario de ejemplo
+  // Seed User
   const user = await prisma.user.create({
     data: {
-      first_name: "usuario",
-      email: "usuario@example.com",
-      password: "usuario", 
+      name: 'John Doe',
+      email: 'john@example.com',
+      phone: '1234567890',
+      password: 'supersecurepassword',
+      postcode: '12345',
+      created_at: new Date(),
     },
   });
 
-
-  // Creación de tipos de entregas
-  const deliverytype = await prisma.deliveryType.create({
+  // Seed Category
+  const category = await prisma.category.create({
     data: {
-      delivery_type: "Standard",
+      name: 'Electronics',
+      state: 'Active',
     },
   });
 
-  await prisma.deliveryType.create({
+  // Seed Product
+  const product = await prisma.product.create({
     data: {
-      delivery_type: "Express",
+      name: 'Laptop',
+      description: 'A high performance laptop.',
+      price: 1200.00,
+      stock: 10,
+      created_at: new Date(),
+      id_category: category.id_category,
     },
   });
 
-  await prisma.deliveryType.create({
-    data: {
-      delivery_type: "Free",
-    },
-  });
-
-  await prisma.deliveryType.create({
-    data: {
-      delivery_type: "InShop",
-    },
-  });
-
-  // Creación de un método de pago de ejemplo
-  const paymentMethod = await prisma.paymentMethod.create({
-    data: {
-      payment_method: "Tarjeta de Crédito",
-    },
-  });
-
-  // Creación de una orden
+  // Seed Order
   const order = await prisma.order.create({
     data: {
-      id_user: user.id_user,
-      delivery_type: deliverytype.delivery_type, 
-      status: "PENDING",
-      paid: false,
-      orderDetails: {
-        create: [
-          { id_product: product1.id_product, quantity: 1, unit_price: 1500.0 },
-          { id_product: product2.id_product, quantity: 2, unit_price: 800.0 },
-        ],
+      total: 1200.00,
+      status: 'Pending',
+      user: {
+        connect: { id: user.id },
       },
-      invoice: {
+      deliveryType: {
         create: {
-          invoice_n: "INV0001",
-          type: "A",
-          amount: 3100.0, 
-          paymentMethod: {
-            connect: {
-              id_p_method: paymentMethod.id_p_method, 
-            },
-          },
+          delivery_type: 'Standard',
         },
       },
-    },
-    include: {
-      orderDetails: true,
-      invoice: true,
+      created_at: new Date(),
     },
   });
 
+  // Seed OrderItem
+  const orderItem = await prisma.orderItem.create({
+    data: {
+      quantity: 1,
+      unit_price: 1200.00,
+      Order: {
+        connect: { id: order.id },
+      },
+      product: {
+        connect: { id: product.id },
+      },
+    },
+  });
+
+  console.log({ user, category, product, order, orderItem });
 }
 
 main()
   .catch((e) => {
-    console.error(e);
-    process.exit(1);
+    throw e;
   })
   .finally(async () => {
     await prisma.$disconnect();

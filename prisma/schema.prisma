@@ -123,7 +123,7 @@ model OrderItem {
   quantity   Int
   unit_price Float
 
-  order      Order      @relation(fields: [id_order], references: [id])
+  Order      Order      @relation(fields: [id_order], references: [id])
   id_order   Int
   product    Product    @relation(fields: [id_product], references: [id])
   id_product Int
@@ -133,7 +133,7 @@ model Invoice {
   id_invoice    Int       @id @default(autoincrement())
   invoice_n     String    @unique
   type          String    
-  order         Order     @relation(fields: [id_order], references: [id_order])
+  Order         Order     @relation(fields: [id_order], references: [id])
   id_order      Int
   created_at    DateTime     @default(now())
   amount        Float
