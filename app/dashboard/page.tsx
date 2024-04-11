@@ -1,12 +1,13 @@
 import { auth, getUser } from "@/auth";
+import FavProducts from "@/components/products/FavProducts";
+// import {Product} from '@/lib/definitions'
 
 export default async function Home() {
 
   const authentication = await auth();
-  console.log(authentication);
   const user = String(authentication?.user?.email);
   const completeUser = await getUser(user);
-  console.log(completeUser);
+  // const favproducts : Product[] = []; 
 
   return (
     <>
@@ -21,7 +22,8 @@ export default async function Home() {
       )}
       <h1 className="flex flex-col items-center justify-between p-24">
             Esta es la página de tu perfil de usuario.
-          </h1>
+      </h1>
+      {/* <FavProducts products={favproducts}></FavProducts>    */}
     </>
   );
 }
