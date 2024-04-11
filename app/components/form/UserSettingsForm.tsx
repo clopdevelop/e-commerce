@@ -51,7 +51,6 @@ export function UserSettingsForm() {
   });
 
   const onSubmit = (data: any) => {
-    console.log(data);
     // Aquí iría la lógica para actualizar los datos del usuario
   };
 

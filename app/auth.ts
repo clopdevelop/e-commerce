@@ -48,7 +48,6 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         // todo const passwordsMatch = await bcrypt.compare(password, user.password);
         
         if (passwordsMatch){
-          console.log(user);
           return user;
         } 
       }

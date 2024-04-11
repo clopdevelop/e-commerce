@@ -48,7 +48,6 @@ export default function AddProductForm() {
     //   }
 
     // Aquí iría la lógica para enviar los datos del formulario a tu backend/API
-    console.log(formData);
   };
 
   // const onSubmit = (values: any) => {
