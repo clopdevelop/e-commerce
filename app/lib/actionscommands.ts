@@ -28,7 +28,7 @@ export async function addUser(formData: FormData) {
 
     const newUser = await prisma.user.create({
       data: {
-        first_name: firstName,
+        name: firstName,
         email: email,
         password: password,
       },
@@ -89,97 +89,10 @@ export async function authenticate(
 //   }
 // }
 
-/**
- * añadir un producto al carrito
- * @param id_product
- * @param name
- * @param description
- * @param price
- * @returns
- */
-export async function addProductToCart(
-  userId: number,
-  id_product: number,
-  quantity: number
-) {
-  let cart = await prisma.cart.findFirst({
-    where: { id_user: userId },
-  });
 
-  if (!cart) {
-    cart = await prisma.cart.create({
-      data: {
-        id_user: userId,
-      },
-    });
-  }
 
-  const cartDetail = await prisma.cartDetail.upsert({
-    where: {
-      id_cart_id_product: {
-        id_cart: cart.id_cart,
-        id_product: id_product,
-      },
-    },
-    update: {
-      quantity: { increment: quantity },
-    },
-    create: {
-      id_cart: cart.id_cart,
-      id_product: id_product,
-      quantity: quantity,
-    },
-  });
 
-  return cartDetail;
-}
-
-/**
- * eliminar un producto al carrito
- * @param id_product
- * @param name
- * @param description
- * @param price
- * @returns
- */
-export async function deleteProductToCart(
-  userId: number,
-  id_product: number,
-  quantity: number
-) {
-  let cart = await prisma.cart.findFirst({
-    where: { id_user: userId },
-  });
-
-  if (!cart) {
-    cart = await prisma.cart.create({
-      data: {
-        id_user: userId,
-      },
-    });
-  }
-
-  const cartDetail = await prisma.cartDetail.upsert({
-    where: {
-      id_cart_id_product: {
-        id_cart: cart.id_cart,
-        id_product: id_product,
-      },
-    },
-    update: {
-      quantity: { increment: quantity },
-    },
-    create: {
-      id_cart: cart.id_cart,
-      id_product: id_product,
-      quantity: quantity,
-    },
-  });
-
-  return cartDetail;
-}
-
-export default async function addOrder(session: Stripe.Checkout.Session,lineItems: Stripe.LineItem[]) {
+export async function addOrder(session: Stripe.Checkout.Session,lineItems: Stripe.LineItem[]) {
   const { amount_total, status, metadata } = session;
   
   if (!status  || !amount_total || !metadata) {
@@ -187,12 +100,15 @@ export default async function addOrder(session: Stripe.Checkout.Session,lineItem
     return;
   }
 
-
+  
   // Asume que siempre procesarás el primer line_item como el producto comprado
   const item = lineItems[0];
-  const id_product = Number(metadata?.id_product); 
+  console.log(metadata);
+  
+  const id_product = Number(metadata?.product); 
   const quantity = item.quantity ?? 1;
   const unit_price = item.price?.unit_amount ?? 0;
+  
 
   //todo En produccion se creará una secuencia cuando se migre a Postgree para crear un codigo de factura
   const lastInvoice = await prisma.invoice.findFirst({
@@ -212,37 +128,77 @@ export default async function addOrder(session: Stripe.Checkout.Session,lineItem
 
   // Crear la orden con detalles y factura en la base de datos.
   try {
-    const newOrder = await prisma.order.create({
-      data: {
-        id_user: Number(metadata.id_user),
-        id_delivery: 1, 
-        status: status,
-        orderDetails: {
-          create: [{
-            id_product: id_product,
-            quantity: quantity,
-            unit_price: unit_price,
-            discount: 0, 
-          }],
-        },
-        invoice: {
-          create: [
-            {
-              invoice_n: formattedInvoiceNumber,
-              type: "A",
-              amount: amount_total,
-              id_p_method: 1, 
+    // const newOrder = await prisma.order.create({
+    //   data: {
+    //     id_user: Number(metadata.id_user),
+    //     delivery_type: "Standar",
+    //     status: status,
+    //     total: amount_total,
+    //     OrderItem: {
+    //       create: [{
+    //         id_product: 1,
+    //         quantity: quantity,
+    //         unit_price: unit_price,
+    //         // discount: 0, 
+    //       }],
+    //     },
+    //     invoice: {
+    //       create: [
+    //         {
+    //           invoice_n: formattedInvoiceNumber,
+    //           type: "A",
+    //           amount: amount_total,
+    //           id_p_method: 1, 
+    //           state: 'ok'
+    //         },
+    //       ],
+    //     },
+    //   },
+    //   include: {
+    //     OrderItem: true,
+    //     invoice: true,
+    //   },
+    // });
+        //TEST
+        const newOrder = await prisma.order.create({
+          data: {
+            total: 100.0, // Asume un total arbitrario
+            status: "Processing", // Estado inicial del pedido
+            paid: false, // Asume que el pedido inicialmente no está pagado
+            discount: 0, // Sin descuento inicialmente
+            // Asume que ya tienes un usuario con id 1
+            id_user: 1,
+            // Asume que ya tienes un tipo de entrega con id 1
+            delivery_type: "Standard", 
+            OrderItem: {
+              create: [{
+                // Asume que ya tienes un producto con id 1
+                id_product: 1,
+                quantity: 2,
+                unit_price: 50.0,
+              }],
             },
-          ],
-        },
-      },
-      include: {
-        orderDetails: true,
-        invoice: true,
-      },
-    });
+            invoice: {
+              create: {
+                // Genera un número de factura único. Este es un ejemplo simple.
+                invoice_n: "INV-001",
+                type: "A",
+                amount: 100.0,
+                // Asume que ya tienes un método de pago con id 1
+                id_p_method: 1,
+                state: 'ok'
+              },
+            },
+          },
+          include: {
+            OrderItem: true,
+            invoice: true,
+          },
+        });
+    
+        console.log("Orden guardada:", newOrder);
 
-    console.log("Orden guardada:", newOrder);
+        return newOrder;
   } catch (error) {
     console.error("Error guardando la orden en la base de datos:", error);
   }

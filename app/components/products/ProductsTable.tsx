@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/shadcn/card";
-import AddCartBotton from "@/components/utils/AddCartBotton";
+import AddCartButton from "@/components/utils/AddCartButton";
 import { Toaster } from "sonner";
 import { fetchProducts } from "@/lib/data";
 import PayBotton from "../utils/PayBotton";
@@ -28,7 +28,7 @@ export default async function ProductsTable({
         {Products.map((product) => (
           <Card
             className="m-4 max-w-80 min-w-80 max-h-96 min-h-96"
-            key={product.id_product}
+            key={product.id}
           >
             <CardHeader>
               <CardTitle className="h-14 leading-relaxed line-clamp-2 text-balance">
@@ -48,12 +48,12 @@ export default async function ProductsTable({
                 <>
                   {id_user!=null ? (
                     <>
-                      <AddCartBotton id_user={id_user} product={product} ></AddCartBotton>
+                      <AddCartButton product={product} ></AddCartButton>
                       <PayBotton id_user={id_user} product={product} />
                     </>
                   ) : (
                     <>
-                      <AddCartBotton id_user={id_user} product={product} ></AddCartBotton>
+                      <AddCartButton product={product} ></AddCartButton>
                       <PayBotton id_user={id_user} product={product} />
                     </>
                   )}

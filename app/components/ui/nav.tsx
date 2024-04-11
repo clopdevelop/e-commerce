@@ -73,21 +73,16 @@ export function NavigationMenuDemo() {
     <NavigationMenu className="hidden sm:block ">
       <NavigationMenuList>
         <NavigationMenuItem>
-          <Link href="/dashboard">
-          <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${pathname.startsWith('/dashboard') ? '!bg-pink-400' : ''} ${pathname.startsWith('/entrada') ? '!bg-pink-400' : ''}`}>
+            <NavigationMenuLink href="/dashboard" className={`${navigationMenuTriggerStyle()} ${pathname.startsWith('/dashboard') ? '!bg-pink-400' : ''} ${pathname.startsWith('/entrada') ? '!bg-pink-400' : ''}`}>
               Principal
             </NavigationMenuLink>
-          </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/catalogo">
-            <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${pathname === '/catalogo' ? '!bg-pink-400' : ''}`}>
+            <NavigationMenuLink href="/catalogo" className={`${navigationMenuTriggerStyle()} ${pathname === '/catalogo' ? '!bg-pink-400' : ''}`}>
               Tienda
             </NavigationMenuLink>
-          </Link>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Sheet>
+        <Sheet>
           <SheetTrigger className={navigationMenuTriggerStyle()}>Carrito</SheetTrigger>
           <SheetContent>
             <SheetHeader>
@@ -104,13 +99,10 @@ export function NavigationMenuDemo() {
             </SheetFooter>
           </SheetContent>
         </Sheet>
-        </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/contacto">
-            <NavigationMenuLink className={`${navigationMenuTriggerStyle()} ${pathname === '/contacto' ? '!bg-pink-400' : ''}`}>
+            <NavigationMenuLink href="/contacto" className={`${navigationMenuTriggerStyle()} ${pathname === '/contacto' ? '!bg-pink-400' : ''}`}>
               Contacto
             </NavigationMenuLink>
-          </Link>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

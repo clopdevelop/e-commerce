@@ -27,7 +27,7 @@ export type Product = {
   id_provider?: number | null;
   category?: Category | null;
   id_category?: number | null;
-  OrderItem: OrderItem[];
+  OrderItem?: OrderItem[];
 }
 
 export type Category = {
@@ -57,18 +57,22 @@ export type Order = {
   paid: boolean;
   discount: number;
   created_at: Date;
-  user: User;
+  user?: User;
   id_user: number;
-  deliveryType: DeliveryType;
-  delivery_type: string;
-  OrderItem: OrderItem[];
-  invoice: Invoice[];
+  // deliveryType: DeliveryType;
+  delivery_type?: string;
+  OrderItem?: OrderItem[];
+  invoice?: Invoice[];
 }
 
 export type DeliveryType = {
   id_delivery: number;
   delivery_type: string;
   Order: Order[];
+}
+
+enum delivery_type {
+  "Standar"
 }
 
 export type OrderItem = {

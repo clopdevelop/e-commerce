@@ -1,9 +1,10 @@
+"use client"
 import { CartItem } from '@/lib/definitions';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type CartContextType = {
   items: CartItem[];
-  addItem: (item: CartItem) => void;
+  addItem: (item: CartItem, quantity: Number) => void;
   removeItem: (itemId: number) => void;
 };
 
@@ -16,7 +17,7 @@ type CartProviderProps = {
 export const CartProvider = ({ children }: CartProviderProps) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  const addItem = (item: CartItem) => {
+  const addItem = (item: CartItem, quantity: Number) => {
     // todo Implementación para agregar un item al carrito
     setItems((prevItems) => [...prevItems, item]);
   };

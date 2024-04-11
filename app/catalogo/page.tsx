@@ -3,10 +3,9 @@ import Search from "@/components/utils/Search";
 import MyPagination from "@/components/utils/myPagination";
 
 import { Suspense } from 'react';
-import { fetchProducts } from "@/lib/data";
 import { fetchProductsPages } from '@/lib/data';
 import { auth, getUser } from "@/auth";
-import { addUserGoogle } from "@/lib/actionscommands";
+// import { addUserGoogle } from "@/lib/actionscommands";
 
 export default async function Home({
   searchParams,
@@ -24,21 +23,18 @@ export default async function Home({
 
   //Recuperar el USERID
   const authentication = await auth()
-  console.log(authentication)
-  const user = String(authentication?.user?.email)
-  const completeUser = await getUser(user);
-  const id_user = Number(completeUser?.id_user)
+  const user_email = String(authentication?.user?.email)
+  const completeUser = await getUser(user_email);
+  const id_user = Number(completeUser?.id)
 
 // Todo utilizar esta funcion para guardrar el usario de google en la base de datos
   // if(user==='cristianlogo6@gmail.com' && authentication !=null){
   //   addUserGoogle(authentication)
   // }
 
-  // This component passed as a fallback to the Suspense boundary
-  // will be rendered in place of the search bar in the initial HTML.
-  // When the value is available during React hydration the fallback
-  // will be replaced with the `<SearchBar>` component.
+
   function SearchBarFallback() {
+    //todo cambiar por un skeleton
     return <div>Cargando...</div>
   }
 
@@ -49,7 +45,7 @@ export default async function Home({
          <Search placeholder="Buscar productos..." />
       </div>
         <Suspense fallback={<SearchBarFallback />}>
-      <ProductsTable currentPage={currentPage} id_user={id_user} />
+          <ProductsTable currentPage={currentPage} id_user={id_user} />
         </Suspense>
       <div className="mt-5 flex w-full justify-center">
           <MyPagination totalPages={totalPages} currentPage={currentPage}></MyPagination>

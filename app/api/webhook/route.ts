@@ -1,4 +1,4 @@
-import addOrder from '@/lib/actionscommands';
+import {addOrder} from '@/lib/actionscommands';
 import { headers } from 'next/headers';
 import Stripe from 'stripe'
 
@@ -6,7 +6,7 @@ const stripeSecretKey: string = process.env.STRIPE_SECRET_KEY ?? '';
 
 const stripe = new Stripe(stripeSecretKey) ?? ''
 
-const endpointSecret = "whsec_qA8l7RPVLD3TX7K8FUoUS8cOnUHUjXZo"
+const endpointSecret = "whsec_YC3GYnYa07HQ42Z8if0Vf1TrovCKZIJz"
 
 // todo Soportar pedidos con varios productos
 export async function POST(request: Request) {
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
       const checkoutSessionCompleted = event.data.object;
 
       const lineItems = await stripe.checkout.sessions.listLineItems(checkoutSessionCompleted.id, { limit: 100 });
-
+      
 
       await addOrder(checkoutSessionCompleted,lineItems.data);
 

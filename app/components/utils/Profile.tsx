@@ -9,7 +9,6 @@ import {
 } from "@/components/shadcn/menubar";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/shadcn/avatar";
-import { getCartDetailsByEmail } from "@/lib/data";
 
 
 
@@ -35,7 +34,7 @@ async function Profile() {
           <form
             action={async () => {
               "use server";
-              console.log("signout");
+              // console.log("signout");
               await signOut();
             }}
           >

@@ -1,27 +1,55 @@
 "use client";
 import { toast } from "sonner";
 import { Button } from "../shadcn/button";
-import { Product } from "@/lib/definitions";
-import { addProductToCart } from "@/lib/actionscommands";
+import { CartItem, Product } from "@/lib/definitions";
+import { CartContext } from "@/context";
+import React, {  useContext } from "react";
 
-export default function addCartBotton({
-  id_user,
+export default function AddCartButton({
   product,
 }: {
-  id_user: number;
   product: Product;
 }) {
-  async function addProduct(product: { id_product: number }) {
+  
+  const cart = useContext(CartContext);
+  const {items, addItem } = cart || {};
+
+  const quantity=1;
+
+  // console.log(items);
+  // console.log(cart);
+  
+
+  function addProduct(product: Product, quantity: number) {
     try {
-      await addProductToCart(id_user, product.id_product, 1);
+      if (!addItem) {
+        toast.error("addItem function is not available");
+        throw new Error('addItem function is not available');
+      }
+      if (items==undefined){
+        toast.error("items are undefined");
+
+        throw new Error('items are undefined');
+      }
+      
+      const newItem: CartItem = {
+        id: items.length,
+        id_product: product.id,
+        name: product.name,
+        unit_price: product.price,
+        quantity: quantity,
+      };
+      
+      addItem(newItem, quantity);
       toast("Producto agregado al carrito!");
     } catch (error) {
-      toast.error("No se pudo agregar el producto al carrito.");
+      // toast.error("No se pudo agregar el producto al carrito.");
     }
   }
   
   return (
-    <Button onClick={() => addProduct(product)} className="text-white">
+  <>
+    <Button onClick={() => addProduct(product, quantity)} className="text-white">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -40,7 +68,8 @@ export default function addCartBotton({
         <path d="M17 17h-11v-14h-2" />
         <path d="M6 5l14 1l-1 7h-13" />
       </svg>
-    </Button>
+      </Button>
+  </>
     //     <Button
     //     disabled
     //     onClick={() => addProduct(product)}

@@ -12,13 +12,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/shadcn/dropdown-menu";
 
-import { UserOrder } from "@/lib/definitions";
 
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 
 import { Input } from "@/components/shadcn/input";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { Order } from "@/lib/definitions";
 
 function HandleSearch(term: string) {
   const searchParams = useSearchParams();
@@ -34,7 +34,7 @@ function HandleSearch(term: string) {
   replace(`${pathname}?${params.toString()}`);
 }
 
-export const columns: ColumnDef<UserOrder>[] = [
+export const columns: ColumnDef<Order>[] = [
   // {
   //   id: "orderDetail", // Identificador único para la columna
   //   header: "Detalle del Pedido",
@@ -56,14 +56,14 @@ export const columns: ColumnDef<UserOrder>[] = [
     accessorKey: "created_at",
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    accessorKey: "total",
+    header: () => <div className="text-right">total</div>,
     cell: ({ row }) => {
-      let amount = parseFloat(row.getValue("amount")) / 100;
+      let total = parseFloat(row.getValue("total"));
       const formatted = new Intl.NumberFormat("es-ES", {
         style: "currency",
         currency: "eur",
-      }).format(amount);
+      }).format(total);
 
       return <div className="text-right font-medium">{formatted}</div>;
     },
@@ -72,7 +72,7 @@ export const columns: ColumnDef<UserOrder>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const order = String(row.original.id_order);
+      const order = String(row.original.id);
 
       return (
         <div className="flex justify-end">
