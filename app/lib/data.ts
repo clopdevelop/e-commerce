@@ -42,7 +42,23 @@ export async function fetchFilteredProducts(query: string, currentPage: number) 
     });
   
     return filteredProducts;
+}
+
+export async function countProducts(): Promise<number> {
+  const productCount = await prisma.product.count();
+  return productCount;
+}
+
+export async function fetchProduct(id: number) {
+  const Product = await prisma.product.findFirst({
+    where: {
+      id : id
+    }
   }
+  );
+
+  return Product;
+}
   
 /**
  * Calcula el total de páginas para una búsqueda
