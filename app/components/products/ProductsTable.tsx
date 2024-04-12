@@ -10,6 +10,7 @@ import AddCartButton from "@/components/utils/AddCartButton";
 import { Toaster } from "sonner";
 import { fetchProducts } from "@/lib/data";
 import PayBotton from "../utils/PayBotton";
+import Link from "next/link";
 
 
 
@@ -32,7 +33,7 @@ export default async function ProductsTable({
           >
             <CardHeader>
               <CardTitle className="h-14 leading-relaxed line-clamp-2 text-balance">
-                {product.name}
+                <Link href={`catalogo/${ product.id }`}>{product.name}</Link>
               </CardTitle>
               <CardDescription className="h-16">
                 {product.description}
