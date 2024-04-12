@@ -1,5 +1,5 @@
 import { auth, getUser } from "@/auth";
-import FavProducts from "@/components/products/FavProducts";
+import {FavProducts} from "@/components/products";
 // import {Product} from '@/lib/definitions'
 
 export default async function Home() {

@@ -7,6 +7,11 @@ import { fetchProductsPages } from '@/lib/data';
 import { auth, getUser } from "@/auth";
 // import { addUserGoogle } from "@/lib/actionscommands";
 
+export const metadata = {
+  title: 'La mejor Tienda',
+  description: 'Es una tienda que es la mejor.',
+ };
+
 export default async function Home({
   searchParams,
 }: {

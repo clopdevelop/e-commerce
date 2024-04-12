@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "@/globals.css";
 import { CartProvider } from "@/context";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -37,14 +37,10 @@ export default function RootLayout({
 
   return (
     <CartProvider>
-      <html lang="en">
-        <body className={inter.className}>
+          <NavBar></NavBar>
+          <main className="flex flex-col items-center justify-between p-24">
             {children}
-          <footer className="py-10 flex justify-center items-center">
-            Proyecto final de Ciclo
-          </footer>
-        </body>
-      </html>
+          </main>
     </CartProvider>
   );
 }

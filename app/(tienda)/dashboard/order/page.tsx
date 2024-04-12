@@ -4,6 +4,7 @@ import { auth, getUser } from "@/auth";
 
 import { DataTable } from "./data-table"
 import { fetchOrdersByUserId, fetchInvoicesByUserId } from "@/lib/data";
+import OrderTable from "@/components/ui/OrderTable";
 
 
 async function getData(): Promise<Order[]> {
@@ -25,7 +26,8 @@ export default async function DemoPage() {
   const data = await getData()
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
+      {/* <DataTable columns={columns} data={data} /> */}
+      <OrderTable></OrderTable>
     </div>
   )
 }
