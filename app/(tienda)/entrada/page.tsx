@@ -1,5 +1,5 @@
 import {LoginForm} from "@/components/form/Form";
-import { signIn } from "../auth"
+import { signIn } from "@/auth"
 
 export default function Home() {
   return (

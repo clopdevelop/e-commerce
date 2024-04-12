@@ -15,13 +15,12 @@ export default function PayBotton({id_user, product} : {id_user: number, product
             body: JSON.stringify({ product: product, id_user },),
           });
     
-          const session = await res.json();
-    
-          if (res) {
-            window.location = session.url;
-          } else {
-            throw new Error("Invalid session data");
+          if (!res.ok) {
+            throw new Error("Failed to create checkout session");
           }
+
+          const session = await res.json();
+          window.location = session.url;
         } catch (error: any) {
           console.error("Error buying product:", error);
           toast("error: " + error.message);

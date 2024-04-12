@@ -16,7 +16,8 @@ export async function POST(request: NextRequest) {
     const result = responseSchema.safeParse(product);
     const session = await stripe.checkout.sessions.create({
       metadata: {
-        id_product: product,
+        // id_product: product,
+        id_product: "1",
         id_user: id_user
       },
       line_items: [{
@@ -32,8 +33,8 @@ export async function POST(request: NextRequest) {
       }],
       mode: "payment",
     //   todo implementar lógica para el caso de exito y caso de cancelación
-      success_url: `http://localhost:3001/?success=true`,
-      cancel_url: `http://localhost:3001/?canceled=true`,
+      success_url: `http://localhost:3000/?success=true`,
+      cancel_url: `http://localhost:3000/?canceled=true`,
     });
     
     return NextResponse.json(session);
