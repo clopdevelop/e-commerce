@@ -80,7 +80,7 @@ export function LoginForm() {
                 <>
                   <FormItem className="grid gap-2">
                     <FormLabel className="flex justify-between">Contraseña <Link href="#" className="ml-auto inline-block text-sm underline">
-                Forgot your password?
+                  ¿Has olvidado tu contraseña?
               </Link></FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="" {...field} />
@@ -91,12 +91,12 @@ export function LoginForm() {
               )}
             />
             <Button className="w-full" type="submit">
-              Sign in
+              Entrar
             </Button>
             <div className="text-center text-sm">
-              Don&apos;t have an account?{" "}
+              ¿No tienes cuenta? {"     "}
               <Link href="#" className="underline">
-                Sign up
+                Regístrate
               </Link>
             </div>
             

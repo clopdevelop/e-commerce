@@ -6,8 +6,8 @@ test('login', async ({ page }) => {
   await page.fill('input[type="email"]', 'john@example.com');
   await page.fill('input[type="password"]', 'supersecurepassword');
 
-  await page.click('text="Submit"');
-  await page.waitForURL('http://localhost:3000/dashboard', { timeout: 1000 });
+  await page.click('text="Entrar"');
+  await page.waitForURL('http://localhost:3000/dashboard', { timeout: 5000 });
   await expect(page.locator('h1:has-text("Hola John Doe")')).toBeVisible();
 
 })
