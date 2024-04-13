@@ -35,29 +35,25 @@ function HandleSearch(term: string) {
 }
 
 export const columns: ColumnDef<Order>[] = [
-  // {
-  //   id: "orderDetail", // Identificador único para la columna
-  //   header: "Detalle del Pedido",
-  //   cell: ({ row }) => {
-  //     // Asegurarse de que row.original.orderDetails es un arreglo y tiene al menos un elemento
-  //     const detail =
-  //       row.original.orderDetails && row.original.orderDetails.length > 0
-  //         ? row.original.orderDetails[0]
-  //         : "N/A";
-
-  //     // Si detail es un objeto OrderDetail, necesitamos convertirlo a un string o ReactNode de alguna manera.
-  //     // Supongamos que OrderDetail tiene una propiedad llamada 'description' que queremos mostrar.
-  //     const content = typeof detail === "object" ? detail.id_product : detail;
-
-  //     return <span>{content}</span>;
-  //   },
-  // },
+  {
+    accessorKey: "code",
+    header: "Codigo de Pedido"
+  },
+  {
+    accessorKey: "type",
+    header: "Tipo"
+  },
+  {
+    accessorKey: "status",
+    header: "Estado"
+  },
   {
     accessorKey: "created_at",
+    header: "Fecha"
   },
   {
     accessorKey: "total",
-    header: () => <div className="text-right">total</div>,
+    header: () => <div className="text-right">Total</div>,
     cell: ({ row }) => {
       let total = parseFloat(row.getValue("total"));
       const formatted = new Intl.NumberFormat("es-ES", {

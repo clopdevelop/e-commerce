@@ -13,6 +13,7 @@ import {
   } from "@/components/shadcn/command";
 import React from "react";
 import { Button } from "@/components/shadcn/button";
+import { AtSign, Heart, Package, Settings} from "lucide-react";
   
 
 export function CommandMenu() {
@@ -27,10 +28,13 @@ export function CommandMenu() {
           {/* <CommandEmpty>No results found.</CommandEmpty> */}
           <CommandGroup heading="Opciones">
             <a href="/dashboard">
-            <CommandItem>Principal</CommandItem>
+            <CommandItem><AtSign className="mr-2"></AtSign>Principal</CommandItem>
             </a>
-            <a href="/dashboard/profile"><CommandItem>Configuración</CommandItem></a>
-            <a href="/dashboard/order"><CommandItem>Ver Pedidos</CommandItem></a>
+            
+            <a href="/dashboard/fav"><CommandItem><Heart className="mr-2"></Heart>Favoritos</CommandItem></a>
+            <a href="/dashboard/profile"><CommandItem><Settings className="mr-2"></Settings>Configuración</CommandItem></a>
+            <a href="/dashboard/order"><CommandItem><Package className="mr-2"></Package>Ver Pedidos</CommandItem></a>
+
           </CommandGroup>
         </CommandList>
       </CommandDialog>

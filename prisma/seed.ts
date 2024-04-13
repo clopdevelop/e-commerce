@@ -39,7 +39,9 @@ async function main() {
   const order = await prisma.order.create({
     data: {
       total: 1200.00,
-      status: 'Pending',
+      code: '#000000',
+      status: 'Pendiente',
+      type: 'Envío',
       user: {
         connect: { id: user.id },
       },

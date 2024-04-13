@@ -96,21 +96,24 @@ model Provider {
 }
 
 model Order {
-  id           Int            @id @default(autoincrement())
-  total        Float
-  status       String       
-  paid         Boolean      @default(false)
-  discount     Float        @default(0)
-  created_at   DateTime     @default(now())
+  id            Int            @id @default(autoincrement())
+  code          String         @unique
+  type          String 
+  total         Float
+  status        String
+  paid          Boolean        @default(false)
+  discount      Float          @default(0)
+  created_at    DateTime       @default(now())
+  
+  user          User           @relation(fields: [id_user], references: [id])
+  id_user       Int
+  deliveryType  DeliveryType   @relation(fields: [delivery_type], references: [delivery_type])
+  delivery_type String
 
-  user         User         @relation(fields: [id_user], references: [id])
-  id_user      Int
-  deliveryType DeliveryType @relation(fields: [delivery_type], references: [delivery_type])
-  delivery_type  String
-
-  OrderItem    OrderItem[]
-  invoice      Invoice[]
+  OrderItem     OrderItem[]
+  invoice       Invoice[]
 }
+
 
 model DeliveryType {
   id_delivery   Int    @id @default(autoincrement())

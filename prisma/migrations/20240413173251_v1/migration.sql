@@ -85,6 +85,8 @@ CREATE TABLE "Provider" (
 -- CreateTable
 CREATE TABLE "Order" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "code" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
     "total" REAL NOT NULL,
     "status" TEXT NOT NULL,
     "paid" BOOLEAN NOT NULL DEFAULT false,
@@ -144,6 +146,9 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Order_code_key" ON "Order"("code");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "DeliveryType_delivery_type_key" ON "DeliveryType"("delivery_type");

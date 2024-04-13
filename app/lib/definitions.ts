@@ -52,6 +52,8 @@ export type Provider = {
 
 export type Order = {
   id: number;
+  code?: string;
+  type?: string;
   total: number;
   status: string;
   paid: boolean;
@@ -73,6 +75,18 @@ export type DeliveryType = {
 
 enum delivery_type {
   "Standar"
+}
+
+enum Order_Type {
+  "Subscripción",
+  "Recogida",
+  "Envío",
+}
+
+enum Order_Status {
+  "Pendiente",
+  "Entregado",
+  "Cancelado"
 }
 
 export type OrderItem = {
