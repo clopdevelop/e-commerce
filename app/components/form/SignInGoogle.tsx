@@ -1,5 +1,4 @@
 import { signIn } from "@/auth";
-import { Separator } from "../shadcn/separator";
 import { Button } from "../shadcn/button";
 import {AtSign} from "lucide-react"
 
@@ -16,7 +15,6 @@ export function Google() {
             <AtSign className="mr-2"></AtSign>
             Continuar con Google</Button>
       </form>
-      <Separator className="mb-10 mt-10"></Separator>
     </>
   );
 }

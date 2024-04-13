@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Google } from "./SignInGoogle";
 import Link from "next/link";
+import { Separator } from "../shadcn/separator";
 
 export function LoginForm() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
@@ -54,6 +55,7 @@ export function LoginForm() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="grid gap-6 p-6 pt-0"
           >
+            <Separator className="my-5"></Separator>
             <FormField
               control={form.control}
               name="email"
@@ -79,9 +81,15 @@ export function LoginForm() {
               render={({ field }) => (
                 <>
                   <FormItem className="grid gap-2">
-                    <FormLabel className="flex justify-between">Contraseña <Link href="#" className="ml-auto inline-block text-sm underline">
-                  ¿Has olvidado tu contraseña?
-              </Link></FormLabel>
+                    <FormLabel className="flex justify-between">
+                      Contraseña{" "}
+                      <Link
+                        href="#"
+                        className="ml-auto inline-block text-sm underline"
+                      >
+                        ¿Has olvidado tu contraseña?
+                      </Link>
+                    </FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="" {...field} />
                     </FormControl>
@@ -95,11 +103,10 @@ export function LoginForm() {
             </Button>
             <div className="text-center text-sm">
               ¿No tienes cuenta? {"     "}
-              <Link href="#" className="underline">
+              <Link href="/registro" className="underline">
                 Regístrate
               </Link>
             </div>
-            
           </form>
         </Form>
       </div>
