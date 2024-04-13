@@ -73,7 +73,7 @@ export function NavigationMenuDemo() {
     <NavigationMenu className="hidden sm:block ">
       <NavigationMenuList>
         <NavigationMenuItem>
-            <NavigationMenuLink href="/dashboard" className={`${navigationMenuTriggerStyle()} ${pathname.startsWith('/dashboard') ? '!bg-pink-400' : ''} ${pathname.startsWith('/entrada') ? '!bg-pink-400' : ''}`}>
+            <NavigationMenuLink href="/dashboard" className={`${navigationMenuTriggerStyle()} ${pathname.startsWith('/dashboard') ? '!bg-pink-400' : ''}`}>
               Principal
             </NavigationMenuLink>
         </NavigationMenuItem>
