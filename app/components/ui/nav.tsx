@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 // import { Icons } from "@/components/icons"
@@ -28,6 +27,7 @@ import {
 import { Button } from "../shadcn/button";
 import { usePathname } from "next/navigation";
 import Cart from "@/components/cart/Cart";
+import { Separator } from "../shadcn/separator";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -86,15 +86,16 @@ export function NavigationMenuDemo() {
           <SheetTrigger className={navigationMenuTriggerStyle()}>Carrito</SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle>Opciones</SheetTitle>
+              <SheetTitle>Carrito</SheetTitle>
               <SheetDescription>
                 Este es tu carrito de compra
               </SheetDescription>
             </SheetHeader>
+            <Separator className="my-5"></Separator>
               <Cart></Cart>
-            <SheetFooter className="pt-5">
+            <SheetFooter>
               <SheetClose asChild>
-                <Button className="p-5 text-lg font-bold" type="submit">Comprar</Button>
+                <Button className="w-full" size="lg" type="submit">Ir a Pagar</Button>
               </SheetClose>
             </SheetFooter>
           </SheetContent>
