@@ -1,4 +1,5 @@
 import { auth, getUser } from '@/auth';
+import SettingForm from '@/components/form/SettingForm';
 import {UserSettingsForm} from '@/components/form/UserSettingsForm'
 
 export default async function Home() {
@@ -10,7 +11,8 @@ export default async function Home() {
     <>
       {completeUser ? (
         <>
-          <UserSettingsForm />
+          {/* <UserSettingsForm /> */}
+          <SettingForm></SettingForm>
         </>
       ) : (
         <>

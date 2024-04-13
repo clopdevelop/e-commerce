@@ -25,7 +25,7 @@ async function getData(): Promise<Order[]> {
 export default async function DemoPage() {
   const data = await getData()
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto">
       {/* <DataTable columns={columns} data={data} /> */}
       <OrderTable></OrderTable>
     </div>
