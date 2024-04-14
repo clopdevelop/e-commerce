@@ -7,7 +7,7 @@ import prisma from "@/lib/prisma";
  * @param currentPage 
  * @returns 
  */
-export async function fetchProducts(currentPage: number) {
+export async function fetchProducts(currentPage: number = 1) {
   await new Promise((resolve) => setTimeout(resolve,3000));
 
   const productsOnPage = 1; 
@@ -136,4 +136,9 @@ export async function fetchProductsByOrder(orderId: number) {
     console.error('Error fetching orders by user ID:', error);
     throw error;
   }
+}
+
+
+export async function consolelog() {
+  console.log("Hola");
 }

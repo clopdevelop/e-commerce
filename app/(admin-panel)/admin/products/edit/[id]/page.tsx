@@ -55,9 +55,23 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/shadcn/toggle-group"
+import { Product } from "@/lib/definitions"
+import { fetchProduct } from "@/lib/data"
 
+interface Props {
+  params: { id: string };
+}
 
-export default function EditPage() {
+export default async function EditPage({ params }: Props) {
+
+  const product: Product | null = await fetchProduct(Number(params.id))
+
+  //TODO RECUPERAR LAS CATEGORIAS
+  const categories = ["Electronics", "Clothes", "Food", "Books", "Others"]
+
+  //TODO RECUPERAR LOS ESTADOS
+  const states = ["Available", "Unavailable"]
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -98,14 +112,14 @@ export default function EditPage() {
                           id="name"
                           type="text"
                           className="w-full"
-                          defaultValue="Gamer Gear Pro Controller"
+                          defaultValue={product?.name}
                         />
                       </div>
                       <div className="grid gap-3">
                         <Label htmlFor="description">Description</Label>
                         <Textarea
                           id="description"
-                          defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultricies ultricies, nunc nisl ultricies nunc, nec ultricies nunc nisl nec nunc."
+                          defaultValue={product?.description ?? ''}
                           className="min-h-32"
                         />
                       </div>
@@ -141,7 +155,7 @@ export default function EditPage() {
                             <Input
                               id="stock-1"
                               type="number"
-                              defaultValue="100"
+                              defaultValue={product?.stock}
                             />
                           </TableCell>
                           <TableCell>
@@ -151,79 +165,7 @@ export default function EditPage() {
                             <Input
                               id="price-1"
                               type="number"
-                              defaultValue="99.99"
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <ToggleGroup
-                              type="single"
-                              defaultValue="s"
-                              variant="outline"
-                            >
-                              <ToggleGroupItem value="s">S</ToggleGroupItem>
-                              <ToggleGroupItem value="m">M</ToggleGroupItem>
-                              <ToggleGroupItem value="l">L</ToggleGroupItem>
-                            </ToggleGroup>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-semibold">
-                            GGPC-002
-                          </TableCell>
-                          <TableCell>
-                            <Label htmlFor="stock-2" className="sr-only">
-                              Stock
-                            </Label>
-                            <Input
-                              id="stock-2"
-                              type="number"
-                              defaultValue="143"
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Label htmlFor="price-2" className="sr-only">
-                              Price
-                            </Label>
-                            <Input
-                              id="price-2"
-                              type="number"
-                              defaultValue="99.99"
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <ToggleGroup
-                              type="single"
-                              defaultValue="m"
-                              variant="outline"
-                            >
-                              <ToggleGroupItem value="s">S</ToggleGroupItem>
-                              <ToggleGroupItem value="m">M</ToggleGroupItem>
-                              <ToggleGroupItem value="l">L</ToggleGroupItem>
-                            </ToggleGroup>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-semibold">
-                            GGPC-003
-                          </TableCell>
-                          <TableCell>
-                            <Label htmlFor="stock-3" className="sr-only">
-                              Stock
-                            </Label>
-                            <Input
-                              id="stock-3"
-                              type="number"
-                              defaultValue="32"
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Label htmlFor="price-3" className="sr-only">
-                              Stock
-                            </Label>
-                            <Input
-                              id="price-3"
-                              type="number"
-                              defaultValue="99.99"
+                              defaultValue={product?.price}
                             />
                           </TableCell>
                           <TableCell>
@@ -264,13 +206,10 @@ export default function EditPage() {
                             <SelectValue placeholder="Select category" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="clothing">Clothing</SelectItem>
-                            <SelectItem value="electronics">
-                              Electronics
-                            </SelectItem>
-                            <SelectItem value="accessories">
-                              Accessories
-                            </SelectItem>
+                            {categories.map((category) => (
+                              <SelectItem key={category} value={category}>{category}</SelectItem>
+                            ))
+                            }
                           </SelectContent>
                         </Select>
                       </div>
@@ -286,11 +225,10 @@ export default function EditPage() {
                             <SelectValue placeholder="Select subcategory" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="t-shirts">T-Shirts</SelectItem>
-                            <SelectItem value="hoodies">Hoodies</SelectItem>
-                            <SelectItem value="sweatshirts">
-                              Sweatshirts
-                            </SelectItem>
+                            {categories.map((category) => (
+                              <SelectItem key={category} value={category}>{category}</SelectItem>
+                            ))
+                            }
                           </SelectContent>
                         </Select>
                       </div>
@@ -299,28 +237,7 @@ export default function EditPage() {
                 </Card>
               </div>
               <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
-                <Card x-chunk="dashboard-07-chunk-3">
-                  <CardHeader>
-                    <CardTitle>Product Status</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <Label htmlFor="status">Status</Label>
-                        <Select>
-                          <SelectTrigger id="status" aria-label="Select status">
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="draft">Draft</SelectItem>
-                            <SelectItem value="published">Active</SelectItem>
-                            <SelectItem value="archived">Archived</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                {/* <ProductStatus state={product?.state}></ProductStatus> */}
                 <Card
                   className="overflow-hidden" x-chunk="dashboard-07-chunk-4"
                 >

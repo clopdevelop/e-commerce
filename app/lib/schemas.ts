@@ -54,6 +54,18 @@ import { z } from "zod";
   discount: z.number().nullable().optional(),
 });
 
+export const addProductSchema = z.object({
+  code: z.string().nullable().optional(),
+  name: z.string(),
+  description: z.string().nullable().optional(),
+  marca: z.number().nullable().optional(),
+  provider: z.number().nullable().optional(),
+  category: z.number().nullable().optional(),
+  thumbnail: z.string().nullable().optional(),
+  price: z.number(),
+  discount: z.number().nullable().optional(),
+  stock: z.number(),
+});
   
   export const cartDetailSchema = z.object({
     id_cart: z.number(),

@@ -15,10 +15,17 @@ import { Input } from "../shadcn/input";
 import { Provider, Category, OrderItem } from "@/lib/definitions";
 import { Product } from "@prisma/client";
 import { useState } from "react";
+import { BookmarkIcon } from "lucide-react"
 
-export default function Name({product,id_user}:{product:Product,id_user:number}) {
+export default function Name({ product, id_user }: { product: Product, id_user: number }) {
 
     const [quantity, setQuantity] = useState(1);
+
+    const [fav, setFav] = useState(false)
+
+    const toogleFav = () => {
+        setFav(!fav)
+    }
 
     return (
         <Card
@@ -26,16 +33,26 @@ export default function Name({product,id_user}:{product:Product,id_user:number})
             key={product.id}
         >
             <CardHeader>
-                <CardTitle className="h-14 leading-relaxed line-clamp-2 text-balance">
-                    <Link href={`catalogo/${product.id}`}>{product.name}</Link>
-                </CardTitle>
-                <CardDescription className="h-16">
-                    {product.description}
-                </CardDescription>
+                <div className="flex justify-between">
+                    <div>
+                        <CardTitle className="h-14 leading-relaxed line-clamp-2 text-balance">
+                            <Link href={`catalogo/${product.id}`}>{product.name}</Link>
+                        </CardTitle>
+                        <CardDescription className="h-16">
+                            {product.description}
+                        </CardDescription>
+                    </div>
+                    <div>
+                        <BookmarkIcon className={`transition-colors duration-500 ease-in-out ${fav ? 'text-red-500' : 'text-white'} cursor-pointer`}
+                         strokeWidth={fav ? 3 : 1} 
+                         onClick={() => toogleFav()}>
+                         </BookmarkIcon>
+                    </div>
+                </div>
             </CardHeader>
             <CardContent className="h-36">
                 Imagen {/* TODO Añadir imagenes */}
-                <Input type="number" defaultValue={1} min={1} max={99} onChange={(e)=>setQuantity(Number(e.target.value))}></Input>
+                <Input type="number" defaultValue={1} min={1} max={99} onChange={(e) => setQuantity(Number(e.target.value))}></Input>
             </CardContent>
             <CardFooter className="flex justify-between ">
                 <p>{product.price}€</p>

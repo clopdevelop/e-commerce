@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import Stripe from "stripe";
+import { addProductSchema } from "./schemas";
 
 /**
  * Añade un usuario
@@ -90,116 +91,141 @@ export async function authenticate(
 // }
 
 
-
-
-export async function addOrder(session: Stripe.Checkout.Session,lineItems: Stripe.LineItem[]) {
-  const { amount_total, status, metadata } = session;
-  
-  if (!status  || !amount_total || !metadata) {
-    console.error("Sesión incompleta: falta status o line_items");
-    return;
-  }
-
-  
-  // Asume que siempre procesarás el primer line_item como el producto comprado
-  const item = lineItems[0];
-  console.log(metadata);
-  
-  const id_product = Number(metadata?.product); 
-  const quantity = item.quantity ?? 1;
-  const unit_price = item.price?.unit_amount ?? 0;
-  
-
-  //todo En produccion se creará una secuencia cuando se migre a Postgree para crear un codigo de factura
-  const lastInvoice = await prisma.invoice.findFirst({
-    orderBy: {
-      id_invoice: 'desc',
-    },
-    select: {
-      invoice_n: true,
-    },
-  });
-
-  const nextInvoiceNumber = lastInvoice
-    ? parseInt(lastInvoice.invoice_n.replace('INV', '')) + 1
-    : 1;
-
-  const formattedInvoiceNumber = `INV${nextInvoiceNumber.toString().padStart(4, '0')}`;
-
-  // Crear la orden con detalles y factura en la base de datos.
+export async function addProduct(formData: FormData) {
   try {
-    // const newOrder = await prisma.order.create({
-    //   data: {
-    //     id_user: Number(metadata.id_user),
-    //     delivery_type: "Standar",
-    //     status: status,
-    //     total: amount_total,
-    //     OrderItem: {
-    //       create: [{
-    //         id_product: 1,
-    //         quantity: quantity,
-    //         unit_price: unit_price,
-    //         // discount: 0, 
-    //       }],
-    //     },
-    //     invoice: {
-    //       create: [
-    //         {
-    //           invoice_n: formattedInvoiceNumber,
-    //           type: "A",
-    //           amount: amount_total,
-    //           id_p_method: 1, 
-    //           state: 'ok'
-    //         },
-    //       ],
-    //     },
-    //   },
-    //   include: {
-    //     OrderItem: true,
-    //     invoice: true,
-    //   },
-    // });
-        //TEST
-        const newOrder = await prisma.order.create({
-          data: {
-            total: 100.0, // Asume un total arbitrario
-            status: "Processing", // Estado inicial del pedido
-            paid: false, // Asume que el pedido inicialmente no está pagado
-            discount: 0, // Sin descuento inicialmente
-            // Asume que ya tienes un usuario con id 1
-            id_user: 1,
-            // Asume que ya tienes un tipo de entrega con id 1
-            delivery_type: "Standard", 
-            OrderItem: {
-              create: [{
-                // Asume que ya tienes un producto con id 1
-                id_product: 1,
-                quantity: 2,
-                unit_price: 50.0,
-              }],
-            },
-            invoice: {
-              create: {
-                // Genera un número de factura único. Este es un ejemplo simple.
-                invoice_n: "INV-001",
-                type: "A",
-                amount: 100.0,
-                // Asume que ya tienes un método de pago con id 1
-                id_p_method: 1,
-                state: 'ok'
-              },
-            },
-          },
-          include: {
-            OrderItem: true,
-            invoice: true,
-          },
-        });
-    
-        console.log("Orden guardada:", newOrder);
+    // const rawFormData = Object.fromEntries(formData.entries());
 
-        return newOrder;
-  } catch (error) {
-    console.error("Error guardando la orden en la base de datos:", error);
+    const rawFormData = {
+      name: formData.get("name"),
+      price: Number(formData.get("price")),
+      description: formData.get("description"),
+      stock: Number(formData.get("stock")),
+    };
+    
+    
+    const { name, price, description, stock } = addProductSchema.parse(rawFormData)
+
+    const newProduct = await prisma.product.create({
+      data: {
+        name: name,
+        price: Number(price),
+        description: description,
+        stock: Number(stock),
+      },
+    });
+  } catch (err) {
+    console.log(err);
   }
 }
+
+// export async function addOrder(session: Stripe.Checkout.Session, lineItems: Stripe.LineItem[]) {
+//   const { amount_total, status, metadata } = session;
+
+//   if (!status || !amount_total || !metadata) {
+//     console.error("Sesión incompleta: falta status o line_items");
+//     return;
+//   }
+
+
+//   // Asume que siempre procesarás el primer line_item como el producto comprado
+//   const item = lineItems[0];
+//   console.log(metadata);
+
+//   const id_product = Number(metadata?.product);
+//   const quantity = item.quantity ?? 1;
+//   const unit_price = item.price?.unit_amount ?? 0;
+
+
+//   //todo En produccion se creará una secuencia cuando se migre a Postgree para crear un codigo de factura
+//   const lastInvoice = await prisma.invoice.findFirst({
+//     orderBy: {
+//       id_invoice: 'desc',
+//     },
+//     select: {
+//       invoice_n: true,
+//     },
+//   });
+
+//   const nextInvoiceNumber = lastInvoice
+//     ? parseInt(lastInvoice.invoice_n.replace('INV', '')) + 1
+//     : 1;
+
+//   const formattedInvoiceNumber = `INV${nextInvoiceNumber.toString().padStart(4, '0')}`;
+
+//   // Crear la orden con detalles y factura en la base de datos.
+//   try {
+//     // const newOrder = await prisma.order.create({
+//     //   data: {
+//     //     id_user: Number(metadata.id_user),
+//     //     delivery_type: "Standar",
+//     //     status: status,
+//     //     total: amount_total,
+//     //     OrderItem: {
+//     //       create: [{
+//     //         id_product: 1,
+//     //         quantity: quantity,
+//     //         unit_price: unit_price,
+//     //         // discount: 0,
+//     //       }],
+//     //     },
+//     //     invoice: {
+//     //       create: [
+//     //         {
+//     //           invoice_n: formattedInvoiceNumber,
+//     //           type: "A",
+//     //           amount: amount_total,
+//     //           id_p_method: 1,
+//     //           state: 'ok'
+//     //         },
+//     //       ],
+//     //     },
+//     //   },
+//     //   include: {
+//     //     OrderItem: true,
+//     //     invoice: true,
+//     //   },
+//     // });
+//     //TEST
+//     const newOrder = await prisma.order.create({
+//       data: {
+//         total: 100.0, // Asume un total arbitrario
+//         status: "Processing", // Estado inicial del pedido
+//         paid: false, // Asume que el pedido inicialmente no está pagado
+//         discount: 0, // Sin descuento inicialmente
+//         // Asume que ya tienes un usuario con id 1
+//         id_user: 1,
+//         // Asume que ya tienes un tipo de entrega con id 1
+//         delivery_type: "Standard",
+//         OrderItem: {
+//           create: [{
+//             // Asume que ya tienes un producto con id 1
+//             id_product: 1,
+//             quantity: 2,
+//             unit_price: 50.0,
+//           }],
+//         },
+//         invoice: {
+//           create: {
+//             // Genera un número de factura único. Este es un ejemplo simple.
+//             invoice_n: "INV-001",
+//             type: "A",
+//             amount: 100.0,
+//             // Asume que ya tienes un método de pago con id 1
+//             id_p_method: 1,
+//             state: 'ok'
+//           },
+//         },
+//       },
+//       include: {
+//         OrderItem: true,
+//         invoice: true,
+//       },
+//     });
+
+//     console.log("Orden guardada:", newOrder);
+
+//     return newOrder;
+//   } catch (error) {
+//     console.error("Error guardando la orden en la base de datos:", error);
+//   }
+// }

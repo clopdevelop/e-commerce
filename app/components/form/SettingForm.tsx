@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Link from "next/link";
 import { CircleUser, Menu, Package2, Search } from "lucide-react";
 import React, { useState } from "react";
@@ -14,7 +14,8 @@ import {
 } from "@/components/shadcn/card";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { Input } from "@/components/shadcn/input";
-import { DialogDemo } from "./changePassDialog";
+import { DialogDemo } from "../client/changePassDialog";
+import UserAddressDialog from "../client/UserAddressDialog";
 
 export default function SettingForm() {
   const [editingEmail, setEditingEmail] = useState(false); // Estado para controlar si se está editando el email
@@ -33,10 +34,10 @@ export default function SettingForm() {
             className="grid gap-4 text-sm text-muted-foreground"
             x-chunk="dashboard-04-chunk-0"
           >
-            <Link href="#" className="font-semibold text-primary">
+            <Link href="/dashboard/profile" className="font-semibold text-primary">
               General
             </Link>
-            <Link href="#">Dirección</Link>
+            <Link href="/dashboard/addr">Dirección</Link>
             <Link href="#">Ayuda</Link>
             <Link href="#">Avanzado</Link>
           </nav>
@@ -47,23 +48,45 @@ export default function SettingForm() {
                 <CardDescription></CardDescription>
               </CardHeader>
               <CardContent>
-                {editingEmail ? ( // Si está editando el email, muestra el input
+                {editingEmail ? (
                   <Input placeholder="Nuevo correo electrónico" />
                 ) : (
-                  // Si no está editando el email, muestra el h2 con el correo electrónico actual
                   <h2 className="text-muted-foreground">usuario@gmail.com</h2>
                 )}
               </CardContent>
               <CardFooter className="border-t px-6 py-4">
-              <Button onClick={handleEmailChange}>Cambiar Email</Button>
+                {editingEmail ? (
+                  <>
+                    <Button
+                      variant={"secondary"}
+                      className="mr-4"
+                      onClick={handleEmailChange}
+                    >
+                      Guardar cambios
+                    </Button>
+                    <Button variant={"destructive"} onClick={handleEmailChange}>
+                      Cancelar
+                    </Button>
+                  </>
+                ) : (
+                  <Button onClick={handleEmailChange}>Editar</Button>
+                )}
               </CardFooter>
             </Card>
             <Card x-chunk="dashboard-04-chunk-1">
               <CardHeader>
-                <CardTitle>Cambia tu contraseña</CardTitle>
+                <CardTitle>Contraseña</CardTitle>
               </CardHeader>
               <CardContent>
                 <DialogDemo></DialogDemo>
+              </CardContent>
+            </Card>
+            <Card x-chunk="dashboard-04-chunk-1">
+              <CardHeader>
+                <CardTitle>Dirección de envío</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <UserAddressDialog></UserAddressDialog>
               </CardContent>
             </Card>
           </div>
