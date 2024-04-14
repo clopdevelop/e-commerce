@@ -1,17 +1,7 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/shadcn/card";
-import AddCartButton from "@/components/utils/AddCartButton";
+
 import { Toaster } from "sonner";
 import { fetchProducts } from "@/lib/data";
-import PayBotton from "../utils/PayBotton";
-import Link from "next/link";
-import { Input } from "../shadcn/input";
+import ProductCard from "../product/ProductCard";
 
 
 
@@ -24,47 +14,11 @@ export default async function ProductsTable({
 }) {
   const Products = await fetchProducts(currentPage);
 
-  let quantity = 1;
   return (
     <>
       <div className="flex flex-row justify-center">
         {Products.map((product) => (
-          <Card
-            className="m-4 max-w-80 min-w-80 max-h-96 min-h-96"
-            key={product.id}
-          >
-            <CardHeader>
-              <CardTitle className="h-14 leading-relaxed line-clamp-2 text-balance">
-                <Link href={`catalogo/${ product.id }`}>{product.name}</Link>
-              </CardTitle>
-              <CardDescription className="h-16">
-                {product.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="h-36">
-              Imagen {/* TODO Añadir imagenes */}
-            <Input type="number" value={quantity}></Input>
-            </CardContent>
-            <CardFooter className="flex justify-between ">
-              <p>{product.price}€</p>
-              <div className="flex gap-2 ">
-                {/* todo arreglar: como no existe el id user con el google auth no funciona con este */}
-                <>
-                  {id_user!=null ? (
-                    <>
-                      <AddCartButton product={product} quantity={quantity} ></AddCartButton>
-                      <PayBotton id_user={id_user} product={product} />
-                    </>
-                  ) : (
-                    <>
-                      <AddCartButton product={product} quantity={quantity}></AddCartButton>
-                      <PayBotton id_user={id_user} product={product} />
-                    </>
-                  )}
-                </>
-              </div>
-            </CardFooter>
-          </Card>
+          <ProductCard product={product} id_user={id_user}></ProductCard>
         ))}
         <Toaster></Toaster>
       </div>
