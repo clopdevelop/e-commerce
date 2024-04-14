@@ -8,7 +8,6 @@ import {
   MenubarTrigger,
 } from "@/components/shadcn/menubar";
 
-import { CommandMenu } from "../utils/ComandMenu";
 
 import Link from "next/link";
 
@@ -18,6 +17,7 @@ import Profile from "@/components/utils/Profile";
 
 import { NavigationMenuDemo } from "@/components/ui/nav";
 
+import { ModeToggle } from "../utils/ModeToggle";
 
 export async function NavBar() {
   
@@ -66,7 +66,10 @@ export async function NavBar() {
             </MenubarContent>
           </div>
         </MenubarMenu>
+        <div className="flex">
+        <ModeToggle></ModeToggle>
         {account && <Profile></Profile>}
+        </div>
       </Menubar>
     </>
   );

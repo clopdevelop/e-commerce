@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context";
+import { ThemeProvider } from "./context/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,8 +28,6 @@ export const metadata: Metadata = {
   // },
 };
 
-import { NavBar } from "@/components/ui/NavBar";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -39,10 +38,17 @@ export default function RootLayout({
     <CartProvider>
       <html lang="en">
         <body className={inter.className}>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             {children}
           <footer className="py-10 flex justify-center items-center">
             Proyecto final de Ciclo
           </footer>
+          </ThemeProvider>
         </body>
       </html>
     </CartProvider>
