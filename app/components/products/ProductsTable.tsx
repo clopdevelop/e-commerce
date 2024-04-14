@@ -11,6 +11,7 @@ import { Toaster } from "sonner";
 import { fetchProducts } from "@/lib/data";
 import PayBotton from "../utils/PayBotton";
 import Link from "next/link";
+import { Input } from "../shadcn/input";
 
 
 
@@ -23,6 +24,7 @@ export default async function ProductsTable({
 }) {
   const Products = await fetchProducts(currentPage);
 
+  let quantity = 1;
   return (
     <>
       <div className="flex flex-row justify-center">
@@ -41,6 +43,7 @@ export default async function ProductsTable({
             </CardHeader>
             <CardContent className="h-36">
               Imagen {/* TODO Añadir imagenes */}
+            <Input type="number" value={quantity}></Input>
             </CardContent>
             <CardFooter className="flex justify-between ">
               <p>{product.price}€</p>
@@ -49,12 +52,12 @@ export default async function ProductsTable({
                 <>
                   {id_user!=null ? (
                     <>
-                      <AddCartButton product={product} ></AddCartButton>
+                      <AddCartButton product={product} quantity={quantity} ></AddCartButton>
                       <PayBotton id_user={id_user} product={product} />
                     </>
                   ) : (
                     <>
-                      <AddCartButton product={product} ></AddCartButton>
+                      <AddCartButton product={product} quantity={quantity}></AddCartButton>
                       <PayBotton id_user={id_user} product={product} />
                     </>
                   )}

@@ -1,13 +1,13 @@
 "use client";
-import React, { useState, useContext } from "react";
-import { CartContext } from "@/context";
+import React, { useState } from "react";
 import { Button } from "../shadcn/button";
 import { Input } from "../shadcn/input";
 import { Separator } from "../shadcn/separator";
+import { useCart } from "@/context/CartProvider";
 
 function Cart() {
-  const cart = useContext(CartContext);
-  const { items: products = [], removeItem, updateItemQuantity } = cart || {};
+  const cart = useCart();
+  const { items: products , removeItem, updateItemQuantity } = cart || {};
   const [productQuantities, setProductQuantities] = useState<number[]>(
     products.map(() => 1)
   );
@@ -19,7 +19,6 @@ function Cart() {
     const newQuantities = [...productQuantities];
     newQuantities[index] = value;
     setProductQuantities(newQuantities);
-    // Update the quantity in the cart if updateItemQuantity is defined
     if (updateItemQuantity) {
       updateItemQuantity(products[index].id, value);
     }
@@ -28,8 +27,8 @@ function Cart() {
   return (
     <>
       {products.map((item, index) => (
-        <>
-          <div key={item.id} className="flex items-center gap-4">
+        <div key={item.id}>
+          <div className="flex items-center gap-4">
             <img
               alt="Thumbnail"
               className="aspect-square rounded-md overflow-hidden object-cover bg-white"
@@ -70,7 +69,7 @@ function Cart() {
             </div>
           </div>
           <Separator className="my-5"></Separator>
-        </>
+        </div>
       ))}
     </>
   );

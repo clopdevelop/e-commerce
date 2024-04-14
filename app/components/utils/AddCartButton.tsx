@@ -2,23 +2,20 @@
 import { toast } from "sonner";
 import { Button } from "../shadcn/button";
 import { CartItem, Product } from "@/lib/definitions";
-import { CartContext } from "@/context";
-import React, {  useContext } from "react";
+import React from "react";
+import { useCart } from "@/context/CartProvider";
 
 export default function AddCartButton({
   product,
+  quantity
 }: {
   product: Product;
+  quantity: number;
 }) {
   
-  const cart = useContext(CartContext);
+  const cart = useCart();
   const {items, addItem } = cart || {};
 
-  const quantity=1;
-
-  // console.log(items);
-  // console.log(cart);
-  
 
   function addProduct(product: Product, quantity: number) {
     try {
@@ -43,7 +40,7 @@ export default function AddCartButton({
       addItem(newItem, quantity);
       toast("Producto agregado al carrito!");
     } catch (error) {
-      // toast.error("No se pudo agregar el producto al carrito.");
+      toast.error("No se pudo agregar el producto al carrito.");
     }
   }
   

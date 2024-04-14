@@ -1,6 +1,7 @@
 "use client"
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { CartItem } from '@/lib/definitions';
+import { loadFromLocalStorage, saveToLocalStorage } from '@/lib/utils';
 
 type CartContextType = {
   items: CartItem[];
@@ -16,10 +17,26 @@ type CartProviderProps = {
 };
 
 export const CartProvider = ({ children }: CartProviderProps) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(loadFromLocalStorage());;
 
+  useEffect(() => {
+    saveToLocalStorage(items);
+  }, [items]);
+  
   const addItem = (item: CartItem, quantity: number) => {
-    setItems((prevItems) => [...prevItems, item]);
+    // Verificar si el ítem ya existe en el carrito
+    const existingItemIndex = items.findIndex((existingItem) => existingItem.id_product === item.id_product);
+
+    if (existingItemIndex !== -1) {
+      // Si el ítem ya está en el carrito, actualizar la cantidad
+      const updatedItems = [...items];
+      updatedItems[existingItemIndex].quantity += quantity;
+      setItems(updatedItems);
+    } else {
+      // Si el ítem no está en el carrito, agregarlo con la cantidad especificada
+      const newItem = { ...item, quantity };
+      setItems((prevItems) => [...prevItems, newItem]);
+    }
   };
 
   const removeItem = (itemId: number) => {
