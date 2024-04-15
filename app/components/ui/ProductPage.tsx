@@ -1,4 +1,3 @@
-
 /**
  * v0 by Vercel.
  * @see https://v0.dev/t/jnO31LGLBI6
@@ -15,10 +14,11 @@ import { RadioGroupItem, RadioGroup } from "@/components/shadcn/radio-group"
 import { SelectValue, SelectTrigger, SelectItem, SelectContent, Select } from "@/components/shadcn/select"
 import { JSX, SVGProps } from "react"
 import { Product } from "@/lib/definitions"
+import AddCartButton from "../utils/AddCartButton"
 
-export default function Component({ product }: { product: Product | null }) {
+export default function Component({ product }: { product: Product }) {
   console.log(product);
-  
+
   return (
     <div className="flex min-h-screen w-full">
       <div className="flex flex-col">
@@ -113,22 +113,13 @@ export default function Component({ product }: { product: Product | null }) {
             <div className="grid gap-2">
               <Label className="text-base" htmlFor="quantity">
                 Quantity
-              <Badge className="ml-4">Stock: {product?.stock}</Badge>
+                <Badge className="ml-4">Stock: {product?.stock}</Badge>
               </Label>
-              <Select defaultValue="1">
-                <SelectTrigger className="w-24">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1</SelectItem>
-                  <SelectItem value="2">2</SelectItem>
-                  <SelectItem value="3">3</SelectItem>
-                  <SelectItem value="4">4</SelectItem>
-                  <SelectItem value="5">5</SelectItem>
-                </SelectContent>
-              </Select>
+              <Input type="number" defaultValue={1} min={1} max={product?.stock} className="w-24"></Input>
             </div>
-            <Button size="lg">Add to cart</Button>
+            <AddCartButton product={product} quantity={1} ></AddCartButton>
+            <Button size="lg">Comprar</Button>
+            {/* <PayBotton id_user={id_user} product={product} /> */}
           </div>
           <div className="grid gap-4">
             <div className="grid gap-2">

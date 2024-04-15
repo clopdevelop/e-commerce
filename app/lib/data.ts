@@ -8,9 +8,9 @@ import prisma from "@/lib/prisma";
  * @returns 
  */
 export async function fetchProducts(currentPage: number = 1) {
-  await new Promise((resolve) => setTimeout(resolve,3000));
+  // await new Promise((resolve) => setTimeout(resolve,3000));
 
-  const productsOnPage = 1; 
+  const productsOnPage = 3; 
   const productsToSkip = (currentPage - 1) * productsOnPage;
 
   const Products = await prisma.product.findMany({
@@ -56,6 +56,9 @@ export async function fetchProduct(id: number) {
     }
   }
   );
+
+  if (Product==null)
+    throw new Error;
 
   return Product;
 }
