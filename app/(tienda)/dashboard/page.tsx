@@ -1,13 +1,10 @@
 import { auth, getUser } from "@/auth";
-import {FavProducts} from "@/components/products";
-// import {Product} from '@/lib/definitions'
 
 export default async function Home() {
 
   const authentication = await auth();
   const user = String(authentication?.user?.email);
   const completeUser = await getUser(user);
-  // const favproducts : Product[] = []; 
 
   return (
     <>

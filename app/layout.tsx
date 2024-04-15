@@ -43,7 +43,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
-          <footer className="py-10 flex justify-center items-center">
+          <footer className="absolute bottom-0 w-full text-white text-center p-6">
             Proyecto final de Ciclo
           </footer>
           </ThemeProvider>

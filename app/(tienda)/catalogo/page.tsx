@@ -45,7 +45,7 @@ export default async function Home({
 
   return (
     <>
-      <h1 className="py-10">Tienda</h1>
+      <h1>Tienda</h1>
       <div className="my-5 flex items-center justify-between gap-2 md:mt-8">
          <Search placeholder="Buscar productos..." />
       </div>

@@ -39,7 +39,7 @@ export default function RootLayout({
     <>
       <CartProvider>
         <NavBar></NavBar>
-        <main className="flex flex-col items-center justify-between p-24">
+        <main className="flex flex-col items-center justify-between px-24 py-10">
           {children}
         </main>
       </CartProvider></>

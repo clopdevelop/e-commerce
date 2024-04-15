@@ -7,7 +7,8 @@ export default function Home() { // Obtiene el parámetro `success` de la URL
   const success = searchParams.get('success')
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <>
+    {/*     <main className="flex min-h-screen flex-col items-center justify-between p-24"> */}
       {success ? (
         <>
           <h1>SUCCESS</h1>
@@ -17,7 +18,6 @@ export default function Home() { // Obtiene el parámetro `success` de la URL
           <h1>WELCOME</h1>
         </>
       )}
-    </main>
-    
+    </>
   );
 }
