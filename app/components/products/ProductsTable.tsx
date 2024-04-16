@@ -9,8 +9,8 @@ export default async function ProductsTable({
   currentPage,
   id_user,
 }: {
-  currentPage:number;
-  id_user: number;
+  currentPage:number
+  id_user: number
 }) {
   const Products = await fetchProducts(currentPage);
 
@@ -18,7 +18,7 @@ export default async function ProductsTable({
     <>
       <div className="flex flex-row justify-center">
         {Products.map((product) => (
-          <ProductCard product={product} id_user={id_user}></ProductCard>
+            <ProductCard key={product.id} product={product} id_user={id_user}></ProductCard>
         ))}
         <Toaster></Toaster>
       </div>

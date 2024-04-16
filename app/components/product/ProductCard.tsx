@@ -14,42 +14,37 @@ import Link from "next/link";
 import { Input } from "../shadcn/input";
 import { Provider, Category, OrderItem } from "@/lib/definitions";
 import { Product } from "@prisma/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BookmarkIcon } from "lucide-react"
+import { setCookie, getCookie } from "cookies-next";
 
-export default function Name({ product, id_user }: { product: Product, id_user: number }) {
+export default function ProductCard({ product, id_user }: { product: Product, id_user: number}) {
 
     const [quantity, setQuantity] = useState(1);
 
     const [fav, setFav] = useState(false)
 
-    const toogleFav = () => {
-        setFav(!fav)
-      const favoritos = getCookie("favoritos");
-      const nuevosFavoritos = String(product.id) + "," +  favoritos;
-      setCookie("favoritos", nuevosFavoritos, 7);
-      console.log("cookie seteada");
-      
-    }
-
-    const setCookie = (name: string, value: string, days: number) => {
-        const expirationDate = new Date();
-        expirationDate.setDate(expirationDate.getDate() + days);
-        const cookieValue = `${name}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
-        document.cookie = cookieValue;
-    };
-    const getCookie = (name: string) => {
-        const cookies = document.cookie.split("; ");
-        for (const cookie of cookies) {
-          const [cookieName, cookieValue] = cookie.split("=");
-          if (cookieName === name) {
-            return cookieValue;
-          }
+    useEffect(() => {
+        const favs = getCookie("favoritos");
+        if (favs && favs.split(',').includes(String(product.id))) {
+            setFav(true);
         }
-        return null; 
-      };
-      
-  
+    }, []);
+
+    const toggleFav = () => {
+        const favoritos = getCookie("favoritos") || '';
+        const favoritosArray = favoritos.split(',');
+
+        if (fav) {
+            const updatedFavoritos = favoritosArray.filter(id => id !== String(product.id));
+            setCookie("favoritos", updatedFavoritos.join(','));
+        } else {
+            favoritosArray.push(String(product.id));
+            setCookie("favoritos", favoritosArray.join(','));
+        }
+        setFav(!fav);
+    };
+
     return (
         <Card
             className="m-4 max-w-80 min-w-80 max-h-96 min-h-96"
@@ -68,7 +63,7 @@ export default function Name({ product, id_user }: { product: Product, id_user: 
                     <div>
                         <BookmarkIcon className={`transition-colors duration-500 ease-in-out ${fav ? 'text-red-500' : 'text-white'} cursor-pointer`}
                          strokeWidth={fav ? 3 : 1} 
-                         onClick={() => toogleFav()}>
+                         onClick={() => toggleFav()}>
                          </BookmarkIcon>
                     </div>
                 </div>

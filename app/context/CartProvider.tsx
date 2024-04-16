@@ -1,7 +1,7 @@
 "use client"
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { CartItem } from '@/lib/definitions';
-import { loadFromLocalStorage, saveToLocalStorage } from '@/lib/utils';
+import { loadFromLocalStorage, saveToLocalStorage } from '@/lib/localStorage';
 
 type CartContextType = {
   items: CartItem[];
@@ -16,11 +16,8 @@ type CartProviderProps = {
   children: ReactNode;
 };
 
-let  cartItem : CartItem[];
-
 export const CartProvider = ({ children }: CartProviderProps) => {
-  const [items, setItems] = useState<CartItem[]>(cartItem);
-  // const [items, setItems] = useState<CartItem[]>(loadFromLocalStorage());
+  const [items, setItems] = useState<CartItem[]>(loadFromLocalStorage());
 
   useEffect(() => {
     saveToLocalStorage(items);

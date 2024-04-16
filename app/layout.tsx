@@ -34,19 +34,19 @@ export default function RootLayout({
 }>) {
 
   return (
-      <html lang="en">
+      <html lang="es">
         <body className={inter.className}>
-        <ThemeProvider
+            {children}
+        {/* <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
-          >
-            {children}
+          > */}
           <footer className="absolute bottom-0 w-full text-white text-center p-6">
             Proyecto final de Ciclo
           </footer>
-          </ThemeProvider>
+          {/* </ThemeProvider> */}
         </body>
       </html>
   );

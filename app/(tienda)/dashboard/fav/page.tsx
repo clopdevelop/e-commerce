@@ -8,19 +8,15 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const cookie = cookies().get('favoritos');
+  const cookie  = cookies().get('favoritos')?.value ?? "0";
+  //Convertir cookie en array de numeros
+  const favorites : number[] = cookie.split(",").map(Number);
 
-  console.log(cookie);
+  console.log(favorites);
 
-  // Convertir la cookie en un array { name: 'favoritos', value: '2,null' }
-  const cookieArray = cookie?.value.split(',');
-  // Borrar los null del array
-  const cookieWithoutNull = cookieArray?.filter(item => item !== 'null');
-  // Convertir a number los items del array
-  const cookieNumber = cookieWithoutNull?.map(item => Number(item)); 
   return (
     <>
-      <Favs favoritos={cookieNumber}></Favs>
+      <Favs favorites={favorites}></Favs>
     </>
   );
 }

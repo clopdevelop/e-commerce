@@ -9,15 +9,19 @@ import { fetchProductsbyIDs } from "@/lib/data";
 import { Product } from "@/lib/definitions";
 import { StarIcon } from "lucide-react"
 
-export default async function FavsProducts(favoritos : { favoritos: number[] | undefined; }) {
-  const favproducts = true;
-  let Products : Product[];
+interface Props {
+  favorites?: number[]
+}
 
-  if (favoritos.favoritos) {
-  Products = await fetchProductsbyIDs(favoritos.favoritos) ?? ''
-  }else{
+export default async function FavsTable({ favorites }: Props) {
+  const favproducts = true;
+  let Products: Product[];
+
+  if (favorites) {
+    Products = await fetchProductsbyIDs(favorites) ?? ''
+  } else {
     Products = []
-  
+  }
 
   return (
     <div className="divide-y">
@@ -27,27 +31,27 @@ export default async function FavsProducts(favoritos : { favoritos: number[] | u
         Ver todo
         {/* </Link> */}
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-stretch py-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-stretch py-4 mb-96">
         {favproducts
-            ? Products.map((product) => (
-                <Card key={product.id}>
-            {/* <Link className="absolute inset-0 rounded-lg overflow-hidden z-10" href="#" /> */}
-            <div className="grid gap-2.5 p-4">
-              <img
-                alt="Thumbnail"
-                className="aspect-square object-cover rounded-lg border border-gray-200 overflow-hidden dark:border-gray-800"
-                height={250}
-                src="/placeholder.svg"
-                width={250}
-              />
-              <div className="grid gap-2">
-                <h3 className="font-bold text-base leading-none">{product.name}</h3>
-                <p className="text-sm leading-none text-muted">Description of the product. This can be long or short.</p>
+          ? Products.map((product) => (
+              <Card key={product.id}>
+              {/* <Link className="absolute inset-0 rounded-lg overflow-hidden z-10" href="#" /> */}
+              <div className="grid gap-2.5 p-4">
+                <img
+                  alt="Thumbnail"
+                  className="aspect-square object-cover rounded-lg border border-gray-200 overflow-hidden dark:border-gray-800"
+                  height={250}
+                  src="/placeholder.svg"
+                  width={250}
+                />
+                <div className="grid gap-2">
+                  <h3 className="font-bold text-base leading-none">{product.name}</h3>
+                  <p className="text-sm leading-none text-muted">Description of the product. This can be long or short.</p>
+                </div>
               </div>
-            </div>
-          </Card>
-            ))
-            : <h2>No has añadido productos a tus Favoritos</h2>
+            </Card>
+          ))
+          : <h2>No has añadido productos a tus Favoritos</h2>
         }
       </div>
       <div className="flex items-center justify-between pt-8 pb-4">

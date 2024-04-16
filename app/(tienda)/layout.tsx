@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/globals.css";
+import Providers from "@/components/providers"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +28,6 @@ export const metadata: Metadata = {
 };
 
 import { NavBar } from "@/components/ui/NavBar";
-import { CartProvider } from "@/context";
 
 export default function RootLayout({
   children,
@@ -37,11 +37,12 @@ export default function RootLayout({
 
   return (
     <>
-      <CartProvider>
+      <Providers>
         <NavBar></NavBar>
         <main className="flex flex-col items-center justify-between px-24 py-10">
           {children}
         </main>
-      </CartProvider></>
+      </Providers>
+      </>
   );
 }
