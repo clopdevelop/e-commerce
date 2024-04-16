@@ -63,6 +63,19 @@ export async function fetchProduct(id: number) {
   return Product;
 }
   
+// Recuperar los productos con los IDs proporcionados
+export async function fetchProductsbyIDs(products_ids: Array<number> = [1]) {
+    const products = await prisma.product.findMany({
+      where: {
+        id: {
+          in: products_ids,
+        },
+      },
+    });
+    return products;
+}
+
+
 /**
  * Calcula el total de páginas para una búsqueda
  * @param query 

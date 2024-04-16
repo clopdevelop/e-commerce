@@ -25,8 +25,31 @@ export default function Name({ product, id_user }: { product: Product, id_user: 
 
     const toogleFav = () => {
         setFav(!fav)
+      const favoritos = getCookie("favoritos");
+      const nuevosFavoritos = String(product.id) + "," +  favoritos;
+      setCookie("favoritos", nuevosFavoritos, 7);
+      console.log("cookie seteada");
+      
     }
 
+    const setCookie = (name: string, value: string, days: number) => {
+        const expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + days);
+        const cookieValue = `${name}=${value}; expires=${expirationDate.toUTCString()}; path=/`;
+        document.cookie = cookieValue;
+    };
+    const getCookie = (name: string) => {
+        const cookies = document.cookie.split("; ");
+        for (const cookie of cookies) {
+          const [cookieName, cookieValue] = cookie.split("=");
+          if (cookieName === name) {
+            return cookieValue;
+          }
+        }
+        return null; 
+      };
+      
+  
     return (
         <Card
             className="m-4 max-w-80 min-w-80 max-h-96 min-h-96"
