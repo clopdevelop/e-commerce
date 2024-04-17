@@ -1,5 +1,4 @@
 "use client"
-import Image from "next/image"
 import {
   ChevronLeft,
   Home,
@@ -60,10 +59,9 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, useFormField } from "@/components/shadcn/form"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { addProductSchema } from "@/lib/schemas"
 import { addProduct } from "@/lib/actionscommands"
-export default function EditPage() {
+import Image from "next/image"
+export default function NewProductPage() {
   const form = useForm()
 
   //TODO RECUPERAR LAS CATEGORIAS
@@ -74,6 +72,8 @@ export default function EditPage() {
   const handleStatusChange = (value: any) => {
     setSelectedStatus(value);
   };
+
+  const [file, setFile] = useState<File | null>(null);
 
   return (
 
@@ -143,7 +143,7 @@ export default function EditPage() {
                                     <FormControl>
                                       <Textarea
                                         id="description"
-                                        className="min-h-32" 
+                                        className="min-h-32"
                                         {...field}/>
                                     </FormControl>
                                   </FormItem>
@@ -391,21 +391,34 @@ export default function EditPage() {
                                 render={({ field }) => (
                                   <FormItem>
                                     <FormControl>
-                                      {/* <Input
-                                        id="name"
-                                        type="text"
-                                        className="w-full"
-                                        {...field} /> */}
-                                      <button className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
+                                      {/* <button className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
                                         <Upload className="h-4 w-4 text-muted-foreground" />
                                         <span className="sr-only">Upload</span>
-                                      </button>
+                                      </button> */}
+                                      <Input
+                                        id="image"
+                                        type="file"
+                                        className="w-auto max-w-52"
+                                        src={file ? URL.createObjectURL(file) : undefined} // Verifica si file es null antes de llamar a createObjectURL
+                                        {...field}
+                                        onChange={(e) => {
+                                          if (e.target.files && e.target.files.length > 0) {
+                                            setFile(e.target.files[0]);
+                                            console.log(e.target.files[0])
+                                          }
+                                        }}
+                                      />
                                     </FormControl>
                                   </FormItem>
                                 )}
                               />
                             </div>
                           </div>
+                        </CardContent>
+                      </Card>
+                      <Card x-chunk="dashboard-07-chunk-5">
+                        <CardContent className="pt-5">
+                          {file && <Image alt="" src={URL.createObjectURL(file)} width={100} height={100} className="w-full"/>}
                         </CardContent>
                       </Card>
                       {/* <Card x-chunk="dashboard-07-chunk-5">
