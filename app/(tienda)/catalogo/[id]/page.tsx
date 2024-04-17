@@ -52,6 +52,7 @@ export default async function Page({ params }: Props) {
     );
   } catch (error) {
     notFound();
+    // throw new Error('Producto no encontrado');
   }
   
 }

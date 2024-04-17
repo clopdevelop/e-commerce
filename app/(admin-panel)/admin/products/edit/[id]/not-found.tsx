@@ -1,18 +1,18 @@
 import Link from 'next/link'
-import { NavBar } from './components/ui'
+import Header from "@/components/admin/Header";
 import 'tailwindcss/tailwind.css';
 
 export default function NotFound() {
   return (
     <>
-        <NavBar />
-        <main className="flex flex-col items-center justify-between px-24 py-10">
+        <Header></Header>
+      <main className="flex flex-col items-center justify-between p-24">
         <div>
           <h2>Not Found</h2>
           <p>Could not find requested resource</p>
           <Link href="/">Return Home</Link>
         </div>
-        </main>
+      </main>
     </>
   )
 }
