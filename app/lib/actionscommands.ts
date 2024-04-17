@@ -229,3 +229,30 @@ export async function addProduct(formData: FormData) {
 //     console.error("Error guardando la orden en la base de datos:", error);
 //   }
 // }
+// Todo despues de ejecutarse esta funcion se debe redireccionar
+export async function deleteProduct(formData: FormData) {
+  const data = formData.get("id_product");
+  const id_product = Number(data);
+  try {
+    const deletedProduct = await prisma.product.delete({
+      where: { id:id_product },
+    });
+    return deletedProduct;
+  } catch (error) {
+    console.error("Error al eliminar el producto:", error);
+    throw error;
+  }
+}
+
+export async function deleteProductonClick(product:{id_product: number}) {
+  const { id_product } = product;
+  try {
+    const deletedProduct = await prisma.product.delete({
+      where: { id:id_product },
+    });
+    return deletedProduct;
+  } catch (error) {
+    console.error("Error al eliminar el producto:", error);
+    throw error;
+  }
+}

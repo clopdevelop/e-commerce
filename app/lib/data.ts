@@ -7,10 +7,19 @@ import prisma from "@/lib/prisma";
  * @param currentPage 
  * @returns 
  */
+export async function fetchAllProducts() {
+  // await new Promise((resolve) => setTimeout(resolve,3000));
+
+  const Products = await prisma.product.findMany({
+  });
+
+  return Products;
+}
+
 export async function fetchProducts(currentPage: number = 1) {
   // await new Promise((resolve) => setTimeout(resolve,3000));
 
-  const productsOnPage = 3; 
+  const productsOnPage = 1; 
   const productsToSkip = (currentPage - 1) * productsOnPage;
 
   const Products = await prisma.product.findMany({
