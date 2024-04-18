@@ -61,6 +61,10 @@ export function ProfileForm() {
     addUser(formData);
   }
 
+  function handlerClick(){
+
+  }
+
   return (
     <div className="w-full max-w-sm rounded-xl border shadow">
       <header className="flex flex-col space-y-1.5 p-6">
@@ -139,10 +143,6 @@ export function ProfileForm() {
           />
           <Button className="w-full" type="submit">
             Crear una cuenta
-          </Button>
-          <Button variant="outline" className="w-full">
-            <AtSign className="mr-2"></AtSign>
-            Registrate con Google
           </Button>
           <div className="text-center text-sm">
             ¿Ya tienes una cuenta? {"     "}

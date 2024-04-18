@@ -1,29 +1,13 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { UserLogInFormSchema, userSchema } from "@/lib/schemas";
-
 import { Button } from "@/components/shadcn/button";
 import { useEffect } from "react";
-
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Google } from "./SignInGoogle";
 import { Separator } from "../shadcn/separator";
-import { CircleAlert, ArrowRight } from 'lucide-react'
+import { AtSign, CircleAlert } from 'lucide-react'
 import { useFormState, useFormStatus } from "react-dom";
 import Link from "next/link";
-import { authenticate } from "@/lib/actionscommands";
-import clsx from "clsx";
+import { authenticate, signInGoogle } from "@/lib/actionscommands";
 import { Label } from "../shadcn/label";
 
 export function LoginForm() {
@@ -31,16 +15,10 @@ export function LoginForm() {
 
   useEffect(() => {
     if (state === 'Success') {
-      // redireccionar
-      // router.replace('/');
-      window.location.replace('/');
+      window.location.replace('/dashboard');
     }
-
   }, [state]);
 
-  // const form = useForm<z.infer<typeof UserLogInFormSchema>>({
-  //   resolver: zodResolver(UserLogInFormSchema),
-  // });
 
   return (
     <>
@@ -50,7 +28,14 @@ export function LoginForm() {
             Iniciar Sesión
           </h1>
         </header>
-        <Google></Google>
+        <form
+          action={signInGoogle}
+          className="text-center"
+        >
+          <Button type="submit" className="mt-3 mb-3">
+            <AtSign className="mr-2"></AtSign>
+            Continuar con Google</Button>
+        </form>
         <form action={dispatch} className="grid gap-6 p-6 pt-0">
           <Separator className="my-5"></Separator>
           <div className="grid gap-3">
@@ -121,7 +106,3 @@ function LoginButton() {
     </Button>
   );
 }
-// // className={clsx({
-//   "bg-primary": !pending,
-//   "bg-muted": pending
-// }) + 'w-full'}

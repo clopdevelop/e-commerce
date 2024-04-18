@@ -47,26 +47,6 @@ export async function addUser(formData: FormData) {
  * @param formData
  * @returns
  */
-// export async function authenticate(
-//   prevState: string | undefined,
-//   formData: FormData
-// ) {
-//   try {
-//         await signIn("credentials", Object.fromEntries(formData));
-// } catch (error) {
-//     if (error instanceof AuthError) {
-//         switch (error.type) {
-//             case "CredentialsSignin":
-//                 return "Usuario o contraseña invalido.";
-//             default:
-//                 return "Algo fue mal.";
-//         }
-//     }
-//     throw error;
-// }
-
-// }
-
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
@@ -90,6 +70,10 @@ export async function authenticate(
 
 
   }
+}
+
+export async function signInGoogle(){
+  await signIn("google");
 }
 
 /**

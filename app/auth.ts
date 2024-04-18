@@ -3,5 +3,7 @@ import { authConfig } from './auth.config';
 
 
 //  Inicializacion básica:
-export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth(authConfig);
+export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
+    ...authConfig
+});
  
