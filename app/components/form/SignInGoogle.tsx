@@ -7,7 +7,7 @@ export function Google() {
     <>
       <form
         action={async () => {
-          await signIn("google");
+          await signIn("google"), { redirectTo: "/dashboard" };
         }}
         className="text-center"
       >

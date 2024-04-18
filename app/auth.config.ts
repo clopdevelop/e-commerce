@@ -1,6 +1,16 @@
 import type { NextAuthConfig } from 'next-auth';
-import { redirect } from 'next/navigation';
- 
+
+import Credentials from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
+import { z } from 'zod';
+import { getUser } from './auth';
+
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient()
+
+
 export const authConfig: NextAuthConfig = {
   pages: {
     signIn: '/entrada',
@@ -8,7 +18,7 @@ export const authConfig: NextAuthConfig = {
     // error: '/auth/error',
     // verifyRequest: '/auth/verify-request',
     // newUser: '/auth/new-user'
-  },  
+  },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
@@ -16,7 +26,7 @@ export const authConfig: NextAuthConfig = {
       if (isOnDashboard) {
         if (isLoggedIn) return true;
         return false;
-      } 
+      }
       return true;
     },
     async signIn({ user, account, profile }) {
@@ -25,9 +35,52 @@ export const authConfig: NextAuthConfig = {
     async redirect({ url, baseUrl }) {
       return baseUrl + '/dashboard';
     },
+    async jwt({ token, account, profile }) {
+      // Persist the OAuth access_token and or the user id to the token right after signin
+      if (account) {
+        token.accessToken = account.access_token
+        // token.id = profile.id;
+      }
+      return token
+    },
+    async session({ session, token, user }) {
+      // Send properties to the client, like an access_token and user id from a provider.
+      // session.accessToken = token.accessToken
+      // session.user.id = token.id
+
+      return session
+    }
   },
-  providers: [], 
-  // adapter: PrismaAdapter(prisma),
+  providers: [
+    // Credentials({
+    //   async authorize(credentials) {
+    //     const parsedCredentials = z
+    //       .object({ email: z.string().email(), password: z.string().min(6) })
+    //       .safeParse(credentials);
+
+    //     if (parsedCredentials.success) {
+    //       const { email, password } = parsedCredentials.data;
+    //       const user = await getUser(email);
+    //       if (!user) return null;
+    //       const passwordsMatch = (password == user.password) ? true : false;
+    //       // todo const passwordsMatch = await bcrypt.compare(password, user.password);
+
+    //       if (passwordsMatch) {
+    //         return user;
+    //       }
+    //     }
+
+    //     console.log('Invalid credentials');
+    //     return null;
+    //   },
+    // })
+    // ,
+    GoogleProvider({
+      clientId: process.env.AUTH_GOOGLE_ID as string,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
+    })
+    ,],
+  adapter: PrismaAdapter(prisma),
   // basePath?: string, // La ruta base de los puntos de conexión de la API de Auth.js.
   // cookies?: Partial< CookiesOptions >,
   // events?: Partial< EventCallbacks >,

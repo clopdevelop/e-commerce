@@ -34,7 +34,6 @@ async function Profile() {
           <form
             action={async () => {
               "use server";
-              // console.log("signout");
               await signOut();
             }}
           >
