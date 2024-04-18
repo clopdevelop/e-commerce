@@ -1,9 +1,15 @@
 import EmptyInventory from "@/components/admin/emptyinventory"
 import Inventory from "@/components/admin/inventory"
+import { fetchAllProducts } from "@/lib/data"
+import { Product } from "@/lib/definitions";
 
-export default function admin() {
+
+export default async function admin() {
+  const Products:Product[] = await fetchAllProducts();
+  
+
     return (
         // <EmptyInventory></EmptyInventory>
-        <Inventory></Inventory>
+        <Inventory products={Products}></Inventory>
     )
 }

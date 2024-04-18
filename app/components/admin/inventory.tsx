@@ -27,11 +27,12 @@ import {
   TableRow,
 } from "@/components/shadcn/table"
 import Link from "next/link"
-import { fetchProducts } from "@/lib/data"
+import { Product } from "@/lib/definitions"
+import DeleteProduct from "../utils/DeleteProduct"
 
-export default async function Inventory() {
 
-  const Products = await fetchProducts();
+
+export default async function Inventory({ products }: { products: Product[] }) {
 
   return (
     <Card>
@@ -59,7 +60,7 @@ export default async function Inventory() {
               <TableHead>Status</TableHead>
               <TableHead>Price</TableHead>
               <TableHead className="hidden md:table-cell">
-                Total Sales
+                Stock
               </TableHead>
               <TableHead className="hidden md:table-cell">Created at</TableHead>
               <TableHead>
@@ -68,8 +69,8 @@ export default async function Inventory() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Products.map((product) => (
-              <TableRow>
+            {products.map((product) => (
+              <TableRow key={product.id}>
                 <TableCell className="hidden sm:table-cell">
                   <Image
                     alt="Product image"
@@ -86,7 +87,8 @@ export default async function Inventory() {
                   <Badge variant="outline">{product.state}</Badge>
                 </TableCell>
                 <TableCell>${product.price}</TableCell>
-                <TableCell className="hidden md:table-cell">25</TableCell>
+                {/* <TableCell className="hidden md:table-cell">X</TableCell> */}
+                <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
                 <TableCell className="hidden md:table-cell">
                   2023-07-12 10:42 AM
                 </TableCell>
@@ -100,8 +102,8 @@ export default async function Inventory() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <Link href={`/admin/products/edit/${product.id}`}><DropdownMenuItem>Edit</DropdownMenuItem></Link>
-                      <DropdownMenuItem>Delete</DropdownMenuItem>
+                      <Link href={`/admin/products/edit/${product.id}`}><DropdownMenuItem>Editar</DropdownMenuItem></Link>
+                      <DeleteProduct id_product={product.id}></DeleteProduct>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

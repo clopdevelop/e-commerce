@@ -61,8 +61,12 @@ import { useForm } from "react-hook-form"
 import { useState } from "react"
 import { addProduct } from "@/lib/actionscommands"
 import Image from "next/image"
-export default function NewProductPage() {
-  const form = useForm()
+import { Product } from "@/lib/definitions"
+
+
+  export default function EditProductForm({ product }: { product: Product }) {
+
+    const form = useForm()
 
   //TODO RECUPERAR LAS CATEGORIAS
   const categories = ["Electronics", "Clothes", "Food", "Books", "Others"]
@@ -126,6 +130,7 @@ export default function NewProductPage() {
                                         id="name"
                                         type="text"
                                         className="w-full"
+                                        defaultValue={product.name}
                                         {...field} />
                                     </FormControl>
                                   </FormItem>
@@ -144,6 +149,7 @@ export default function NewProductPage() {
                                       <Textarea
                                         id="description"
                                         className="min-h-32"
+                                        defaultValue={product.description ?? ''}
                                         {...field}/>
                                     </FormControl>
                                   </FormItem>
@@ -195,6 +201,7 @@ export default function NewProductPage() {
                                             id="stock"
                                             type="number"
                                             className="w-full"
+                                            defaultValue={product.stock}
                                             {...field} />
                                         </FormControl>
                                       </FormItem>
@@ -215,12 +222,12 @@ export default function NewProductPage() {
                                     {...form.register("price")}
                                     render={({ field }) => (
                                       <FormItem>
-                                        {/* <FormLabel>Name</FormLabel> */}
                                         <FormControl>
                                           <Input
                                             id="price"
                                             type="number"
                                             className="w-full"
+                                            defaultValue={product.price}
                                             {...field} />
                                         </FormControl>
                                       </FormItem>
@@ -260,7 +267,7 @@ export default function NewProductPage() {
                               <FormField
                                 control={form.control}
                                 {...form.register("category")}
-                                defaultValue=""
+                                defaultValue={product.category}
                                 render={({ field }) => (
                                   <FormItem>
                                     <FormControl>
@@ -326,7 +333,7 @@ export default function NewProductPage() {
                             <div className="grid gap-3">
                               <FormField
                                 control={form.control}
-                                defaultValue=""
+                                defaultValue={product.state}
                                 {...form.register("status")}
                                 render={({ field }) => (
                                   <FormItem>
