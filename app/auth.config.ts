@@ -1,11 +1,9 @@
 import type { NextAuthConfig } from 'next-auth';
-
 import Credentials from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { z } from 'zod';
 
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import { PrismaClient } from '@prisma/client';
 import { getUser } from './lib/data';
 import prisma from './lib/prisma';
 
@@ -17,7 +15,7 @@ export const authConfig: NextAuthConfig = {
       // signOut: '/auth/signout',
       // error: '/auth/error',
       // verifyRequest: '/auth/verify-request',
-      // newUser: '/auth/new-user'
+      newUser: '/registro'
     },
     callbacks: {
       authorized({ auth, request: { nextUrl } }) {
@@ -25,29 +23,31 @@ export const authConfig: NextAuthConfig = {
         const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
         if (isOnDashboard) {
           if (isLoggedIn) return true;
-          return false;
+          return false; // Redirect unauthenticated users to login page
+        } else if (isLoggedIn) {
+          return Response.redirect(new URL('/dashboard', nextUrl));
         }
         return true;
       },
-      async signIn({ user, account, profile }) {
-        return true
-      },
-      async redirect({ url, baseUrl }) {
-        return baseUrl + '/dashboard';
-      },
-      async jwt({ token, user, account, profile, isNewUser }) {
-        if (user) {
-          token.id = user.id
+      // async signIn({ user, account, profile }) {
+      //   return true
+      // },
+      // async redirect({ url, baseUrl }) {
+      //   return baseUrl + '/dashboard';
+      // },
+      jwt({ token, user }) {
+        if ( user ) {
+          token.data = user;
         }
-        return token
-      },
-      async session({ session, token, user }) {
-        // Send properties to the client, like an access_token and user id from a provider.
-        // session.accessToken = token.accessToken
-        // session.user.id = token.id
   
-        return session
-      }
+        return token;
+      },
+  
+      session({ session, token, user }) {
+        session.user = token.data as any;
+        return session;
+      },
+  
     },
     providers: [
       Credentials({
@@ -56,20 +56,23 @@ export const authConfig: NextAuthConfig = {
             .object({ email: z.string().email(), password: z.string().min(6) })
             .safeParse(credentials);
   
-          if (parsedCredentials.success) {
-            const { email, password } = parsedCredentials.data;
-            const user = await getUser(email);
-            if (!user) return null;
-            const passwordsMatch = (password == user.password) ? true : false;
-            // todo const passwordsMatch = await bcrypt.compare(password, user.password);
-  
-            if (passwordsMatch) {
-              return user;
-            }
+          if (!parsedCredentials.success) {
+            console.log('Error en el correo electrónico o en la contraseña');
+            return null;
           }
-  
-          console.log('Error en el correo electrónico o en la contraseña');
-          return null;
+
+          const { email, password } = parsedCredentials.data;
+          const user = await getUser(email);
+          if (!user) return null;
+          const passwordsMatch = (password == user.password) ? true : false;
+          // todo const passwordsMatch = await bcrypt.compare(password, user.password);
+          // if( !bcryptjs.compareSync( password, user.password ) ) return null;
+
+          if (!passwordsMatch) return null;
+
+          const { password: pass, ...rest } = user;
+          return rest;
+
         },
       })
       ,

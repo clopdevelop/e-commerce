@@ -5,8 +5,8 @@ import { z } from "zod";
 import { UserLogInFormSchema, userSchema } from "@/lib/schemas";
 
 import { Button } from "@/components/shadcn/button";
-import { useFormState, useFormStatus } from "react-dom";
-import { authenticate } from "@/lib/actionscommands";
+import { useEffect } from "react";
+
 import {
   Form,
   FormControl,
@@ -18,28 +18,29 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Google } from "./SignInGoogle";
-import Link from "next/link";
 import { Separator } from "../shadcn/separator";
+import { CircleAlert, ArrowRight } from 'lucide-react'
+import { useFormState, useFormStatus } from "react-dom";
+import Link from "next/link";
+import { authenticate } from "@/lib/actionscommands";
+import clsx from "clsx";
+import { Label } from "../shadcn/label";
 
 export function LoginForm() {
-  const [errorMessage, dispatch] = useFormState(authenticate, undefined);
+  const [state, dispatch] = useFormState(authenticate, undefined);
 
-  const form = useForm<z.infer<typeof UserLogInFormSchema>>({
-    resolver: zodResolver(UserLogInFormSchema),
-  });
+  useEffect(() => {
+    if (state === 'Success') {
+      // redireccionar
+      // router.replace('/');
+      window.location.replace('/');
+    }
 
-  function onSubmit(values: z.infer<typeof UserLogInFormSchema>) {
-    const formData = new FormData();
+  }, [state]);
 
-    Object.keys(values).forEach((key) => {
-      const value = values[key as keyof typeof values];
-      if (value) {
-        formData.append(key, value);
-      }
-    });
-
-    dispatch(formData);
-  }
+  // const form = useForm<z.infer<typeof UserLogInFormSchema>>({
+  //   resolver: zodResolver(UserLogInFormSchema),
+  // });
 
   return (
     <>
@@ -50,66 +51,77 @@ export function LoginForm() {
           </h1>
         </header>
         <Google></Google>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid gap-6 p-6 pt-0"
-          >
-            <Separator className="my-5"></Separator>
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <>
-                  <FormItem className="grid gap-2">
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Usuario@mail.com"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                </>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <>
-                  <FormItem className="grid gap-2">
-                    <FormLabel className="flex justify-between">
-                      Contraseña{" "}
-                      <Link
-                        href="#"
-                        className="ml-auto inline-block text-sm underline"
-                      >
-                        ¿Has olvidado tu contraseña?
-                      </Link>
-                    </FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                </>
-              )}
-            />
-            <Button className="w-full" type="submit">
-              Entrar
-            </Button>
-            <div className="text-center text-sm">
-              ¿No tienes cuenta? {"     "}
-              <Link href="/registro" className="underline">
-                Regístrate
+        <form action={dispatch} className="grid gap-6 p-6 pt-0">
+          <Separator className="my-5"></Separator>
+          <div className="grid gap-3">
+            <div>
+              <Label htmlFor="email">Correo electrónico</Label>
+            </div>
+            <div>
+              <Input
+                type="email"
+                name="email"
+                placeholder="Usuario@mail.com"
+              />
+            </div>
+          </div>
+          <div className="grid gap-3">
+            <div className="flex justify-between">
+              <Label htmlFor="email">Contraseña</Label>
+              <Link
+                href="#"
+                className="ml-auto inline-block text-sm underline"
+              >
+                ¿Has olvidado tu contraseña?
               </Link>
             </div>
-          </form>
-        </Form>
+            <div>
+              <Input
+                type="password"
+                name="password"
+              />
+            </div>
+          </div>
+          {state === "CredentialsSignin" && (
+            <div
+              className="flex items-end"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <>
+                <CircleAlert size={20} className="text-red-500 mr-2" />
+                <p className="text-sm text-red-500">Credenciales no son correctas</p>
+              </>
+            </div>
+
+          )}
+          <LoginButton />
+          <div className="text-center text-sm">
+            ¿No tienes cuenta? {"     "}
+            <Link href="/registro" className="underline">
+              Regístrate
+            </Link>
+          </div>
+        </form>
       </div>
     </>
   );
 }
+
+function LoginButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      type="submit"
+      className="w-full bg-primary"
+      disabled={pending}
+    >
+      Ingresar
+    </Button>
+  );
+}
+// // className={clsx({
+//   "bg-primary": !pending,
+//   "bg-muted": pending
+// }) + 'w-full'}

@@ -7,6 +7,7 @@ import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import Stripe from "stripe";
 import { addProductSchema } from "./schemas";
+import { sleep } from "./utils";
 
 /**
  * Añade un usuario
@@ -46,22 +47,48 @@ export async function addUser(formData: FormData) {
  * @param formData
  * @returns
  */
+// export async function authenticate(
+//   prevState: string | undefined,
+//   formData: FormData
+// ) {
+//   try {
+//         await signIn("credentials", Object.fromEntries(formData));
+// } catch (error) {
+//     if (error instanceof AuthError) {
+//         switch (error.type) {
+//             case "CredentialsSignin":
+//                 return "Usuario o contraseña invalido.";
+//             default:
+//                 return "Algo fue mal.";
+//         }
+//     }
+//     throw error;
+// }
+
+// }
+
 export async function authenticate(
   prevState: string | undefined,
-  formData: FormData
+  formData: FormData,
 ) {
   try {
-    await signIn("credentials", formData);
+
+    await sleep(2);
+    
+    await signIn('credentials', {
+      ...Object.fromEntries(formData),
+      redirect: false,
+    });
+
+    return 'Success';
+
+
   } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return "Invalid credentials.";
-        default:
-          return "Something went wrong.";
-      }
-    }
-    throw error;
+    console.log(error);
+
+    return 'CredentialsSignin'
+
+
   }
 }
 
