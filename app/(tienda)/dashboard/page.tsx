@@ -1,5 +1,6 @@
-import { auth, getUser } from "@/auth";
+import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { getUser } from "@/lib/data";
 
 export default async function Home() {
 

@@ -1,5 +1,6 @@
 "use server"
 import prisma from "@/lib/prisma";
+import { User } from "./definitions";
 
 /**
  * Devuelve todos los Productos
@@ -107,7 +108,19 @@ export async function fetchProductsPages(query : string, productsOnPage = 1) {
   return totalPages;
 }
 
-
+export async function getUser(email: string): Promise<User | null> {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+    return user;
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+    throw new Error('Failed to fetch user.');
+  }
+}
 
 
 export async function fetchOrdersByUserId(userId: number) {
