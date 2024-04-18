@@ -47,16 +47,16 @@ export default function ProductCard({ product, id_user }: { product: Product, id
 
     return (
         <Card
-            className="m-4 max-w-80 min-w-80 max-h-96 min-h-96"
+            className="m-2 max-w-72 max-h-80"
             key={product.id}
         >
             <CardHeader>
                 <div className="flex justify-between">
                     <div>
-                        <CardTitle className="h-14 leading-relaxed line-clamp-2 text-balance">
+                        <CardTitle className="h-10 leading-relaxed line-clamp-2 text-balance">
                             <Link href={`catalogo/${product.id}`}>{product.name}</Link>
                         </CardTitle>
-                        <CardDescription className="h-16">
+                        <CardDescription className="h-10">
                             {product.description}
                         </CardDescription>
                     </div>
@@ -68,12 +68,12 @@ export default function ProductCard({ product, id_user }: { product: Product, id
                     </div>
                 </div>
             </CardHeader>
-            <CardContent className="h-36">
+            <CardContent className="h-24">
                 Imagen {/* TODO Añadir imagenes */}
                 <Input type="number" defaultValue={1} min={1} max={99} onChange={(e) => setQuantity(Number(e.target.value))}></Input>
             </CardContent>
             <CardFooter className="flex justify-between ">
-                <p>{product.price}€</p>
+                <p className="p-2 mr-2">{product.price}€</p>
                 <div className="flex gap-2 ">
                     {/* todo arreglar: como no existe el id user con el google auth no funciona con este */}
                     <>

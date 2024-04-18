@@ -37,8 +37,7 @@ export async function fetchProducts(currentPage: number = 1) {
  * @param currentPage 
  * @returns 
  */
-export async function fetchFilteredProducts(query: string, currentPage: number) {
-    const productsOnPage = 1; 
+export async function fetchFilteredProducts(query: string, currentPage: number, productsOnPage: number) {
     const productsToSkip = (currentPage - 1) * productsOnPage;
   
     const filteredProducts = await prisma.product.findMany({
@@ -53,6 +52,19 @@ export async function fetchFilteredProducts(query: string, currentPage: number) 
   
     return filteredProducts;
 }
+
+// export async function fetchFilteredProducts(query: string) {
+
+//   const filteredProducts = await prisma.product.findMany({
+//     where: {
+//       name: {
+//         contains: query, 
+//       },
+//     },
+//   });
+
+//   return filteredProducts;
+// }
 
 export async function countProducts(): Promise<number> {
   const productCount = await prisma.product.count();
@@ -92,7 +104,7 @@ export async function fetchProductsbyIDs(products_ids: Array<number> = [1]) {
  * @param productsOnPage 
  * @returns 
  */
-export async function fetchProductsPages(query : string, productsOnPage = 1) {
+export async function fetchProductsPages(query : string, productsOnPage: number ) {
   
   const totalProducts = await prisma.product.count({
     where: {
@@ -102,8 +114,16 @@ export async function fetchProductsPages(query : string, productsOnPage = 1) {
     },
   });
 
+  if (totalProducts === 0) {
+    return 1;
+  }
+
+
   // para asegurarse de incluir todas las páginas, incluso si la última página no está completa.
   const totalPages = Math.ceil(totalProducts / productsOnPage);
+
+
+  totalPages
 
   return totalPages;
 }
@@ -179,4 +199,10 @@ export async function fetchProductsByOrder(orderId: number) {
 
 export async function consolelog() {
   console.log("Hola");
+}
+
+
+export async function fetchAllCategories() {
+    const categories = await prisma.category.findMany();
+    return categories;
 }

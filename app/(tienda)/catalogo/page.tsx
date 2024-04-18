@@ -23,8 +23,8 @@ export default async function Home({
 }) {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-
-  const totalPages = await fetchProductsPages(query);
+  const productOnPage = 3;
+  const totalPages = await fetchProductsPages(query,productOnPage);
 
 
   //Recuperar el USERID
@@ -51,7 +51,7 @@ export default async function Home({
          <Search placeholder="Buscar productos..." />
       </div>
         <Suspense fallback={<SearchBarFallback />}>
-          <ProductsTable currentPage={currentPage} id_user={id_user} />
+          <ProductsTable currentPage={currentPage} id_user={id_user} query={query} />
         </Suspense>
       <div className="mt-5 flex w-full justify-center">
           <MyPagination totalPages={totalPages} currentPage={currentPage}></MyPagination>
