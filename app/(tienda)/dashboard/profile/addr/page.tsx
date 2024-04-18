@@ -1,4 +1,5 @@
-import { auth, getUser } from "@/auth";
+import { auth } from "@/auth";
+import { getUser } from "@/lib/data";
 import React from "react";
 
 import {

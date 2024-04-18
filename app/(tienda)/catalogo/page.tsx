@@ -4,7 +4,8 @@ import MyPagination from "@/components/utils/myPagination";
 
 import { Suspense } from 'react';
 import { fetchProductsPages } from '@/lib/data';
-import { auth, getUser } from "@/auth";
+import { auth } from "@/auth";
+import { getUser } from "@/lib/data";
 // import { addUserGoogle } from "@/lib/actionscommands";
 
 export const metadata = {

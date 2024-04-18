@@ -1,7 +1,7 @@
 import { Order, Invoice } from "@/lib/definitions"
 import { columns } from "./columns"
-import { auth, getUser } from "@/auth";
-
+import { auth } from "@/auth";
+import { getUser } from "@/lib/data";
 import { DataTable } from "./data-table"
 import { fetchOrdersByUserId, fetchInvoicesByUserId } from "@/lib/data";
 import OrderTable from "@/components/ui/OrderTable";

@@ -51,7 +51,7 @@ export const authConfig: NextAuthConfig = {
     },
     providers: [
       Credentials({
-        async authorize(credentials,req) {
+        async authorize(credentials) {
           const parsedCredentials = z
             .object({ email: z.string().email(), password: z.string().min(6) })
             .safeParse(credentials);
@@ -73,17 +73,6 @@ export const authConfig: NextAuthConfig = {
         },
       })
       ,
-      // Credentials({
-      //   credentials: {
-      //     username: { label: "Username" },
-      //     password: { label: "Password", type: "password" },
-      //   },
-      //   async authorize({ request }) {
-      //     const response = await fetch(request)
-      //     if (!response.ok) return null
-      //     return (await response.json()) ?? null
-      //   },
-      // }),
       GoogleProvider({
         clientId: process.env.AUTH_GOOGLE_ID as string,
         clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
