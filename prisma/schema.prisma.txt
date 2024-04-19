@@ -37,8 +37,6 @@ model ProductImage {
 
 model User {
   emailVerified DateTime?
-  role          Role      @default(user)
-  image         String?
 
   address UserAddress?
 
