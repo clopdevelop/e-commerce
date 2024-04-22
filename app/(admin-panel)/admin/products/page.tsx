@@ -5,11 +5,13 @@ import { Product } from "@/lib/definitions";
 
 
 export default async function admin() {
-  const Products:Product[] = await fetchAllProducts();
-  
+  const Products: Product[] = await fetchAllProducts();
 
-    return (
-        // <EmptyInventory></EmptyInventory>
-        <Inventory products={Products}></Inventory>
-    )
+
+  return (
+    // <EmptyInventory></EmptyInventory>
+    <main className="flex flex-col items-center justify-between p-24">
+      <Inventory products={Products}></Inventory>
+    </main>
+  )
 }
