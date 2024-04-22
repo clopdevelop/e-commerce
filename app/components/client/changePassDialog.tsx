@@ -12,7 +12,7 @@ import { Input } from "@/components/shadcn/input"
 import { Label } from "@/components/shadcn/label"
 import Link from "next/link"
 
-export function DialogDemo() {
+export function ChangePassDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
