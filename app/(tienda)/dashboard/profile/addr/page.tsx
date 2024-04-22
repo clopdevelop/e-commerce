@@ -12,6 +12,7 @@ import {
 } from "@/components/shadcn/card";
 import UserAddressDialog from "@/components/client/UserAddressDialog";
 import AddressConfig from "@/components/client/AddressConfig";
+import { AddressForm } from "@/components/form/AddressForm";
 
 export default async function Home() {
   const authentication = await auth();

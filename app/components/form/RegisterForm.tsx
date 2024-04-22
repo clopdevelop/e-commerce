@@ -61,9 +61,6 @@ export function ProfileForm() {
     addUser(formData);
   }
 
-  function handlerClick(){
-
-  }
 
   return (
     <div className="w-full max-w-sm rounded-xl border shadow">

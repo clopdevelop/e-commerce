@@ -32,19 +32,6 @@ CREATE TABLE "Country" (
 );
 
 -- CreateTable
-CREATE TABLE "User" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "phone" TEXT,
-    "password" TEXT NOT NULL,
-    "id_address" INTEGER,
-    "postcode" TEXT,
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "User_id_address_fkey" FOREIGN KEY ("id_address") REFERENCES "Address" ("id_address") ON DELETE SET NULL ON UPDATE CASCADE
-);
-
--- CreateTable
 CREATE TABLE "Product" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "code" TEXT,
@@ -59,14 +46,21 @@ CREATE TABLE "Product" (
     "id_provider" INTEGER,
     "id_category" INTEGER,
     CONSTRAINT "Product_id_provider_fkey" FOREIGN KEY ("id_provider") REFERENCES "Provider" ("id_provider") ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT "Product_id_category_fkey" FOREIGN KEY ("id_category") REFERENCES "Category" ("id_category") ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT "Product_id_category_fkey" FOREIGN KEY ("id_category") REFERENCES "Category" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "ProductImage" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "url" TEXT NOT NULL,
+    "id_product" INTEGER NOT NULL,
+    CONSTRAINT "ProductImage_id_product_fkey" FOREIGN KEY ("id_product") REFERENCES "Product" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "Category" (
-    "id_category" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL,
-    "state" TEXT
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -93,15 +87,15 @@ CREATE TABLE "Order" (
     "discount" REAL NOT NULL DEFAULT 0,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "id_user" INTEGER NOT NULL,
-    "delivery_type" TEXT NOT NULL,
+    "id_delivery_type" INTEGER NOT NULL,
     CONSTRAINT "Order_id_user_fkey" FOREIGN KEY ("id_user") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Order_delivery_type_fkey" FOREIGN KEY ("delivery_type") REFERENCES "DeliveryType" ("delivery_type") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "Order_id_delivery_type_fkey" FOREIGN KEY ("id_delivery_type") REFERENCES "DeliveryType" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "DeliveryType" (
-    "id_delivery" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "delivery_type" TEXT NOT NULL
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -117,22 +111,89 @@ CREATE TABLE "OrderItem" (
 
 -- CreateTable
 CREATE TABLE "Invoice" (
-    "id_invoice" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "invoice_n" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "id_order" INTEGER NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "amount" REAL NOT NULL,
     "state" TEXT NOT NULL,
-    "id_p_method" INTEGER NOT NULL,
+    "id_payment_method" INTEGER NOT NULL,
     CONSTRAINT "Invoice_id_order_fkey" FOREIGN KEY ("id_order") REFERENCES "Order" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Invoice_id_p_method_fkey" FOREIGN KEY ("id_p_method") REFERENCES "PaymentMethod" ("id_p_method") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "Invoice_id_payment_method_fkey" FOREIGN KEY ("id_payment_method") REFERENCES "PaymentMethod" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "PaymentMethod" (
-    "id_p_method" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "payment_method" TEXT NOT NULL
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "User" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "emailVerified" DATETIME,
+    "image" TEXT,
+    "role" TEXT NOT NULL DEFAULT 'user',
+    "phone" TEXT,
+    "password" TEXT NOT NULL,
+    "id_address" INTEGER,
+    "postcode" TEXT,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "User_id_address_fkey" FOREIGN KEY ("id_address") REFERENCES "Address" ("id_address") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Account" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "userId" INTEGER NOT NULL,
+    "type" TEXT NOT NULL,
+    "provider" TEXT NOT NULL,
+    "providerAccountId" TEXT NOT NULL,
+    "refresh_token" TEXT,
+    "access_token" TEXT,
+    "expires_at" INTEGER,
+    "token_type" TEXT,
+    "scope" TEXT,
+    "id_token" TEXT,
+    "session_state" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Session" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "sessionToken" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "expires" DATETIME NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "VerificationToken" (
+    "identifier" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "expires" DATETIME NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Authenticator" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "credentialID" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "providerAccountId" TEXT NOT NULL,
+    "credentialPublicKey" TEXT NOT NULL,
+    "counter" INTEGER NOT NULL,
+    "credentialDeviceType" TEXT NOT NULL,
+    "credentialBackedUp" BOOLEAN NOT NULL,
+    "transports" TEXT,
+    CONSTRAINT "Authenticator_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex
@@ -142,16 +203,28 @@ CREATE UNIQUE INDEX "Province_iso_code_key" ON "Province"("iso_code");
 CREATE UNIQUE INDEX "Country_iso_code_key" ON "Country"("iso_code");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Order_code_key" ON "Order"("code");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "DeliveryType_delivery_type_key" ON "DeliveryType"("delivery_type");
+CREATE UNIQUE INDEX "DeliveryType_name_key" ON "DeliveryType"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Invoice_invoice_n_key" ON "Invoice"("invoice_n");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Authenticator_credentialID_key" ON "Authenticator"("credentialID");
