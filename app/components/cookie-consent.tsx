@@ -4,6 +4,8 @@ import { CookieIcon } from "lucide-react";
 import { Button } from "./shadcn/button";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogTrigger } from "./shadcn";
+import { DemoCookieSettings } from "./cookie-settings";
 
 
 export default function CookieConsent({ demo = false, onAcceptCallback = () => { }, onDeclineCallback = () => { } }) {
@@ -49,22 +51,41 @@ export default function CookieConsent({ demo = false, onAcceptCallback = () => {
             <div className="bg-secondary rounded-md m-2">
                 <div className="grid gap-2">
                     <div className="border-b border-border h-14 flex items-center justify-between p-4">
-                        <h1 className="text-lg font-medium">We use cookies</h1>
+                        <h1 className="text-lg font-medium">Usamos cookies</h1>
                         <CookieIcon className="h-[1.2rem] w-[1.2rem]" />
                     </div>
                     <div className="p-4">
                         <p className="text-sm font-normal">
-                            We use cookies to ensure you get the best experience on our website. For more information on how we use cookies, please see our cookie policy.
+                            Utilizamos cookies para garantizar que obtenga la mejor experiencia en nuestro sitio web. Para obtener más información sobre cómo utilizamos las cookies, consulte nuestra política de cookies.
                             <br />
                             <br />
-                            <span className="text-xs">By clicking "<span className="font-medium opacity-80">Accept</span>", you agree to our use of cookies.</span>
+                            <span className="text-xs">Al hacer clic en "<span className="font-medium opacity-80">Aceptar</span>", acepta nuestro uso de cookies. Puedes pullsar en "Configurar" para personalizar las cookies.
+                            </span>
                             <br />
-                            <a href="#" className="text-xs underline">Learn more.</a>
+                            <a href="#" className="text-xs underline">Leer más.</a>
                         </p>
                     </div>
                     <div className="flex gap-2 p-4 py-5 border-t border-border bg-background/20">
-                        <Button onClick={accept} className="w-full">Accept</Button>
-                        <Button onClick={decline} className="w-full" variant="secondary">Decline</Button>
+                        <Button onClick={accept} className="w-full">Aceptar</Button>
+                        <Button onClick={decline} className="w-full" variant="secondary">Rechazar</Button>
+                        <Dialog>
+                            <DialogTrigger>
+                                {/* todo Poner el boton da error */}
+                                {/* <Button className="w-full" variant="secondary">Configurar</Button> */}
+                                Config
+                            </DialogTrigger>
+                            <DialogContent>
+                                {/* <DialogHeader>
+                                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                    <DialogDescription>
+                                        This action cannot be undone. This will permanently delete your account
+                                        and remove your data from our servers.
+                                    </DialogDescription>
+                                </DialogHeader> */}
+                                <DemoCookieSettings></DemoCookieSettings>
+                            </DialogContent>
+                        </Dialog>
+
                     </div>
                 </div>
             </div>
