@@ -29,7 +29,7 @@ export default async function ProductsTable({
         </div>
         <div className="grid grid-cols-2 gap-2">
           {Products.map((product) => (
-            <ProductCard key={product.id} product={product} id_user={id_user}></ProductCard>
+            <ProductCard product={product} id_user={id_user}></ProductCard>
           ))}
         </div>
       </div>

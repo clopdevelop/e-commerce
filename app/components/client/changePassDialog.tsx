@@ -22,21 +22,27 @@ export function DialogDemo() {
         <DialogHeader>
           <DialogTitle>Cambiar Contraseña</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+          Realiza el cambio en tu contraseña. Haz clic en Guardar cuando hayas terminado.          
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
+            <Label htmlFor="actual" className="text-right">
               Contraseña actual
             </Label>
-            <Input id="name" value="" className="col-span-3" />
+            <Input id="actual" type="password" className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="new_pass" className="text-right">
               Nueva Contraseña
             </Label>
-            <Input id="new_pass" value="" className="col-span-3" />
+            <Input id="new_pass"  type="password" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="new_pass" className="text-right">
+              Confirmar Contraseña
+            </Label>
+            <Input id="new_pass"  type="password" className="col-span-3" />
           </div>
           <div className="text-center text-sm">
             ¿Has olvidado la contraseña? {"     "}

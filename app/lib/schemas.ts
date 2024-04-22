@@ -62,6 +62,7 @@ export const addProductSchema = z.object({
   provider: z.number().nullable().optional(),
   category: z.number().nullable().optional(),
   thumbnail: z.string().nullable().optional(),
+  image: z.any(),
   price: z.number(),
   discount: z.number().nullable().optional(),
   stock: z.number(),
