@@ -28,6 +28,12 @@ export type Product = {
   category?: Category | null;
   id_category?: number | null;
   OrderItem?: OrderItem[];
+  ProductImage?: ProductImage[];
+}
+
+export type ProductImage = {
+  id: number;
+  url: string;
 }
 
 export type Category = {
@@ -128,4 +134,5 @@ export type CartItem = {
   name: string;
   unit_price: number;
   quantity: number;
+  image: string;
 };

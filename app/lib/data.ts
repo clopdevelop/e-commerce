@@ -12,6 +12,7 @@ export async function fetchAllProducts() {
   // await new Promise((resolve) => setTimeout(resolve,3000));
 
   const Products = await prisma.product.findMany({
+    include: { ProductImage: true },
   });
 
   return Products;
@@ -46,6 +47,7 @@ export async function fetchFilteredProducts(query: string, currentPage: number, 
           contains: query, 
         },
       },
+      include: { ProductImage: true },
       take: productsOnPage,
       skip: productsToSkip, 
     });
@@ -75,7 +77,8 @@ export async function fetchProduct(id: number) {
   const Product = await prisma.product.findFirst({
     where: {
       id : id
-    }
+    },
+    include: { ProductImage: true },
   }
   );
 

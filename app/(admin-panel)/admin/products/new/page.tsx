@@ -125,10 +125,11 @@ export default function NewProductPage() {
                                     <FormLabel>Nombre</FormLabel>
                                     <FormControl>
                                       <Input
+                                      {...field}
                                         id="name"
                                         type="text"
                                         className="w-full"
-                                        {...field} />
+                                         />
                                     </FormControl>
                                   </FormItem>
                                 )}
@@ -144,9 +145,10 @@ export default function NewProductPage() {
                                     <FormLabel>Descripción</FormLabel>
                                     <FormControl>
                                       <Textarea
+                                       {...field}
                                         id="description"
                                         className="min-h-32"
-                                        {...field}/>
+                                       />
                                     </FormControl>
                                   </FormItem>
                                 )}
@@ -194,10 +196,11 @@ export default function NewProductPage() {
                                         {/* <FormLabel>Name</FormLabel> */}
                                         <FormControl>
                                           <Input
+                                           {...field}
                                             id="stock"
                                             type="number"
                                             className="w-full"
-                                            {...field} />
+                                            />
                                         </FormControl>
                                       </FormItem>
                                     )}
@@ -220,10 +223,11 @@ export default function NewProductPage() {
                                         {/* <FormLabel>Name</FormLabel> */}
                                         <FormControl>
                                           <Input
+                                           {...field}
                                             id="price"
                                             type="number"
                                             className="w-full"
-                                            {...field} />
+                                            />
                                         </FormControl>
                                       </FormItem>
                                     )}
@@ -389,7 +393,6 @@ export default function NewProductPage() {
                               <FormField
                                 control={form.control}
                                 {...form.register("image")}
-                                defaultValue=""
                                 render={({ field }) => (
                                   <FormItem>
                                     <FormControl>
@@ -398,11 +401,12 @@ export default function NewProductPage() {
                                         <span className="sr-only">Upload</span>
                                       </button> */}
                                       <Input
+                                        {...field}
                                         id="image"
                                         type="file"
                                         className="w-auto max-w-52"
+                                        accept="image/jpeg"
                                         src={file ? URL.createObjectURL(file) : undefined} // Verifica si file es null antes de llamar a createObjectURL
-                                        {...field}
                                         onChange={(e) => {
                                           if (e.target.files && e.target.files.length > 0) {
                                             setFile(e.target.files[0]);

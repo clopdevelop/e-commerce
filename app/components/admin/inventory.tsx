@@ -72,13 +72,15 @@ export default async function Inventory({ products }: { products: Product[] }) {
             {products.map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="hidden sm:table-cell">
-                  <Image
-                    alt="Product image"
-                    className="aspect-square rounded-md object-cover"
-                    height="64"
-                    src="/placeholder.svg"
-                    width="64"
-                  />
+                  {product.ProductImage && product.ProductImage[0] && (
+                    <Image
+                      alt="Product image"
+                      className="aspect-square rounded-md object-cover"
+                      height="100"
+                      src={product.ProductImage[0].url ?? ''}
+                      width="100"
+                    />
+                  )}
                 </TableCell>
                 <TableCell className="font-medium">
                   {product.name}

@@ -108,7 +108,7 @@ import path from "path";
 cloudinary.config({ 
   cloud_name: 'denq9j9dq', 
   api_key: '135212156196912', 
-  api_secret: '' 
+  api_secret: process.env.CLOUDINARY_API_KEY
 });
 
 export async function addProduct(formData: FormData) {
@@ -127,6 +127,9 @@ export async function addProduct(formData: FormData) {
     
     const { name, price, description, stock, image } = addProductSchema.parse(rawFormData)
 
+    console.log(image);
+    
+
     const bytes = await image.arrayBuffer()
     const buffer = Buffer.from(bytes)
 
@@ -142,9 +145,14 @@ export async function addProduct(formData: FormData) {
         price: Number(price),
         description: description,
         stock: Number(stock),
-
+        ProductImage: {
+          create: {
+            url: cloud.url
+          }
+        }
       },
     });
+    
   } catch (err) {
     console.log(err);
   }
@@ -288,12 +296,14 @@ export async function deleteProductonClick(product:{id_product: number}) {
     throw error;
   }
 }
+
 import { EmailTemplate } from '@/components/contact/email-template';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function enviarEmail(formData: { name: string; email: string; text: string; }) {
+const resend = new Resend(process.env.RESEND_API_KEY);
+
   const firstName = formData.name ?? '';
   const email = formData.email ?? '';
   const text = formData.text ?? '';

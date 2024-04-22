@@ -4,10 +4,11 @@ import { Button } from "../shadcn/button";
 import { Input } from "../shadcn/input";
 import { Separator } from "../shadcn/separator";
 import { useCart } from "@/context/CartProvider";
+import Image from "next/image";
 
 function Cart() {
   const cart = useCart();
-  const { items: products , removeItem, updateItemQuantity } = cart || {};
+  const { items: products, removeItem, updateItemQuantity } = cart || {};
   const [productQuantities, setProductQuantities] = useState<number[]>(
     products.map(() => 1)
   );
@@ -23,41 +24,44 @@ function Cart() {
       updateItemQuantity(products[index].id, value);
     }
   };
+  console.log(products);
 
   return (
     <>
-      {products.map((item, index) => (
-        <div key={item.id}>
+      {products.map((product, index) => (
+        <div key={product.id}>
           <div className="flex items-center gap-4">
-            <img
-              alt="Thumbnail"
-              className="aspect-square rounded-md overflow-hidden object-cover bg-white"
-              height="100"
-              src="/placeholder.svg"
-              width="100"
-            />
+            {product.image &&
+              <Image
+                alt="Product image"
+                className="aspect-square rounded-md object-cover"
+                height="100"
+                src={product.image}
+                width="100"
+              />
+            }
             <div className="grid gap-1.5">
               <h3 className="font-semibold text-sm leading-none">
-                {item.name}
+                {product.name}
               </h3>
               <div className="flex items-center gap-2 text-sm">
-                <span className="font-semibold">{item.unit_price}€</span>
+                <span className="font-semibold">{product.unit_price}€</span>
                 <span className="text-gray-500 dark:text-gray-400">
-                  x {item.quantity}
+                  x {product.quantity}
                 </span>
               </div>
               <div className="flex items-center gap-4">
                 {removeItem && (
                   <Button
                     variant="destructive"
-                    onClick={() => removeItem(item.id)}
+                    onClick={() => removeItem(product.id)}
                   >
                     Eliminar
                   </Button>
                 )}
                 <Input
                   className="w-16"
-                  defaultValue={item.quantity}
+                  defaultValue={product.quantity}
                   type="number"
                   min={1}
                   max={99}

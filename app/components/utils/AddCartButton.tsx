@@ -35,6 +35,7 @@ export default function AddCartButton({
         name: product.name,
         unit_price: product.price,
         quantity: quantity,
+        image: product.ProductImage?.[0].url ?? ''
       };
       
       addItem(newItem, quantity);

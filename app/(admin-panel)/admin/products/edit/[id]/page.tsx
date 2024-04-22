@@ -71,7 +71,7 @@ interface Props {
 
   export default async function EditPage({ params }: Props) {
   const product: Product | null = await fetchProduct(Number(params.id))
-
+  
   return (
     <EditProductForm product={product}></EditProductForm>
   )
