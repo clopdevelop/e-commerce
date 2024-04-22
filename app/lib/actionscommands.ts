@@ -101,8 +101,18 @@ export async function signInGoogle(){
 //   }
 // }
 
+import {v2 as cloudinary} from 'cloudinary';
+import { writeFile } from "fs";
+import path from "path";
+          
+cloudinary.config({ 
+  cloud_name: 'denq9j9dq', 
+  api_key: '135212156196912', 
+  api_secret: '' 
+});
 
 export async function addProduct(formData: FormData) {
+  await sleep(3)
   try {
     // const rawFormData = Object.fromEntries(formData.entries());
 
@@ -111,10 +121,20 @@ export async function addProduct(formData: FormData) {
       price: Number(formData.get("price")),
       description: formData.get("description"),
       stock: Number(formData.get("stock")),
+      image: formData.get("image")
     };
     
     
-    const { name, price, description, stock } = addProductSchema.parse(rawFormData)
+    const { name, price, description, stock, image } = addProductSchema.parse(rawFormData)
+
+    const bytes = await image.arrayBuffer()
+    const buffer = Buffer.from(bytes)
+
+    const filePath = path.join(process.cwd(), 'public', image.name)
+    await writeFile(filePath, buffer,() => {return 0})
+
+    const cloud = await cloudinary.uploader.upload(filePath)
+    
 
     const newProduct = await prisma.product.create({
       data: {
@@ -122,6 +142,7 @@ export async function addProduct(formData: FormData) {
         price: Number(price),
         description: description,
         stock: Number(stock),
+
       },
     });
   } catch (err) {
@@ -265,5 +286,36 @@ export async function deleteProductonClick(product:{id_product: number}) {
   } catch (error) {
     console.error("Error al eliminar el producto:", error);
     throw error;
+  }
+}
+import { EmailTemplate } from '@/components/contact/email-template';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export async function enviarEmail(formData: { name: string; email: string; text: string; }) {
+  const firstName = formData.name ?? '';
+  const email = formData.email ?? '';
+  const text = formData.text ?? '';
+  
+  try {
+    const emailContent = EmailTemplate({ firstName: firstName, email: text, text: text });
+    
+    const formDataToSend = new FormData();
+    formDataToSend.append('name', firstName);
+    formDataToSend.append('email', email);
+    formDataToSend.append('text', text);
+    
+    const data = await resend.emails.send({
+      from: 'Acme <onboarding@resend.dev>',
+      to: ["yakiiloop@gmail.com"],
+      subject: text,
+      react: emailContent,
+      text: ''
+    });
+
+    return { message: "Email enviado" };
+  } catch (error) {
+    return { mensaje: "Error al enviar: ", error };
   }
 }

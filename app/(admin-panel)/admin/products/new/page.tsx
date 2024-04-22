@@ -61,6 +61,7 @@ import { useForm } from "react-hook-form"
 import { useState } from "react"
 import { addProduct } from "@/lib/actionscommands"
 import Image from "next/image"
+import { useFormStatus } from "react-dom"
 export default function NewProductPage() {
   const form = useForm()
 
@@ -74,6 +75,8 @@ export default function NewProductPage() {
   };
 
   const [file, setFile] = useState<File | null>(null);
+
+
 
   return (
 
@@ -99,8 +102,7 @@ export default function NewProductPage() {
                       <Button variant="outline" size="sm">
                         Discard
                       </Button>
-                      <Button type="submit" size="sm">Save Product</Button>
-                    </div>
+                      <LoginButton></LoginButton>                    </div>
                   </div>
                   <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
                     <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
@@ -404,7 +406,6 @@ export default function NewProductPage() {
                                         onChange={(e) => {
                                           if (e.target.files && e.target.files.length > 0) {
                                             setFile(e.target.files[0]);
-                                            console.log(e.target.files[0])
                                           }
                                         }}
                                       />
@@ -442,8 +443,7 @@ export default function NewProductPage() {
                     <Button variant="outline" size="sm">
                       Discard
                     </Button>
-                    <Button size="sm">Save Product</Button>
-                  </div>
+                    <LoginButton></LoginButton>                  </div>
                 </div>
               </main>
             </div>
@@ -456,4 +456,19 @@ export default function NewProductPage() {
       </div>
     </>
   )
+}
+
+
+function LoginButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      type="submit"
+      size='sm'
+      disabled={pending}
+    >
+    {pending ? "Creando Producto..." : "Crear Producto"}
+    </Button>
+  );
 }
