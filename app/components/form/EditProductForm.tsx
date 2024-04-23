@@ -59,7 +59,7 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, useFormField } from "@/components/shadcn/form"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
-import { addProduct } from "@/lib/actionscommands"
+import { editProduct } from "@/lib/actionscommands"
 import Image from "next/image"
 import { Product } from "@/lib/definitions"
 
@@ -83,12 +83,13 @@ import { Product } from "@/lib/definitions"
 
     <>
       <Form {...form}>
-        <form action={addProduct} className="space-y-8">
+        <form action={editProduct} className="space-y-8">
           <div className="flex min-h-screen w-full flex-col">
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
               <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
                 <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
                   <div className="flex items-center gap-4">
+                    <input type="hidden" name="id_product" value={product.id} />
                     <Button variant="outline" size="icon" className="h-7 w-7">
                       <ChevronLeft className="h-4 w-4" />
                       <span className="sr-only">Back</span>
@@ -120,18 +121,18 @@ import { Product } from "@/lib/definitions"
                             <div className="grid gap-3">
                               <FormField
                                 control={form.control}
-                                defaultValue=""
+                                defaultValue={product.name}
                                 {...form.register("name")}
                                 render={({ field }) => (
                                   <FormItem>
                                     <FormLabel>Nombre</FormLabel>
                                     <FormControl>
                                       <Input
+                                        {...field} 
                                         id="name"
                                         type="text"
                                         className="w-full"
-                                        defaultValue={product.name}
-                                        {...field} />
+                                        />
                                     </FormControl>
                                   </FormItem>
                                 )}
@@ -140,17 +141,17 @@ import { Product } from "@/lib/definitions"
                             <div className="grid gap-3">
                               <FormField
                                 control={form.control}
-                                defaultValue=""
                                 {...form.register("description")}
                                 render={({ field }) => (
                                   <FormItem>
                                     <FormLabel>Descripción</FormLabel>
                                     <FormControl>
                                       <Textarea
+                                        {...field}
                                         id="description"
                                         className="min-h-32"
                                         defaultValue={product.description ?? ''}
-                                        {...field}/>
+                                        />
                                     </FormControl>
                                   </FormItem>
                                 )}
@@ -191,18 +192,18 @@ import { Product } from "@/lib/definitions"
                                     defaultValue="" /> */}
                                   <FormField
                                     control={form.control}
-                                    defaultValue=""
                                     {...form.register("stock")}
                                     render={({ field }) => (
                                       <FormItem>
                                         {/* <FormLabel>Name</FormLabel> */}
                                         <FormControl>
                                           <Input
+                                            {...field} 
                                             id="stock"
                                             type="number"
                                             className="w-full"
                                             defaultValue={product.stock}
-                                            {...field} />
+                                            />
                                         </FormControl>
                                       </FormItem>
                                     )}
@@ -218,17 +219,17 @@ import { Product } from "@/lib/definitions"
                                     defaultValue="" /> */}
                                   <FormField
                                     control={form.control}
-                                    defaultValue=""
                                     {...form.register("price")}
                                     render={({ field }) => (
                                       <FormItem>
                                         <FormControl>
                                           <Input
+                                            {...field} 
                                             id="price"
                                             type="number"
                                             className="w-full"
                                             defaultValue={product.price}
-                                            {...field} />
+                                            />
                                         </FormControl>
                                       </FormItem>
                                     )}
@@ -403,11 +404,11 @@ import { Product } from "@/lib/definitions"
                                         <span className="sr-only">Upload</span>
                                       </button> */}
                                       <Input
+                                        {...field}
                                         id="image"
                                         type="file"
                                         className="w-auto max-w-52"
                                         src={file ? URL.createObjectURL(file) : undefined} // Verifica si file es null antes de llamar a createObjectURL
-                                        {...field}
                                         onChange={(e) => {
                                           if (e.target.files && e.target.files.length > 0) {
                                             setFile(e.target.files[0]);

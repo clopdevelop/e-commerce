@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import Stripe from "stripe";
-import { addProductSchema } from "./schemas";
+import { addProductSchema, editProductSchema } from "./schemas";
 import { sleep } from "./utils";
 
 /**
@@ -102,7 +102,7 @@ export async function signInGoogle(){
 // }
 
 import {v2 as cloudinary} from 'cloudinary';
-import { writeFile } from "fs";
+import { writeFile, unlink } from "fs";
 import path from "path";
           
 cloudinary.config({ 
@@ -134,29 +134,69 @@ export async function addProduct(formData: FormData) {
     const buffer = Buffer.from(bytes)
 
     const filePath = path.join(process.cwd(), 'public', image.name)
-    await writeFile(filePath, buffer,() => {return 0})
+    await writeFile(filePath, buffer, async (err) => {
+      if (err) {
+        console.error('Hubo un error al escribir el archivo:', err);
+      } else {
+        console.log('Archivo escrito con éxito');
+      const cloud = await cloudinary.uploader.upload(filePath)
 
-    const cloud = await cloudinary.uploader.upload(filePath)
-    
+      await unlink(filePath,(err)=>{err ? console.log('Hubo un error al eliminar el archivo'):'';
+      })
 
-    const newProduct = await prisma.product.create({
-      data: {
-        name: name,
-        price: Number(price),
-        description: description,
-        stock: Number(stock),
-        ProductImage: {
-          create: {
-            url: cloud.url
+      if(cloud){
+        await unlink(filePath,() => {return 0})
+      }
+  
+      const newProduct = await prisma.product.create({
+        data: {
+          name: name,
+          price: Number(price),
+          description: description,
+          stock: Number(stock),
+          ProductImage: {
+            create: {
+              url: cloud.url
+            }
           }
-        }
-      },
+        },
+      });
+      }
     });
     
   } catch (err) {
     console.log(err);
   }
 }
+
+//todo Revalidar los datos
+export async function editProduct(formData: FormData) {
+  await sleep(3)
+  try {
+    const rawFormData = {
+      id_product: Number(formData.get("id_product")),
+      name: formData.get("name"),
+      price: Number(formData.get("price")),
+      description: formData.get("description"),
+      stock: Number(formData.get("stock")),
+    };
+
+    const { id_product, name, price, description, stock } = editProductSchema.parse(rawFormData)
+
+        const updatedProduct = await prisma.product.update({
+          where: { id: id_product },
+          data: {
+            name: name,
+            price: Number(price),
+            description: description,
+            stock: Number(stock),
+          },
+        });
+      }catch(err){
+        console.log(err);
+      }
+    }
+
 
 // export async function addOrder(session: Stripe.Checkout.Session, lineItems: Stripe.LineItem[]) {
 //   const { amount_total, status, metadata } = session;
@@ -274,6 +314,14 @@ export async function deleteProduct(formData: FormData) {
   const data = formData.get("id_product");
   const id_product = Number(data);
   try {
+    const deletedProductImages = await prisma.productImage.deleteMany({
+      where: { id_product: id_product },
+    });
+    
+    const deletedOrderItems = await prisma.orderItem.deleteMany({
+      where: { id_product: id_product },
+    });
+    
     const deletedProduct = await prisma.product.delete({
       where: { id:id_product },
     });
