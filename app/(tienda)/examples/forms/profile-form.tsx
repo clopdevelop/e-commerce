@@ -26,6 +26,7 @@ import {
 } from "@/components/shadcn/select";
 import { Textarea } from "@/components/shadcn/textarea";
 import { toast } from "@/components/shadcn/use-toast";
+import { ChangePassDialog } from "@/components/client/changePassDialog";
 
 const profileFormSchema = z.object({
   username: z
@@ -152,7 +153,7 @@ export function ProfileForm() {
             </FormItem>
           )}
         />
-        <div>
+        {/* <div>
           {fields.map((field, index) => (
             <FormField
               control={form.control}
@@ -183,6 +184,12 @@ export function ProfileForm() {
           >
             Add URL
           </Button>
+        </div>
+         */}
+         <div>
+           <h1>Cambiar la contraseña</h1>
+           <h2>Pulsa aquí para cambiar la contraseña</h2>
+            <ChangePassDialog />
         </div>
         <Button type="submit">Update profile</Button>
       </form>
