@@ -1,57 +1,24 @@
+import { Separator } from "@/components/shadcn/separator";
+import { ProfileForm } from "./profile-form";
 import { auth } from "@/auth";
-import { getUser } from "@/lib/data";
-import React from "react";
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/shadcn/card";
-import { ChangePassDialog } from "@/components/client/changePassDialog";
-import UserAddressDialog from "@/components/client/UserAddressDialog";
-import EmailConfig from "@/components/client/EmailConfig";
+import { User } from "@/lib/definitions";
 
 
-export default async function Home() {
-  const authentication = await auth();
-  const user = String(authentication?.user?.email);
-  const completeUser = await getUser(user);
-  
+export default async function SettingsProfilePage() {
+  // todo averiguar si esto se guarda en caché
+  const authentication = await auth()
+  const user : User  = authentication?.user 
 
   return (
-    <>
-      {completeUser ? (
-        <>
-          <div className="grid gap-6">
-            <EmailConfig></EmailConfig>
-            <Card x-chunk="dashboard-04-chunk-1">
-              <CardHeader>
-                <CardTitle>Contraseña</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ChangePassDialog></ChangePassDialog>
-              </CardContent>
-            </Card>
-            <Card x-chunk="dashboard-04-chunk-1">
-              <CardHeader>
-                <CardTitle>Dirección de envío</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <UserAddressDialog></UserAddressDialog>
-              </CardContent>
-            </Card>
-          </div>
-        </>
-      ) : (
-        <>
-          <h2>
-            Para configurar tus datos debes accerlo en tu cuenta de Google
-          </h2>
-        </>
-      )}
-    </>
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-medium">Perfil</h3>
+        <p className="text-sm text-muted-foreground">
+          Este es tu perfil que podrán ver otros usuarios.
+        </p>
+      </div>
+      <Separator />
+      <ProfileForm user={user} />
+    </div>
   );
 }
