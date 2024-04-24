@@ -34,6 +34,7 @@ export default async function Home({
   const id_user = Number(completeUser?.id)
 
 // Todo utilizar esta funcion para guardrar el usario de google en la base de datos
+// ? El problema es que no funciona el adaptador de prisma
   // if(user==='cristianlogo6@gmail.com' && authentication !=null){
   //   addUserGoogle(authentication)
   // }

@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/shadcn/card";
-import { DialogDemo } from "@/components/client/changePassDialog";
+import { ChangePassDialog } from "@/components/client/changePassDialog";
 import UserAddressDialog from "@/components/client/UserAddressDialog";
 import EmailConfig from "@/components/client/EmailConfig";
 
@@ -32,7 +32,7 @@ export default async function Home() {
                 <CardTitle>Contraseña</CardTitle>
               </CardHeader>
               <CardContent>
-                <DialogDemo></DialogDemo>
+                <ChangePassDialog></ChangePassDialog>
               </CardContent>
             </Card>
             <Card x-chunk="dashboard-04-chunk-1">

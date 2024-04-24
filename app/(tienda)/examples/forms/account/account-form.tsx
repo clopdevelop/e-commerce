@@ -1,4 +1,5 @@
 "use client";
+import AddressConfig from "@/components/client/AddressConfig";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon, CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
@@ -32,6 +33,9 @@ import {
   PopoverTrigger,
 } from "@/components/shadcn/popover";
 import { toast } from "@/components/shadcn/use-toast";
+import { Label } from "@/components/shadcn";
+import { ChangePassDialog } from "@/components/client/changePassDialog";
+import { User } from "@/lib/definitions";
 
 const languages = [
   { label: "English", value: "en" },
@@ -60,6 +64,9 @@ const accountFormSchema = z.object({
   language: z.string({
     required_error: "Please select a language.",
   }),
+  email: z.string({
+    required_error: "Please select a language.",
+  })
 });
 
 type AccountFormValues = z.infer<typeof accountFormSchema>;
@@ -70,7 +77,11 @@ const defaultValues: Partial<AccountFormValues> = {
   // dob: new Date("2023-01-23"),
 };
 
-export function AccountForm() {
+interface Props {
+  user: User;
+}
+
+export function AccountForm({user}:Props) {
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     defaultValues,
@@ -95,19 +106,18 @@ export function AccountForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Nombre</FormLabel>
               <FormControl>
-                <Input placeholder="Your name" {...field} />
+                <Input placeholder={"usuario.name"} {...field} />
               </FormControl>
               <FormDescription>
-                This is the name that will be displayed on your profile and in
-                emails.
+                Este es tu nombre real.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name="dob"
           render={({ field }) => (
@@ -150,8 +160,8 @@ export function AccountForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
-        <FormField
+        /> */}
+        {/* <FormField
           control={form.control}
           name="language"
           render={({ field }) => (
@@ -211,8 +221,42 @@ export function AccountForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
-        <Button type="submit">Update account</Button>
+        /> */}
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+                  <Input placeholder={user.email} />
+              <FormDescription>
+                Puedes modificar tu email
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+          />
+        <div>
+           <Label>Cambiar la contraseña</Label><br></br>
+            <ChangePassDialog />
+        </div>
+          {/* todo recuperar la direccion */}
+        <div className="grid gap-4">
+          <Label>Dirección</Label>
+          <Input placeholder="Calle" type="text" />
+          <div className="grid gap-4 grid-cols-4">
+            <Input placeholder="Número" type="text" />
+            <Input placeholder="Letra" type="text" />
+            <Input placeholder="Bloque" type="text" />
+            <Input placeholder="Escalera" type="text" />
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Input placeholder="Ciudad" type="text" />
+            <Input placeholder="Provincia" type="text" />
+          </div>
+          <Input placeholder="Código Postal" type="text" />
+        </div>
+        <Button type="submit">Actualizar cuenta</Button>
       </form>
     </Form>
   );

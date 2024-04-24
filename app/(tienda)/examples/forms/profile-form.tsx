@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/shadcn/button";
 import {
   Form,
@@ -17,16 +16,10 @@ import {
   FormMessage,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/shadcn/select";
 import { Textarea } from "@/components/shadcn/textarea";
 import { toast } from "@/components/shadcn/use-toast";
-import { ChangePassDialog } from "@/components/client/changePassDialog";
+import { User } from "@/lib/definitions";
+import { Label } from "@/components/shadcn";
 
 const profileFormSchema = z.object({
   username: z
@@ -58,12 +51,15 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 const defaultValues: Partial<ProfileFormValues> = {
   bio: "I own a computer.",
   urls: [
-    { value: "https://shadcn.com" },
-    { value: "http://twitter.com/shadcn" },
   ],
 };
 
-export function ProfileForm() {
+interface Props {
+  user: User;
+}
+
+export function ProfileForm({user}:Props) {
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
@@ -89,44 +85,19 @@ export function ProfileForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* todo solo permitir cambiar el username cada 30 días */}
         <FormField
           control={form.control}
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Nombre de Usuario</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder={user.name} {...field} />
               </FormControl>
               <FormDescription>
-                This is your public display name. It can be your real name or a
-                pseudonym. You can only change this once every 30 days.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="m@example.com">m@example.com</SelectItem>
-                  <SelectItem value="m@google.com">m@google.com</SelectItem>
-                  <SelectItem value="m@support.com">m@support.com</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                You can manage verified email addresses in your{" "}
-                <Link href="/examples/forms">email settings</Link>.
+                Este es tu nombre público que aparecerá en los comentarios y valoraciones de los productos.
+                Podrás cambiar tu nombre cada 30 días.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -137,7 +108,7 @@ export function ProfileForm() {
           name="bio"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Bio</FormLabel>
+              <FormLabel>Biografía</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Tell us a little bit about yourself"
@@ -145,11 +116,6 @@ export function ProfileForm() {
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                You can <span>@mention</span> other users and organizations to
-                link to them.
-              </FormDescription>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -186,12 +152,8 @@ export function ProfileForm() {
           </Button>
         </div>
          */}
-         <div>
-           <h1>Cambiar la contraseña</h1>
-           <h2>Pulsa aquí para cambiar la contraseña</h2>
-            <ChangePassDialog />
-        </div>
-        <Button type="submit">Update profile</Button>
+         
+        <Button type="submit">Actualizar Perfil</Button>
       </form>
     </Form>
   );

@@ -29,20 +29,20 @@ export default function Component() {
           <Button className="ml-auto">Save</Button>
         </CardFooter>
       </Card>
-      <Card></Card>
+      {/* <Card></Card>
       <Card>
         <CardHeader>
           <CardTitle>Shipping address</CardTitle>
           <CardDescription>Enter the shipping address for the customer.</CardDescription>
         </CardHeader>
         <CardContent >
-          {/* <AddressForm></AddressForm> */}
+          <AddressForm></AddressForm>
           <AddressAutoForm></AddressAutoForm>
         </CardContent>
         <CardFooter>
           <Button className="ml-auto">Save</Button>
         </CardFooter>
-      </Card>
+      </Card> */}
     </>
   )
 }

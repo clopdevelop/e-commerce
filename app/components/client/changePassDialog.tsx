@@ -10,13 +10,14 @@ import {
 } from "@/components/shadcn/dialog"
 import { Input } from "@/components/shadcn/input"
 import { Label } from "@/components/shadcn/label"
+import { changePass } from "@/lib/actionscommands"
 import Link from "next/link"
 
 export function ChangePassDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Cambiar</Button>
+        <Button className="my-3">Cambiar</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -52,7 +53,11 @@ export function ChangePassDialog() {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+        <form action={changePass}>
+          <Button className="!bg-destructive" type="submit">
+              Aceptar
+          </Button>
+        </form>
         </DialogFooter>
       </DialogContent>
     </Dialog>

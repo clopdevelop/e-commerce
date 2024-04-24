@@ -76,10 +76,16 @@ export async function signInGoogle(){
   await signIn("google");
 }
 
+export async function changePass(){
+  //todo cambiar con prisma la contraseña
+
+}
+
+
+
 /**
  * PERFIL
  */
-
 // async function updateUserAddress(id_user: number, newAddress: string, id_city: number): Promise<void> {
 //   const user = await prisma.user.findUnique({
 //     where: { id_user },
@@ -195,7 +201,7 @@ export async function editProduct(formData: FormData) {
       }catch(err){
         console.log(err);
       }
-    }
+}
 
 
 // export async function addOrder(session: Stripe.Checkout.Session, lineItems: Stripe.LineItem[]) {

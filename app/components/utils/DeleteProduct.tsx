@@ -30,7 +30,7 @@ export default function DeleteProduct(id_product: { id_product: number }) {
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <form action={deleteProduct}>
                         <input type="hidden" name="id_product" value={id_product.id_product} />
-                        <Button className="!bg-destructive" type="submit">Continue</Button>
+                        <Button className="!bg-destructive" type="submit">Eliminar</Button>
                     </form>
                 </AlertDialogFooter>
             </AlertDialogContent>
