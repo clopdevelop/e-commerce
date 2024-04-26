@@ -8,6 +8,7 @@ import { Card, CardHeader, CardContent } from "@/components/shadcn/card"
 import { fetchProductsbyIDs } from "@/lib/data";
 import { Product } from "@/lib/definitions";
 import { StarIcon } from "lucide-react"
+import Link from "next/link";
 
 interface Props {
   favorites?: number[]
@@ -27,13 +28,14 @@ export default async function FavsTable({ favorites }: Props) {
     <div className="divide-y">
       <div className="flex items-center justify-between pb-4">
         <h1 className="text-2xl font-bold">Tus productos favoritos</h1>
-        {/* <Link className="text-sm font-medium underline" href="#"> */}
+        <Link className="text-sm font-medium underline" href="/dashboard/fav/all">
         Ver todo
-        {/* </Link> */}
+        </Link>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-stretch py-4 mb-96">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-stretch py-4">
         {favproducts
           ? Products.map((product) => (
+            // todo Renderizar solo 3 elementos
               <Card key={product.id}>
               {/* <Link className="absolute inset-0 rounded-lg overflow-hidden z-10" href="#" /> */}
               <div className="grid gap-2.5 p-4">
@@ -55,8 +57,8 @@ export default async function FavsTable({ favorites }: Props) {
         }
       </div>
       <div className="flex items-center justify-between pt-8 pb-4">
-        <h1 className="text-2xl font-bold">Nuevos productos de proveedores seguidos</h1>
-        {/* <Link className="text-sm font-medium underline" href="#"> */}
+        <h1 className="text-2xl font-bold">Recomendados</h1>
+        {/* <Link className="text-sm font-medium underline" href="/dashboard/fav/all"> */}
         Ver todo
         {/* </Link> */}
       </div>
@@ -65,6 +67,7 @@ export default async function FavsTable({ favorites }: Props) {
           {/* <Link className="absolute inset-0 rounded-lg overflow-hidden z-10" href="#" /> */}
           <div className="grid gap-6 md:gap-3 items-start">
             <Card>
+              <h1 className="p-5 mx-auto text-center">Herramientas</h1>
               <CardHeader className="pb-0">
                 {/* <div className="flex items-center gap-3">
               <div className="flex items-center gap-0.5">

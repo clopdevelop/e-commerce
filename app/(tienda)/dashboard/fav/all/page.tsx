@@ -1,4 +1,4 @@
-import Favs from "@/components/products/Favs";
+import FavProducts from "@/components/products/FavProducts";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 
@@ -15,7 +15,7 @@ export default async function Home() {
   return (
     <>
       <div className="container mx-auto">
-        <Favs favorites={favorites}></Favs>
+        <FavProducts favorites={favorites}></FavProducts>
       </div>
     </>
   );
