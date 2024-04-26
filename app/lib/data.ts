@@ -206,6 +206,10 @@ export async function consolelog() {
 
 
 export async function fetchAllCategories() {
-    const categories = await prisma.category.findMany();
-    return categories;
+    const categories = await prisma.category.findMany({
+      select:{
+        name:true
+      }
+    });
+    return categories.map(category => category.name);
 }

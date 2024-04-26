@@ -198,6 +198,7 @@ export async function editProduct(formData: FormData) {
             stock: Number(stock),
           },
         });
+        revalidatePath(`/admin/products/edit/${id_product}`);
       }catch(err){
         console.log(err);
       }
@@ -315,7 +316,6 @@ export async function editProduct(formData: FormData) {
 //     console.error("Error guardando la orden en la base de datos:", error);
 //   }
 // }
-// Todo despues de ejecutarse esta funcion se debe redireccionar
 export async function deleteProduct(formData: FormData) {
   const data = formData.get("id_product");
   const id_product = Number(data);
@@ -331,6 +331,7 @@ export async function deleteProduct(formData: FormData) {
     const deletedProduct = await prisma.product.delete({
       where: { id:id_product },
     });
+    revalidatePath('/admin/products/');
     return deletedProduct;
   } catch (error) {
     console.error("Error al eliminar el producto:", error);
@@ -353,6 +354,7 @@ export async function deleteProductonClick(product:{id_product: number}) {
 
 import { EmailTemplate } from '@/components/contact/email-template';
 import { Resend } from 'resend';
+import { revalidatePath } from "next/cache";
 
 
 export async function enviarEmail(formData: { name: string; email: string; text: string; }) {

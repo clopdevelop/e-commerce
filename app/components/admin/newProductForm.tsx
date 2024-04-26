@@ -64,19 +64,19 @@ import {
 } from "@/components/shadcn/form";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { editProduct } from "@/lib/actionscommands";
+import { addProduct } from "@/lib/actionscommands";
 import Image from "next/image";
-import { Product } from "@/lib/definitions";
-import Link from "next/link";
 import { useFormStatus } from "react-dom";
+import Link from "next/link";
 
 interface Props {
-  product: Product;
   categories: string[];
 }
 
-export default function EditProductForm({ product, categories }: Props) {
+export default function NewProductForm({ categories }: Props) {
   const form = useForm();
+
+  //TODO RECUPERAR LAS CATEGORIAS
 
   const states = ["Disponible", "Agotado"];
   const [selectedStatus, setSelectedStatus] = useState("Disponible");
@@ -89,13 +89,12 @@ export default function EditProductForm({ product, categories }: Props) {
   return (
     <>
       <Form {...form}>
-        <form action={editProduct} className="space-y-8">
+        <form action={addProduct} className="space-y-8">
           <div className="flex min-h-screen w-full flex-col">
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
               <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
                 <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
                   <div className="flex items-center gap-4">
-                    <input type="hidden" name="id_product" value={product.id} />
                     <Link href="/admin/products">
                       <Button
                         type="button"
@@ -108,16 +107,13 @@ export default function EditProductForm({ product, categories }: Props) {
                       </Button>
                     </Link>
                     <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                      Editar Producto
+                      Nuevo Producto
                     </h1>
-                    <Badge variant="outline" className="ml-auto sm:ml-0">
-                      {product.stock>0 ? 'In stock' : 'Out stock'}
-                    </Badge>
                     <div className="hidden items-center gap-2 md:ml-auto md:flex">
                       <Button variant="outline" size="sm">
                         Discard
-                      </Button>  
-                      <SubmitButton/>
+                      </Button>
+                      <LoginButton></LoginButton>{" "}
                     </div>
                   </div>
                   <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
@@ -134,7 +130,7 @@ export default function EditProductForm({ product, categories }: Props) {
                             <div className="grid gap-3">
                               <FormField
                                 control={form.control}
-                                defaultValue={product.name}
+                                defaultValue=""
                                 {...form.register("name")}
                                 render={({ field }) => (
                                   <FormItem>
@@ -154,6 +150,7 @@ export default function EditProductForm({ product, categories }: Props) {
                             <div className="grid gap-3">
                               <FormField
                                 control={form.control}
+                                defaultValue=""
                                 {...form.register("description")}
                                 render={({ field }) => (
                                   <FormItem>
@@ -163,7 +160,6 @@ export default function EditProductForm({ product, categories }: Props) {
                                         {...field}
                                         id="description"
                                         className="min-h-32"
-                                        defaultValue={product.description ?? ""}
                                       />
                                     </FormControl>
                                   </FormItem>
@@ -207,6 +203,7 @@ export default function EditProductForm({ product, categories }: Props) {
                                     defaultValue="" /> */}
                                   <FormField
                                     control={form.control}
+                                    defaultValue=""
                                     {...form.register("stock")}
                                     render={({ field }) => (
                                       <FormItem>
@@ -217,7 +214,6 @@ export default function EditProductForm({ product, categories }: Props) {
                                             id="stock"
                                             type="number"
                                             className="w-full"
-                                            defaultValue={product.stock}
                                           />
                                         </FormControl>
                                       </FormItem>
@@ -234,16 +230,17 @@ export default function EditProductForm({ product, categories }: Props) {
                                     defaultValue="" /> */}
                                   <FormField
                                     control={form.control}
+                                    defaultValue=""
                                     {...form.register("price")}
                                     render={({ field }) => (
                                       <FormItem>
+                                        {/* <FormLabel>Name</FormLabel> */}
                                         <FormControl>
                                           <Input
                                             {...field}
                                             id="price"
                                             type="number"
                                             className="w-full"
-                                            defaultValue={product.price}
                                           />
                                         </FormControl>
                                       </FormItem>
@@ -289,7 +286,7 @@ export default function EditProductForm({ product, categories }: Props) {
                               <FormField
                                 control={form.control}
                                 {...form.register("category")}
-                                defaultValue={product.category}
+                                defaultValue=""
                                 render={({ field }) => (
                                   <FormItem>
                                     <FormControl>
@@ -318,37 +315,8 @@ export default function EditProductForm({ product, categories }: Props) {
                             </div>
                             <div className="grid gap-3">
                               <Label htmlFor="subcategory">
-                                Subcategory (optional)
+                                Tags (optional)
                               </Label>
-                              <FormField
-                                control={form.control}
-                                {...form.register("subcategory")}
-                                defaultValue=""
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormControl>
-                                      <Select {...field}>
-                                        <SelectTrigger
-                                          id="subcategory"
-                                          aria-label="Select subcategory"
-                                        >
-                                          <SelectValue placeholder="Select subcategory" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          {categories.map((category) => (
-                                            <SelectItem
-                                              key={category}
-                                              value={category}
-                                            >
-                                              {category}
-                                            </SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                    </FormControl>
-                                  </FormItem>
-                                )}
-                              />
                             </div>
                           </div>
                         </CardContent>
@@ -372,7 +340,7 @@ export default function EditProductForm({ product, categories }: Props) {
                             <div className="grid gap-3">
                               <FormField
                                 control={form.control}
-                                defaultValue={product.state}
+                                defaultValue=""
                                 {...form.register("status")}
                                 render={({ field }) => (
                                   <FormItem>
@@ -449,7 +417,6 @@ export default function EditProductForm({ product, categories }: Props) {
                               <FormField
                                 control={form.control}
                                 {...form.register("image")}
-                                defaultValue=""
                                 render={({ field }) => (
                                   <FormItem>
                                     <FormControl>
@@ -462,6 +429,7 @@ export default function EditProductForm({ product, categories }: Props) {
                                         id="image"
                                         type="file"
                                         className="w-auto max-w-52"
+                                        accept="image/jpeg"
                                         src={
                                           file
                                             ? URL.createObjectURL(file)
@@ -473,7 +441,6 @@ export default function EditProductForm({ product, categories }: Props) {
                                             e.target.files.length > 0
                                           ) {
                                             setFile(e.target.files[0]);
-                                            console.log(e.target.files[0]);
                                           }
                                         }}
                                       />
@@ -519,7 +486,7 @@ export default function EditProductForm({ product, categories }: Props) {
                     <Button variant="outline" size="sm">
                       Discard
                     </Button>
-                    <Button size="sm">Save Product</Button>
+                    <LoginButton></LoginButton>{" "}
                   </div>
                 </div>
               </main>
@@ -533,12 +500,12 @@ export default function EditProductForm({ product, categories }: Props) {
   );
 }
 
-function SubmitButton(){
-  const {pending}=useFormStatus()
+function LoginButton() {
+  const { pending } = useFormStatus();
 
-  return(
+  return (
     <Button type="submit" size="sm" disabled={pending}>
-      EDIT PRODUCT
+      {pending ? "Creando Producto..." : "Crear Producto"}
     </Button>
-  )
+  );
 }
