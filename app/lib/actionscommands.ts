@@ -385,3 +385,16 @@ const resend = new Resend(process.env.RESEND_API_KEY);
     return { mensaje: "Error al enviar: ", error };
   }
 }
+
+
+export async function guardarDireccion(formData: { name: string; email: string; text: string; }) {
+}
+
+export async function eliminarDireccion(formData: { name: string; email: string; text: string; }) {
+}
+
+export async function guardarFacturación(formData: { name: string; email: string; text: string; }) {
+}
+
+export async function eliminarFacturación(formData: { name: string; email: string; text: string; }) {
+}

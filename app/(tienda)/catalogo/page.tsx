@@ -3,9 +3,10 @@ import Search from "@/components/utils/Search";
 import MyPagination from "@/components/utils/myPagination";
 
 import { Suspense } from 'react';
-import { fetchProductsPages } from '@/lib/data';
+import { fetchFilteredProducts, fetchProductsPages } from '@/lib/data';
 import { auth } from "@/auth";
 import { getUser } from "@/lib/data";
+import {CarouselProducts} from "@/components/products/CarouselProducts";
 // import { addUserGoogle } from "@/lib/actionscommands";
 
 export const metadata = {
@@ -23,18 +24,17 @@ export default async function Home({
 }) {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-  const productOnPage = 3;
-  const totalPages = await fetchProductsPages(query,productOnPage);
+  const productsOnPage = 3;
+  const totalPages = await fetchProductsPages(query,productsOnPage);
 
+  const products = await fetchFilteredProducts(query, currentPage, productsOnPage);
 
   //Recuperar el USERID
   const authentication = await auth()
-  const user = authentication?.user?.id
-  const user_email = String(authentication?.user?.email)
-  const completeUser = await getUser(user_email);
-  const id_user = Number(completeUser?.id)
+  const id_user = Number(authentication?.user?.id)
 
-// Todo utilizar esta funcion para guardrar el usario de google en la base de datos
+  
+// Todo55555 utilizar esta funcion para guardrar el usario de google en la base de datos
 // ? El problema es que no funciona el adaptador de prisma
   // if(user==='cristianlogo6@gmail.com' && authentication !=null){
   //   addUserGoogle(authentication)
@@ -42,22 +42,24 @@ export default async function Home({
 
 
   function SearchBarFallback() {
-    //todo cambiar por un skeleton
+    //todo999999 cambiar por un skeleton
     return <div>Cargando...</div>
   }
 
+  
   return (
     <>
-      <h1>Tienda</h1>
-      <div className="my-5 flex items-center justify-between gap-2 md:mt-8">
+      <h1 className="flex justify-center text-4xl mt-5">TIENDA</h1>
+      <div className="my-5  md:mt-8">
          <Search placeholder="Buscar productos..." />
       </div>
-        <Suspense fallback={<SearchBarFallback />}>
-          <ProductsTable currentPage={currentPage} id_user={id_user} query={query} />
-        </Suspense>
+      <Suspense fallback={<SearchBarFallback />}>
+        <ProductsTable products={products} id_user={id_user} />
+      </Suspense>
       <div className="mt-5 flex w-full justify-center">
           <MyPagination totalPages={totalPages} currentPage={currentPage}></MyPagination>
       </div>
+      <CarouselProducts></CarouselProducts>
     </>
   );
 }

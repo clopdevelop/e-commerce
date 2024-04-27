@@ -243,11 +243,14 @@ export async function fetchAllCategories() {
     return categories.map(category => category.name);
 }
 
-export async function fetchfilteredProductsperCategories(category : string, currentPage: number, productsOnPage: number) {
+export async function fetchfilteredProductsperCategories(category : string, currentPage: number, productsOnPage: number, query:string) {
     const productsToSkip = (currentPage - 1) * productsOnPage;
   
     const products = await prisma.product.findMany({
       where: {
+        name: {
+          contains: query, 
+        },
         category: {
           name: category,
         },
@@ -258,4 +261,14 @@ export async function fetchfilteredProductsperCategories(category : string, curr
     });
 
     return products;
+}
+
+
+// todo
+export async function fetchProvinces() {
+
+}
+
+export async function fetchCitiesFromProvinces() {
+  
 }

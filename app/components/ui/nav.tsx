@@ -68,9 +68,11 @@ export function NavigationMenuDemo({id_user, product} : {id_user: number, produc
             <SheetFooter className="w-full mt-5">
               <SheetClose asChild>
                 {/* <Button size="lg" onClick={() => PayBotton(id_user,product)}> */}
+                <Link href={"/pago"}>
                 <Button size="lg" onClick={() => PayBotton()}>
                   Ir a Pagar
                 </Button>
+                </Link>
               </SheetClose>
               <Link href="/catalogo">
                 <SheetClose>

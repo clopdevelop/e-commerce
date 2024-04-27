@@ -39,7 +39,7 @@ export default function RootLayout({
     <>
       <Providers>
         <NavBar></NavBar>
-        <main className="flex flex-col items-center justify-between">
+        <main>
           {children}
         </main>
       </Providers>

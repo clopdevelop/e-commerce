@@ -115,7 +115,7 @@ export default function ClientPay({ user }: Props) {
           <CardContent className="p-6 text-sm">
             <Form {...form}>
               <form className="flex gap-5">
-                <div>
+                <div className="w-full">
                   <div className="grid gap-4 mb-5">
                     <div className="font-semibold">Información de Envío</div>
                     <Input placeholder="Calle" type="text" />
@@ -167,7 +167,7 @@ export default function ClientPay({ user }: Props) {
                   </div>
                 </div>
                 {/* <Separator className="my-4" /> */}
-                <div>
+                <div className="w-full">
                   <div className="grid gap-4">
                     <Label htmlFor="invoicingMethod">Método de Pago:</Label>
                     <RadioGroup
@@ -317,8 +317,8 @@ export default function ClientPay({ user }: Props) {
         </Card>
       )}
       {!open && (
-        <Card className="overflow-hidden w-11/12 mx-auto">
-          <CardHeader className="flex flex-row items-start bg-muted/50">
+        <Card className="overflow-hidden w-9/12 mx-auto">
+        <CardHeader className="flex flex-row items-start bg-muted/50">
             <div className="grid gap-0.5">
               <CardTitle className="group flex items-center gap-2 text-lg">
                 <Button
@@ -368,7 +368,7 @@ export default function ClientPay({ user }: Props) {
             </div>
           </CardHeader>
           <CardContent className="p-6 text-sm flex gap-10">
-            <div className="w-96">
+            <div className="w-full">
               <div className="grid gap-3">
                 <div className="font-semibold">Detalles del Pedido</div>
                 <ul className="grid gap-3">
@@ -419,7 +419,7 @@ export default function ClientPay({ user }: Props) {
               </div>
               <Separator className="my-4" />
             </div>
-            <div className="w-96">
+            <div className="w-full">
               <div className="flex flex-col gap-4">
                 <div className="grid gap-3">
                   <div className="font-semibold">Información de envío</div>

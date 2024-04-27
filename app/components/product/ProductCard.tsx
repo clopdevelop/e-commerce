@@ -48,16 +48,16 @@ export default function ProductCard({ product, id_user }: { product: Product, id
 
     return (
         <Card
-            className="border rounded-lg p-4"
+            className="border rounded-lg p-4 min-w-full"
             key={product.id}
         >
             <CardHeader>
                 <div className="flex justify-between">
                     <div>
-                        <CardTitle className="h-10 leading-relaxed line-clamp-2 text-balance py-3">
-                            <Link href={`catalogo/${product.id}`} className="text-lg font-semibold mb-2">{product.name}</Link>
+                        <CardTitle className="h-15 leading-relaxed line-clamp-2 text-balance py-3">
+                            <Link href={`catalogo/${product.id}`} className="text-2xl font-semibold mb-2">{product.name}</Link>
                         </CardTitle>
-                        <CardDescription className="h-3 ">
+                        <CardDescription className="h-16 text-lg">
                             {product.description}
                         </CardDescription>
                     </div>
