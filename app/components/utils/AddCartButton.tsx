@@ -25,7 +25,7 @@ export default function AddCartButton({
       }
       if (items==undefined){
         toast.error("items are undefined");
-
+        
         throw new Error('items are undefined');
       }
       
@@ -35,7 +35,7 @@ export default function AddCartButton({
         name: product.name,
         unit_price: product.price,
         quantity: quantity,
-        image: product.ProductImage?.[0].url ?? ''
+        // image: product.ProductImage?.[0].url ?? ''
       };
       
       addItem(newItem, quantity);

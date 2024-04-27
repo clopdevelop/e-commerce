@@ -31,7 +31,7 @@ import { Separator } from "../shadcn/separator";
 import { useCart } from "@/context/CartProvider";
 import Link from "next/link";
 import { Product } from "@/lib/definitions";
-import { BuyProduct } from "../utils/PayBotton";
+import PayBotton from "../utils/PayButton";
 
 
 export function NavigationMenuDemo({id_user, product} : {id_user: number, product :Product}) {
@@ -67,7 +67,8 @@ export function NavigationMenuDemo({id_user, product} : {id_user: number, produc
             <Cart></Cart>
             <SheetFooter className="w-full mt-5">
               <SheetClose asChild>
-                <Button size="lg" onClick={() => BuyProduct(id_user,product)}>
+                {/* <Button size="lg" onClick={() => PayBotton(id_user,product)}> */}
+                <Button size="lg" onClick={() => PayBotton()}>
                   Ir a Pagar
                 </Button>
               </SheetClose>

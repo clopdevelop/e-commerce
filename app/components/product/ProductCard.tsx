@@ -9,7 +9,7 @@ import {
 } from "@/components/shadcn/card";
 import AddCartButton from "@/components/utils/AddCartButton";
 
-import PayBotton from "../utils/PayBotton";
+import PayButton from "../utils/PayButton";
 import Link from "next/link";
 import { Input } from "../shadcn/input";
 import { Provider, Category, OrderItem } from "@/lib/definitions";
@@ -48,16 +48,16 @@ export default function ProductCard({ product, id_user }: { product: Product, id
 
     return (
         <Card
-            className="m-2 max-w-72 "
+            className="border rounded-lg p-4"
             key={product.id}
         >
             <CardHeader>
                 <div className="flex justify-between">
                     <div>
                         <CardTitle className="h-10 leading-relaxed line-clamp-2 text-balance py-3">
-                            <Link href={`catalogo/${product.id}`}>{product.name}</Link>
+                            <Link href={`catalogo/${product.id}`} className="text-lg font-semibold mb-2">{product.name}</Link>
                         </CardTitle>
-                        <CardDescription className="h-3">
+                        <CardDescription className="h-3 ">
                             {product.description}
                         </CardDescription>
                     </div>
@@ -83,25 +83,22 @@ export default function ProductCard({ product, id_user }: { product: Product, id
                 )}
                 <Input className='my-3' type="number" defaultValue={1} min={1} max={99} onChange={(e) => setQuantity(Number(e.target.value))}></Input>
             </CardContent>
-            <CardFooter className="flex justify-between h-24">
-                <p className="p-2 mr-2">{product.price}€</p>
-                <div className="flex gap-2 ">
-                    {/* todo arreglar: como no existe el id user con el google auth no funciona con este */}
-                    <>
-                        {id_user != null ? (
-                            <>
-                                <AddCartButton product={product} quantity={quantity} ></AddCartButton>
-                                <PayBotton id_user={id_user} product={product} />
-                            </>
-                        ) : (
-                            <>
-                                <AddCartButton product={product} quantity={quantity}></AddCartButton>
-                                <PayBotton id_user={id_user} product={product} />
-                            </>
-                        )}
-                    </>
-                </div>
-            </CardFooter>
+            <CardFooter className="p-0 flex justify-between items-center h-auto md:h-24">
+          <p className="font-bold">{product.price}€</p>
+          <div className="flex gap-2">
+            {id_user != null ? (
+              <>
+                <AddCartButton product={product} quantity={quantity}></AddCartButton>
+                <PayButton />
+              </>
+            ) : (
+              <>
+                <AddCartButton product={product} quantity={quantity}></AddCartButton>
+                <PayButton />
+              </>
+            )}
+          </div>
+        </CardFooter>
         </Card>
     );
 }

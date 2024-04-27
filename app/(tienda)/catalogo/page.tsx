@@ -29,6 +29,7 @@ export default async function Home({
 
   //Recuperar el USERID
   const authentication = await auth()
+  const user = authentication?.user?.id
   const user_email = String(authentication?.user?.email)
   const completeUser = await getUser(user_email);
   const id_user = Number(completeUser?.id)

@@ -1,6 +1,6 @@
 "use server"
 import prisma from "@/lib/prisma";
-import { User } from "./definitions";
+import { User, Category } from './definitions';
 
 /**
  * Devuelve todos los Productos
@@ -131,6 +131,35 @@ export async function fetchProductsPages(query : string, productsOnPage: number 
   return totalPages;
 }
 
+export async function fetchProductsPagesperCategory(category:string, query : string, productsOnPage: number ) {
+  
+  const totalProducts = await prisma.product.count({
+    where: {
+      name: {
+        contains: query,
+      },
+      category: {
+        name: {
+          contains: category,
+        },
+      },
+    },
+  });
+
+  if (totalProducts === 0) {
+    return 1;
+  }
+
+
+  // para asegurarse de incluir todas las páginas, incluso si la última página no está completa.
+  const totalPages = Math.ceil(totalProducts / productsOnPage);
+
+
+  totalPages
+
+  return totalPages;
+}
+
 export async function getUser(email: string): Promise<User | null> {
   try {
     const user = await prisma.user.findUnique({
@@ -212,4 +241,21 @@ export async function fetchAllCategories() {
       }
     });
     return categories.map(category => category.name);
+}
+
+export async function fetchfilteredProductsperCategories(category : string, currentPage: number, productsOnPage: number) {
+    const productsToSkip = (currentPage - 1) * productsOnPage;
+  
+    const products = await prisma.product.findMany({
+      where: {
+        category: {
+          name: category,
+        },
+      },
+      include: { ProductImage: true, },
+    take: productsOnPage,
+    skip: productsToSkip, 
+    });
+
+    return products;
 }

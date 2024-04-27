@@ -4,11 +4,11 @@ export type User = {
   name: string;
   email: string;
   phone?: string | null;
-  password: string;
+  password?: string;
   address?: Address | null;
   id_address?: number | null;
   postcode?: string | null;
-  created_at: Date;
+  created_at?: Date;
   Order?: Order[] | null;
 }
 
@@ -134,5 +134,5 @@ export type CartItem = {
   name: string;
   unit_price: number;
   quantity: number;
-  image: string;
+  image?: string;
 };
