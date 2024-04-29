@@ -12,8 +12,10 @@ import {
 } from "@/components/shadcn/alert-dialog"
 import { Button } from "../shadcn/button";
 import { deleteProduct } from "@/lib/actionscommands";
+import { useState } from "react";
 
 export default function DeleteProduct(id_product: { id_product: number }) {
+
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -27,10 +29,12 @@ export default function DeleteProduct(id_product: { id_product: number }) {
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
                     <form action={deleteProduct}>
                         <input type="hidden" name="id_product" value={id_product.id_product} />
+                        <AlertDialogAction className="!bg-destructive">
                         <Button className="!bg-destructive" type="submit">Eliminar</Button>
+                        </AlertDialogAction>
                     </form>
                 </AlertDialogFooter>
             </AlertDialogContent>

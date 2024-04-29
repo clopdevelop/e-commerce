@@ -15,7 +15,7 @@ import { Input } from "../shadcn/input";
 import { Provider, Category, OrderItem } from "@/lib/definitions";
 import { Product } from "@/lib/definitions";
 import { useEffect, useState } from "react";
-import { BookmarkIcon } from "lucide-react"
+import { Heart } from "lucide-react"
 import { setCookie, getCookie } from "cookies-next";
 import Image from 'next/image';
 
@@ -62,10 +62,10 @@ export default function ProductCard({ product, id_user }: { product: Product, id
                         </CardDescription>
                     </div>
                     <div>
-                        <BookmarkIcon className={`transition-colors duration-500 ease-in-out ${fav ? 'text-red-500' : 'text-white'} cursor-pointer`}
+                        <Heart className={`transition-colors duration-500 ease-in-out ${fav ? 'text-red-500' : 'text-white'} cursor-pointer`}
                             strokeWidth={fav ? 3 : 1}
                             onClick={() => toggleFav()}>
-                        </BookmarkIcon>
+                        </Heart>
                     </div>
                 </div>
             </CardHeader>

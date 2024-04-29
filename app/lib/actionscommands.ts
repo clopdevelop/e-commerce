@@ -117,65 +117,95 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_KEY
 });
 
-export async function addProduct(formData: FormData) {
-  await sleep(3)
-  try {
-    // const rawFormData = Object.fromEntries(formData.entries());
+// export async function addProduct(formData: FormData) {
+//   await sleep(3)
+//   try {
+//     // const rawFormData = Object.fromEntries(formData.entries());
 
-    const rawFormData = {
-      name: formData.get("name"),
-      price: Number(formData.get("price")),
-      description: formData.get("description"),
-      stock: Number(formData.get("stock")),
-      image: formData.get("image")
-    };
+//     const rawFormData = {
+//       name: formData.get("name"),
+//       price: Number(formData.get("price")),
+//       description: formData.get("description"),
+//       stock: Number(formData.get("stock")),
+//       image: formData.get("image")
+//     };
     
     
-    const { name, price, description, stock, image } = addProductSchema.parse(rawFormData)
+//     const { name, price, description, stock, image } = addProductSchema.parse(rawFormData)
 
-    console.log(image);
+//     console.log(image);
     
 
-    const bytes = await image.arrayBuffer()
-    const buffer = Buffer.from(bytes)
+//     const bytes = await image.arrayBuffer()
+//     const buffer = Buffer.from(bytes)
 
-    const filePath = path.join(process.cwd(), 'public', image.name)
-    await writeFile(filePath, buffer, async (err) => {
-      if (err) {
-        console.error('Hubo un error al escribir el archivo:', err);
-      } else {
-        console.log('Archivo escrito con éxito');
-      const cloud = await cloudinary.uploader.upload(filePath)
+//     const filePath = path.join(process.cwd(), 'public', image.name)
+//     await writeFile(filePath, buffer, async (err) => {
+//       if (err) {
+//         console.error('Hubo un error al escribir el archivo:', err);
+//       } else {
+//         console.log('Archivo escrito con éxito');
+//       const cloud = await cloudinary.uploader.upload(filePath)
 
-      await unlink(filePath,(err)=>{err ? console.log('Hubo un error al eliminar el archivo'):'';
-      })
+//       await unlink(filePath,(err)=>{err ? console.log('Hubo un error al eliminar el archivo'):'';
+//       })
 
-      if(cloud){
-        await unlink(filePath,() => {return 0})
-      }
+//       if(cloud){
+//         await unlink(filePath,() => {return 0})
+//       }
   
-      const newProduct = await prisma.product.create({
-        data: {
-          name: name,
-          price: Number(price),
-          description: description,
-          stock: Number(stock),
-          ProductImage: {
-            create: {
-              url: cloud.url
-            }
-          }
-        },
-      });
-      }
-    });
+//       const newProduct = await prisma.product.create({
+//         data: {
+//           name: name,
+//           price: Number(price),
+//           description: description,
+//           stock: Number(stock),
+//           ProductImage: {
+//             create: {
+//               url: cloud.url
+//             }
+//           }
+//         },
+//       });
+//       }
+//     });
+// revalidatePath("/admin/products")
+//   redirect("/admin/products")
+
     
-  } catch (err) {
-    console.log(err);
-  }
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// TODO CAMBIAR POR ADDPRODUCT
+export async function addProductTEST(formData: FormData) {
+  console.log(formData);
+  
+  // const rawFormData = {
+  //   name: formData.get("name"),
+  //   price: Number(formData.get("price")),
+  //   description: formData.get("description"),
+  //   stock: Number(formData.get("stock")),
+  //   category: Number(formData.get("category")),
+  // };
+
+  // const { name, price, description, stock, category} = addProductSchema.parse(rawFormData)
+
+
+  //   const newProduct = await prisma.product.create({
+  //     data: {
+  //       name,
+  //       description,
+  //       price,
+  //       stock,
+  //       id_category: category,
+  //     },
+  //   });
+  
+  // revalidatePath("/admin/products")
+  // redirect("/admin/products")
 }
 
-//todo Revalidar los datos
 export async function editProduct(formData: FormData) {
   await sleep(3)
   try {

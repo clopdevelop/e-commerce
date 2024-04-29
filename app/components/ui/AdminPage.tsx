@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "next/link";
 import {
   Activity,
   ArrowUpRight,
@@ -9,22 +9,23 @@ import {
   Package2,
   Search,
   Users,
-} from "lucide-react"
+  Rocket
+} from "lucide-react";
 
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/shadcn/avatar"
-import { Badge } from "@/components/shadcn/badge"
-import { Button } from "@/components/shadcn/button"
+} from "@/components/shadcn/avatar";
+import { Badge } from "@/components/shadcn/badge";
+import { Button } from "@/components/shadcn/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/shadcn/card"
+} from "@/components/shadcn/card";
 
 import {
   Table,
@@ -33,71 +34,82 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/shadcn/table"
+} from "@/components/shadcn/table";
+import { fetchTotalRevenues, fetchTotalSales, fetchTotalClients } from "@/lib/data";
 
-export function AdminPage() {
+export async function AdminPage() {
+  const totalRevenue = await fetchTotalRevenues();
+  const totalSales = await fetchTotalSales();
+  const totalClients = await fetchTotalClients();
+  const joke= ''
+  // const joke = fetch('https://icanhazdadjoke.com/',
+  //   {
+  //     headers: {
+  //       Accept: 'text/plain',
+  //     },
+  //   }
+  // )
+  //   .then(res => res.text())
+  //   .then(data => {
+  //     return data;
+  //   });
+
   return (
     <div className="flex min-h-screen w-full flex-col">
-      
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
           <Card x-chunk="dashboard-01-chunk-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Total Revenue
+                Ingresos totales
               </CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$45,231.89</div>
-              <p className="text-xs text-muted-foreground">
-                +20.1% from last month
-              </p>
+              <div className="text-2xl font-bold">
+                ${totalRevenue._sum.total ?? 0}
+              </div>
+              <p className="text-xs text-muted-foreground">Total facturado</p>
             </CardContent>
           </Card>
           <Card x-chunk="dashboard-01-chunk-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Subscriptions
+                Clientes
               </CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+2350</div>
+              <div className="text-2xl font-bold">{totalClients}</div>
               <p className="text-xs text-muted-foreground">
-                +180.1% from last month
+                Total de Clientes
               </p>
             </CardContent>
           </Card>
           <Card x-chunk="dashboard-01-chunk-2">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Sales</CardTitle>
+              <CardTitle className="text-sm font-medium">Ventas</CardTitle>
               <CreditCard className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+12,234</div>
-              <p className="text-xs text-muted-foreground">
-                +19% from last month
-              </p>
+              <div className="text-2xl font-bold">{totalSales}</div>
+              <p className="text-xs text-muted-foreground">Total de Ventas</p>
             </CardContent>
           </Card>
-          <Card x-chunk="dashboard-01-chunk-3">
+          <Card x-chnk="dashboard-01-chunk-3">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Now</CardTitle>
-              <Activity className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Frase Motivadora</CardTitle>
+              <Rocket className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+573</div>
-              <p className="text-xs text-muted-foreground">
-                +201 since last hour
+              <p className="text-sm text-muted-foreground ">
+                {joke}
               </p>
             </CardContent>
           </Card>
         </div>
-        <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-          <Card
-            className="xl:col-span-2" x-chunk="dashboard-01-chunk-4"
-          >
+        {/* <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
+          <Card className="xl:col-span-2" x-chunk="dashboard-01-chunk-4">
             <CardHeader className="flex flex-row items-center">
               <div className="grid gap-2">
                 <CardTitle>Transactions</CardTitle>
@@ -316,8 +328,8 @@ export function AdminPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
       </main>
     </div>
-  )
+  );
 }

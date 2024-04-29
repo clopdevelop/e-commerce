@@ -6,6 +6,7 @@ import {
   Package,
   Package2,
   PanelLeft,
+  Paperclip,
   PlusCircle,
   Search,
   Settings,
@@ -23,7 +24,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/shadcn/breadcrumb";
-import { Button } from "@/components/shadcn/button";
+import { Button, buttonVariants } from "@/components/shadcn/button";
 import {
   Card,
   CardContent,
@@ -63,20 +64,31 @@ import {
   useFormField,
 } from "@/components/shadcn/form";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { addProduct } from "@/lib/actionscommands";
+import { Key, useState } from "react";
+import { addProductTEST } from "@/lib/actionscommands";
 import Image from "next/image";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
+import { string } from "zod";
+import { ProductTags } from "./productsTagsInput";
+import { FancyMultiSelect } from "./fancy-multi-select";
+import {
+  FileUploader,
+  FileInput,
+  FileUploaderContent,
+  FileUploaderItem,
+} from "@/components/shadcn/extensions/file-uploader";
+import { DropzoneOptions } from "react-dropzone";
+import { toast } from "sonner";
+import {  Send } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { AspectRatio } from "@/components/shadcn/aspect-ratio";
 
 interface Props {
   categories: string[];
 }
 
 export default function NewProductForm({ categories }: Props) {
-  const form = useForm();
-
-  //TODO RECUPERAR LAS CATEGORIAS
 
   const states = ["Disponible", "Agotado"];
   const [selectedStatus, setSelectedStatus] = useState("Disponible");
@@ -86,10 +98,29 @@ export default function NewProductForm({ categories }: Props) {
 
   const [file, setFile] = useState<File | null>(null);
 
+  // todo PROBLEMA AL ENVIAR LOS TAGS
+  async function onSubmit(values: any) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values);
+    addProductTEST(values);
+  }
+
+    const form = useForm();
+   
+    const dropzone = {
+      multiple: true,
+      maxFiles: 3,
+      maxSize: 4 * 1024 * 1024,
+    } satisfies DropzoneOptions;
+   
+
+
   return (
     <>
       <Form {...form}>
-        <form action={addProduct} className="space-y-8">
+        {/* <form action={addProductTEST} className="space-y-8"> */}
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="flex min-h-screen w-full flex-col">
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
               <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
@@ -111,9 +142,9 @@ export default function NewProductForm({ categories }: Props) {
                     </h1>
                     <div className="hidden items-center gap-2 md:ml-auto md:flex">
                       <Button variant="outline" size="sm">
-                        Discard
+                        Cancelar
                       </Button>
-                      <LoginButton></LoginButton>{" "}
+                      <LoginButton></LoginButton>
                     </div>
                   </div>
                   <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
@@ -280,43 +311,71 @@ export default function NewProductForm({ categories }: Props) {
                           <CardTitle>Categoría</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <div className="grid gap-6 sm:grid-cols-3">
+                          <div className="grid gap-20 sm:grid-cols-3">
                             <div className="grid gap-3">
-                              <Label htmlFor="category">Category</Label>
                               <FormField
                                 control={form.control}
-                                {...form.register("category")}
                                 defaultValue=""
+                                {...form.register("category")}
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormControl>
-                                      <Select {...field}>
-                                        <SelectTrigger
-                                          id="category"
-                                          aria-label="Select category"
-                                        >
-                                          <SelectValue placeholder="Select category" />
+                                    <FormLabel htmlFor="category">
+                                      Categoría
+                                    </FormLabel>
+                                    <Select
+                                      {...field}
+                                      defaultValue={field.value}
+                                      value={field.value}
+                                      onValueChange={field.onChange}
+                                    >
+                                      <FormControl>
+                                        <SelectTrigger aria-label="Selecciona la categoría">
+                                          <SelectValue placeholder="Selecciona la categoría" />
                                         </SelectTrigger>
-                                        <SelectContent>
-                                          {categories.map((category) => (
-                                            <SelectItem
-                                              key={category}
-                                              value={category}
-                                            >
-                                              {category}
-                                            </SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                    </FormControl>
+                                      </FormControl>
+                                      <SelectContent>
+                                        {categories.map((category, i) => (
+                                          <SelectItem
+                                            key={i}
+                                            value={String(i + 1)}
+                                          >
+                                            {category}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
                                   </FormItem>
                                 )}
                               />
                             </div>
-                            <div className="grid gap-3">
-                              <Label htmlFor="subcategory">
-                                Tags (optional)
-                              </Label>
+                            <div className="grid gap-3 w-80">
+                              <div className="grid gap-3">
+                                <FormField
+                                  control={form.control}
+                                  defaultValue={[]}
+                                  {...form.register("tags")}
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Etiquetas</FormLabel>
+                                      <FormControl>
+                                        <FancyMultiSelect
+                                          {...field}
+                                          onChange={(values) => {
+                                            field.onChange(
+                                              values.map(({ value }) => value)
+                                            );
+                                          }}
+                                        />
+                                        {/* <Input
+                                          {...field}
+                                          type="number"
+                                          className="w-full"
+                                        /> */}
+                                      </FormControl>
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
                             </div>
                           </div>
                         </CardContent>
@@ -354,10 +413,11 @@ export default function NewProductForm({ categories }: Props) {
                                         <SelectTrigger
                                           className="bg-card"
                                           id="status"
-                                          aria-label="Select status"
+                                          aria-label="Selecciona el estado"
                                         >
-                                          <SelectValue placeholder="Select status">
-                                            {selectedStatus || "Select status"}
+                                          <SelectValue placeholder="Selecciona el estado">
+                                            {selectedStatus ||
+                                              "Selecciona el estado"}
                                           </SelectValue>
                                         </SelectTrigger>
                                         <SelectContent>
@@ -424,7 +484,7 @@ export default function NewProductForm({ categories }: Props) {
                                         <Upload className="h-4 w-4 text-muted-foreground" />
                                         <span className="sr-only">Upload</span>
                                       </button> */}
-                                      <Input
+                                      {/* <Input
                                         {...field}
                                         id="image"
                                         type="file"
@@ -443,7 +503,53 @@ export default function NewProductForm({ categories }: Props) {
                                             setFile(e.target.files[0]);
                                           }
                                         }}
-                                      />
+                                      /> */}
+                                      <FileUploader
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                        dropzoneOptions={dropzone}
+                                        reSelect={true}
+                                      >
+                                        <FileInput
+                                          className={cn(
+                                            buttonVariants({
+                                              size: "icon",
+                                            }),
+                                            "size-8"
+                                          )}
+                                        >
+                                          <Paperclip className="size-4" />
+                                          <span className="sr-only">
+                                            Select your files
+                                          </span>
+                                        </FileInput>
+                                        {field.value &&
+                                          field.value.length > 0 && (
+                                            <FileUploaderContent className="absolute bottom-8 p-2  w-full -ml-3 rounded-b-none rounded-t-md flex-row gap-2 ">
+                                              {field.value.map((file:any,i:number) => (
+                                                <FileUploaderItem
+                                                  key={i}
+                                                  index={i}
+                                                  aria-roledescription={`file ${
+                                                    i + 1
+                                                  } containing ${file.name}`}
+                                                  className="p-0 size-20"
+                                                >
+                                                  <AspectRatio className="size-full">
+                                                    <Image
+                                                      src={URL.createObjectURL(
+                                                        file
+                                                      )}
+                                                      alt={file.name}
+                                                      className="object-cover rounded-md"
+                                                      fill
+                                                    />
+                                                  </AspectRatio>
+                                                </FileUploaderItem>
+                                              ))}
+                                            </FileUploaderContent>
+                                          )}
+                                      </FileUploader>
                                     </FormControl>
                                   </FormItem>
                                 )}

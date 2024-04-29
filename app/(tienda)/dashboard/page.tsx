@@ -18,12 +18,12 @@ export default async function Home() {
     <>
       {completeUser ? (
         <>
-          <h1 className="flex flex-col items-center justify-between p-24">Hola {completeUser.name}</h1>
+          <h1>Hola {completeUser.name}</h1>
           <p>{JSON.stringify(authentication?.user)}</p>
         </>
       ) : (
         <>
-          <h1 className="flex flex-col items-center justify-between p-24">Hola {authentication?.user?.name}</h1>
+          <h1 className="flex flex-col items-center justify-between">Hola {authentication?.user?.name}</h1>
         </>
       )}
     </>

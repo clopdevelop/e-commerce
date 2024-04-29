@@ -10,7 +10,7 @@ export default async function admin() {
 
   return (
     // <EmptyInventory></EmptyInventory>
-    <main className="flex flex-col items-center justify-between p-24">
+    <main className="p-24 border">
       <Inventory products={Products}></Inventory>
     </main>
   )

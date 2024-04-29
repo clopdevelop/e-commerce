@@ -175,6 +175,16 @@ export async function getUser(email: string): Promise<User | null> {
 }
 
 
+export async function fetchAllOrders() {
+  try {
+    const orders = await prisma.order.findMany();
+    return orders;
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    throw error;
+  }
+}
+
 export async function fetchOrdersByUserId(userId: number) {
   try {
     const orders = await prisma.order.findMany({
@@ -271,4 +281,24 @@ export async function fetchProvinces() {
 
 export async function fetchCitiesFromProvinces() {
   
+}
+
+export async function fetchTotalRevenues() {
+  return await prisma.order.aggregate({
+    _sum: {
+      total: true,
+    },
+  });
+}
+
+export async function fetchTotalSales() {
+  return await prisma.order.count();
+}
+
+export async function fetchTotalClients() {
+  return await prisma.user.count({
+    where: {
+      role: 'user',
+    },
+  });
 }

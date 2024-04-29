@@ -25,7 +25,7 @@ import {
 
 export default function Header() {
   return (
-    <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+    <header className="sticky hidden top-0 h-16 items-center gap-4 border-b bg-background sm:flex px-4 md:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
         <Link
           href="#"
@@ -44,25 +44,19 @@ export default function Header() {
           href="/admin/orders"
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
-          Orders
+          Pedidos
         </Link>
         <Link
           href="/admin/products"
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
-          Products
+          Productos
         </Link>
         <Link
           href="#"
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
-          Customers
-        </Link>
-        <Link
-          href="#"
-          className="text-muted-foreground transition-colors hover:text-foreground"
-        >
-          Analytics
+          Clientela
         </Link>
       </nav>
       <Sheet>
