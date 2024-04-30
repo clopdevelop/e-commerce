@@ -1,6 +1,6 @@
 import { fetchAllProducts } from '@/lib/data';
 import Link from 'next/link';
-import { GridTileImage } from './c';
+// import { GridTileImage } from './c';
 
 export async function CarouselProducts() {
     const products= await fetchAllProducts();

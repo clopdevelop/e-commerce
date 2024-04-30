@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+import { auth,  } from "@/auth";
 import ProductsTable from "@/components/products/ProductsTable";
 import Search from "@/components/utils/Search";
 import MyPagination from "@/components/utils/myPagination";
@@ -8,8 +8,22 @@ import {
   fetchProductsPagesperCategory,
   fetchfilteredProductsperCategories,
   getUser,
+  countProducts,
+  fetchAllCategories,
 } from "@/lib/data";
+import Link from "next/link";
 import { Suspense } from "react";
+
+export const dynamicParams = false
+
+//! En tiempo de compilación
+export async function generateStaticParams() {
+  const categories = await fetchAllCategories();
+
+  return categories.map( category => ({
+    category: category,
+  }));
+}
 
 export default async function Home({
   searchParams,
@@ -20,15 +34,15 @@ export default async function Home({
     page?: string;
   };
   params: {
-    category: string;
+    currentCategory: string;
   };
 }) {
-  const {category} = params;
+  const {currentCategory} = params;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
   const productOnPage = 3;
   const totalPages = await fetchProductsPagesperCategory(
-    category,
+    currentCategory,
     query,
     productOnPage
   );
@@ -37,7 +51,7 @@ export default async function Home({
   const id_user = Number(authentication?.user?.id);
 
   const products = await fetchfilteredProductsperCategories(
-    category,
+    currentCategory,
     currentPage,
     productOnPage,
     query
@@ -48,15 +62,32 @@ export default async function Home({
     return <div>Cargando...</div>;
   }
 
+  const Categories = await fetchAllCategories();
+  
+  console.log(currentCategory)
   return (
     <>
-      <h1 className="flex justify-center text-4xl mt-5">{category}</h1>
+      <h1 className="flex justify-center text-4xl mt-5">{currentCategory}</h1>
       <div className="my-5 flex items-center justify-between md:mt-8">
         <Search placeholder="Buscar productos..." />
       </div>
-      <Suspense fallback={<SearchBarFallback />}>
-        <ProductsTable products={products} id_user={id_user} currentCategory={category}/>
-      </Suspense>
+      <div className="flex flex-col gap-5 md:flex-row border p-5">
+        <div className="flex flex-col flex-grow border rounded-lg p-6">
+          <h1 className="text-lg font-semibold mb-4 hidden md:block">
+            CATEGORIAS
+          </h1>
+          {Categories.map((category) => (
+            <Link
+              href={`/catalogo/${category}`}
+              key={category}
+              className={`py-2 px-4 border-b hidden md:block ${currentCategory===category ? 'bg-secondary' : ''}`}
+            >
+              {category}
+            </Link>
+          ))}
+        </div>
+        <ProductsTable products={products} id_user={id_user} />
+      </div>
       <div className="mt-5 flex w-full justify-center">
         <MyPagination
           totalPages={totalPages}

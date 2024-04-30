@@ -44,7 +44,7 @@ export default function Component({ product }: { product: Product }) {
       <div className="grid w-9/12 mx-auto">
         <main className="flex flex-col gap-4 p-4 md:gap-8 md:p-6 border">
           <div>
-            <div className="flex flex-row mx-auto border p-10">
+            <div className="flex flex-row justify-center w-full border ">
               <div className="w-96 h-96">Imagen</div>
               <div className="grid gap-4">
                 <h1 className="text-2xl font-semibold tracking-tight lg:text-4xl md:tracking-tighter">
@@ -170,15 +170,8 @@ export default function Component({ product }: { product: Product }) {
                 <Label className="text-base" htmlFor="description">
                   Description
                 </Label>
-                <p id="description">
-                  The Acme Circles T-Shirt is a stylish and comfortable addition
-                  to your wardrobe. Made from high-quality cotton, this t-shirt
-                  features a modern design with an all-over circle pattern. The
-                  slim fit and crew neck make it perfect for everyday wear,
-                  while the soft and breathable fabric keeps you cool and
-                  comfortable all day long. Whether you're heading to the gym or
-                  meeting friends for coffee, the Acme Circles T-Shirt is sure
-                  to make a statement.
+                <p>
+                  Descripcion
                 </p>
               </div>
             </div>

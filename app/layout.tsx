@@ -3,6 +3,12 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./context/theme-provider";
 import CookieConsent  from "@/components/cookie-consent";
+import type { Viewport } from 'next'
+ 
+export const viewport: Viewport = {
+  themeColor: 'black',
+  
+}
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +24,7 @@ export const metadata: Metadata = {
   applicationName: 'Mi Tienda',
   // referrer: 'origin-when-cross-origin',
   keywords: ['Next.js', 'React', 'JavaScript'],
-  authors: [{ name: "Next.js Team", url: "https://nextjs.org" }],
+  authors: [{ name: "@clopdevlop", url: "https://github.com/clopdevelop" }],
   creator: 'Nombre del creador de la web',
   publisher: 'Nombre de quién lo publica',
   // formatDetection: {

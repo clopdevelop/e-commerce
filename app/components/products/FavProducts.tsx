@@ -9,6 +9,7 @@ import { fetchProductsbyIDs } from "@/lib/data";
 import { Product } from "@/lib/definitions";
 import { StarIcon } from "lucide-react"
 import Link from "next/link";
+import Image from "next/image";
 
 interface Props {
   favorites?: number[]
@@ -38,7 +39,7 @@ export default async function FavsTable({ favorites }: Props) {
               <Card key={product.id}>
               {/* <Link className="absolute inset-0 rounded-lg overflow-hidden z-10" href="#" /> */}
               <div className="grid gap-2.5 p-4">
-                <img
+                <Image
                   alt="Thumbnail"
                   className="aspect-square object-cover rounded-lg border border-gray-200 overflow-hidden dark:border-gray-800"
                   height={250}

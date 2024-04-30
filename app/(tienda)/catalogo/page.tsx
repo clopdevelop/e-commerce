@@ -2,11 +2,10 @@ import ProductsTable from "@/components/products/ProductsTable";
 import Search from "@/components/utils/Search";
 import MyPagination from "@/components/utils/myPagination";
 
-import { Suspense } from 'react';
-import { fetchFilteredProducts, fetchProductsPages } from '@/lib/data';
+import { fetchAllCategories, fetchFilteredProducts, fetchProductsPages } from '@/lib/data';
 import { auth } from "@/auth";
-import { getUser } from "@/lib/data";
 import {CarouselProducts} from "@/components/products/CarouselProducts";
+import Link from "next/link";
 // import { addUserGoogle } from "@/lib/actionscommands";
 
 export const metadata = {
@@ -40,12 +39,8 @@ export default async function Home({
   //   addUserGoogle(authentication)
   // }
 
-
-  function SearchBarFallback() {
-    //todo999999 cambiar por un skeleton
-    return <div>Cargando...</div>
-  }
-
+  
+  const Categories = await fetchAllCategories();
   
   return (
     <>
@@ -53,9 +48,23 @@ export default async function Home({
       <div className="my-5  md:mt-8">
          <Search placeholder="Buscar productos..." />
       </div>
-      <Suspense fallback={<SearchBarFallback />}>
+      <div className="flex flex-col gap-5 md:flex-row border p-5">
+        <div className="flex flex-col flex-grow border rounded-lg p-6">
+          <h1 className="text-lg font-semibold mb-4 hidden md:block">
+            CATEGORIAS
+          </h1>
+          {Categories.map((category) => (
+            <Link
+              href={`/catalogo/${category}`}
+              key={category}
+              className={`py-2 px-4 border-b hidden md:block`}
+            >
+              {category}
+            </Link>
+          ))}
+        </div>
         <ProductsTable products={products} id_user={id_user} />
-      </Suspense>
+      </div>
       <div className="mt-5 flex w-full justify-center">
           <MyPagination totalPages={totalPages} currentPage={currentPage}></MyPagination>
       </div>

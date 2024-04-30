@@ -1,10 +1,10 @@
 "use client"
 // THANKS TO Rahul Rajput - r2hu1
 import { CookieIcon } from "lucide-react";
-import { Button } from "./shadcn/button";
+import { Button } from "@/components/shadcn";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "./shadcn";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/shadcn";
 import { DemoCookieSettings } from "./cookie-settings";
 
 

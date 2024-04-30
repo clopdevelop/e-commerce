@@ -72,17 +72,7 @@ import Link from "next/link";
 import { string } from "zod";
 import { ProductTags } from "./productsTagsInput";
 import { FancyMultiSelect } from "./fancy-multi-select";
-import {
-  FileUploader,
-  FileInput,
-  FileUploaderContent,
-  FileUploaderItem,
-} from "@/components/shadcn/extensions/file-uploader";
-import { DropzoneOptions } from "react-dropzone";
-import { toast } from "sonner";
-import {  Send } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { AspectRatio } from "@/components/shadcn/aspect-ratio";
+import { ImageUploader } from "@/components/file-uploader";
 
 interface Props {
   categories: string[];
@@ -107,14 +97,6 @@ export default function NewProductForm({ categories }: Props) {
   }
 
     const form = useForm();
-   
-    const dropzone = {
-      multiple: true,
-      maxFiles: 3,
-      maxSize: 4 * 1024 * 1024,
-    } satisfies DropzoneOptions;
-   
-
 
   return (
     <>
@@ -504,52 +486,7 @@ export default function NewProductForm({ categories }: Props) {
                                           }
                                         }}
                                       /> */}
-                                      <FileUploader
-                                        value={field.value}
-                                        onValueChange={field.onChange}
-                                        dropzoneOptions={dropzone}
-                                        reSelect={true}
-                                      >
-                                        <FileInput
-                                          className={cn(
-                                            buttonVariants({
-                                              size: "icon",
-                                            }),
-                                            "size-8"
-                                          )}
-                                        >
-                                          <Paperclip className="size-4" />
-                                          <span className="sr-only">
-                                            Select your files
-                                          </span>
-                                        </FileInput>
-                                        {field.value &&
-                                          field.value.length > 0 && (
-                                            <FileUploaderContent className="absolute bottom-8 p-2  w-full -ml-3 rounded-b-none rounded-t-md flex-row gap-2 ">
-                                              {field.value.map((file:any,i:number) => (
-                                                <FileUploaderItem
-                                                  key={i}
-                                                  index={i}
-                                                  aria-roledescription={`file ${
-                                                    i + 1
-                                                  } containing ${file.name}`}
-                                                  className="p-0 size-20"
-                                                >
-                                                  <AspectRatio className="size-full">
-                                                    <Image
-                                                      src={URL.createObjectURL(
-                                                        file
-                                                      )}
-                                                      alt={file.name}
-                                                      className="object-cover rounded-md"
-                                                      fill
-                                                    />
-                                                  </AspectRatio>
-                                                </FileUploaderItem>
-                                              ))}
-                                            </FileUploaderContent>
-                                          )}
-                                      </FileUploader>
+                                      <ImageUploader />
                                     </FormControl>
                                   </FormItem>
                                 )}

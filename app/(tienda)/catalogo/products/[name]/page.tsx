@@ -1,11 +1,11 @@
 import { Product } from "@/lib/definitions";
 import { Metadata } from "next";
-import { countProducts, fetchProduct } from "@/lib/data";
+import { countProducts, fetchAllProducts, fetchProductbyName } from "@/lib/data";
 import ProductPage from "@/components/ui/ProductPage";
 import { notFound } from "next/navigation";
 
 interface Props {
-  params: { id: string };
+  params: { name: string };
   searchParams : { }
 }
 
@@ -15,12 +15,10 @@ export const dynamicParams = false
 // todo Consideración importante: En el slog hay que utilizar el nombre del producto para que las arañas de google entiendan las urls
 export async function generateStaticParams() {
 
-  const totalProducts = await countProducts();
+ const products = await fetchAllProducts()
 
-  const staticProductsIndexes = Array.from({ length: totalProducts }).map( (v, i) => `${i + 1}` );
-
-  return staticProductsIndexes.map( id => ({
-    id: id
+  return products.map( product => ({
+    name: product.name
   }));
 }
 
@@ -28,7 +26,7 @@ export async function generateStaticParams() {
 // Metadata dinámica
 export async function generateMetadata({params }: Props): Promise<Metadata> {
   try {
-    const product: Product = await fetchProduct(Number(params.id));
+    const product: Product = await fetchProductbyName(params.name);
   if (product === null) {
     throw new Error('Producto no encontrado');
   }
@@ -48,7 +46,7 @@ export async function generateMetadata({params }: Props): Promise<Metadata> {
 export default async function Page({ params }: Props) {
 
   try {
-    const product : Product  = await fetchProduct(Number(params.id))
+    const product : Product  = await fetchProductbyName(params.name)
   
     return (
       <ProductPage product={product}></ProductPage>

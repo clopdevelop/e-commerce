@@ -93,7 +93,7 @@ export const FancyMultiSelect = ({ onChange }: Props) => {
 
   React.useEffect(() => {
     onChange?.(selected);
-  }, [selected]);
+  }, [selected, onChange]);
 
   return (
     <Command

@@ -6,7 +6,7 @@
 import { CardTitle, CardDescription, CardHeader, CardContent, CardFooter, Card } from "@/components/shadcn/card"
 import { Input } from "@/components/shadcn/input"
 import { Button } from "@/components/shadcn/button"
-import  AddressAutoForm  from "../form/AddressAutoForm"
+// import  AddressAutoForm  from "@/components/form/AddressAutoForm"
 
 export default function Component() {
   return (

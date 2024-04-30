@@ -1,5 +1,5 @@
 "use client";
-import { enviarEmail } from "@/lib/actionscommands";
+// import { enviarEmail } from "@/lib/actionscommands";
 import React, { useState } from "react";
 import { Button, Card, Input, Textarea } from "../shadcn";
 
@@ -23,13 +23,13 @@ const ContactForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await enviarEmail(formData);
-      // Optionally, you can reset the form here
-      setFormData({
-        name: "",
-        email: "",
-        text: "",
-      });
+      // await enviarEmail(formData);
+      // // Optionally, you can reset the form here
+      // setFormData({
+      //   name: "",
+      //   email: "",
+      //   text: "",
+      // });
     } catch (error) {
       console.error("Error al enviar el correo:", error);
     }

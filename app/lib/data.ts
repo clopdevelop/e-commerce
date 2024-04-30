@@ -1,6 +1,7 @@
 "use server"
 import prisma from "@/lib/prisma";
 import { User, Category } from './definitions';
+import { sleep } from "./utils";
 
 /**
  * Devuelve todos los Productos
@@ -19,7 +20,6 @@ export async function fetchAllProducts() {
 }
 
 export async function fetchProducts(currentPage: number = 1) {
-  // await new Promise((resolve) => setTimeout(resolve,3000));
 
   const productsOnPage = 1; 
   const productsToSkip = (currentPage - 1) * productsOnPage;
@@ -39,6 +39,8 @@ export async function fetchProducts(currentPage: number = 1) {
  * @returns 
  */
 export async function fetchFilteredProducts(query: string, currentPage: number, productsOnPage: number) {
+    await sleep(3)
+
     const productsToSkip = (currentPage - 1) * productsOnPage;
   
     const filteredProducts = await prisma.product.findMany({
@@ -77,6 +79,21 @@ export async function fetchProduct(id: number) {
   const Product = await prisma.product.findFirst({
     where: {
       id : id
+    },
+    include: { ProductImage: true },
+  }
+  );
+
+  if (Product==null)
+    throw new Error;
+
+  return Product;
+}
+
+export async function fetchProductbyName(name: string) {
+  const Product = await prisma.product.findFirst({
+    where: {
+      name : name
     },
     include: { ProductImage: true },
   }

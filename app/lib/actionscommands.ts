@@ -387,34 +387,34 @@ import { Resend } from 'resend';
 import { revalidatePath } from "next/cache";
 
 
-export async function enviarEmail(formData: { name: string; email: string; text: string; }) {
-const resend = new Resend(process.env.RESEND_API_KEY);
+// export async function enviarEmail(formData: { name: string; email: string; text: string; }) {
+// const resend = new Resend(process.env.RESEND_API_KEY);
 
-  const firstName = formData.name ?? '';
-  const email = formData.email ?? '';
-  const text = formData.text ?? '';
+//   const firstName = formData.name ?? '';
+//   const email = formData.email ?? '';
+//   const text = formData.text ?? '';
   
-  try {
-    const emailContent = EmailTemplate({ firstName: firstName, email: text, text: text });
+//   try {
+//     const emailContent = EmailTemplate({ firstName: firstName, email: text, text: text });
     
-    const formDataToSend = new FormData();
-    formDataToSend.append('name', firstName);
-    formDataToSend.append('email', email);
-    formDataToSend.append('text', text);
+//     const formDataToSend = new FormData();
+//     formDataToSend.append('name', firstName);
+//     formDataToSend.append('email', email);
+//     formDataToSend.append('text', text);
     
-    const data = await resend.emails.send({
-      from: 'Acme <onboarding@resend.dev>',
-      to: ["yakiiloop@gmail.com"],
-      subject: text,
-      react: emailContent,
-      text: ''
-    });
+//     const data = await resend.emails.send({
+//       from: 'Acme <onboarding@resend.dev>',
+//       to: ["yakiiloop@gmail.com"],
+//       subject: text,
+//       react: emailContent,
+//       text: ''
+//     });
 
-    return { message: "Email enviado" };
-  } catch (error) {
-    return { mensaje: "Error al enviar: ", error };
-  }
-}
+//     return { message: "Email enviado" };
+//   } catch (error) {
+//     return { mensaje: "Error al enviar: ", error };
+//   }
+// }
 
 
 export async function guardarDireccion(formData: { name: string; email: string; text: string; }) {

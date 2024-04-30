@@ -30,7 +30,7 @@ export default function ProductCard({ product, id_user }: { product: Product, id
         if (favs && favs.split(',').includes(String(product.id))) {
             setFav(true);
         }
-    }, []);
+    }, [product.id]);
 
     const toggleFav = () => {
         const favoritos = getCookie("favoritos") || '';
@@ -55,7 +55,7 @@ export default function ProductCard({ product, id_user }: { product: Product, id
                 <div className="flex justify-between">
                     <div>
                         <CardTitle className="h-15 leading-relaxed line-clamp-2 text-balance py-3">
-                            <Link href={`catalogo/${product.id}`} className="text-2xl font-semibold mb-2">{product.name}</Link>
+                            <Link href={`/catalogo/product/${product.id}`} className="text-2xl font-semibold mb-2">{product.name}</Link>
                         </CardTitle>
                         <CardDescription className="h-16 text-lg">
                             {product.description}

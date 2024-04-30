@@ -14,7 +14,7 @@ import {
 } from "@/components/shadcn/card";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { Input } from "@/components/shadcn/input";
-import { DialogDemo } from "../client/changePassDialog";
+import { ChangePassDialog } from "@/components/client/changePassDialog";
 import UserAddressDialog from "../client/UserAddressDialog";
 
 export default function SettingForm() {
@@ -78,7 +78,7 @@ export default function SettingForm() {
                 <CardTitle>Contraseña</CardTitle>
               </CardHeader>
               <CardContent>
-                <DialogDemo></DialogDemo>
+                <ChangePassDialog></ChangePassDialog>
               </CardContent>
             </Card>
             <Card x-chunk="dashboard-04-chunk-1">

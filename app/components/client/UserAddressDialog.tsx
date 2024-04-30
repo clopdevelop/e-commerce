@@ -35,7 +35,7 @@ export default function DialogDemo() {
         <DialogHeader>
           <DialogTitle>Dirección</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            Realiza cambios en tu perfil aquí. Haz clic en Guardar cuando hayas terminado.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">

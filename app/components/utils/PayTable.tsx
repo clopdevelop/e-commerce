@@ -44,7 +44,7 @@ export default function PayTable({user}: Props) {
   const { items } = useCart();
   useEffect(() => {
     setProducts(products);
-  }, []);
+  }, [products]);
 
   return (
     <Card className="overflow-hidden">
@@ -93,7 +93,7 @@ export default function PayTable({user}: Props) {
           <div className="font-semibold">Detalles del Pedido</div>
           <ul className="grid gap-3">
             {items?.map((item) => (
-              <li className="flex items-center justify-between">
+              <li key={item.id} className="flex items-center justify-between">
                 <span className="text-muted-foreground">
                   {item.name} x <span>{item.quantity}</span>
                 </span>
