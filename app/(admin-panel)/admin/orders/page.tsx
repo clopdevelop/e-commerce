@@ -191,7 +191,7 @@ export default async function Dashboard() {
                                 </TableHeader>
                                 <TableBody>
                                     {orders.map((order)=> (
-                                        <TableRow >
+                                        <TableRow key={order.id} >
                                         <TableCell>
                                             <div className="font-medium">{order.id_user}</div>
                                             <div className="hidden text-sm text-muted-foreground md:inline">

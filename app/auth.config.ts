@@ -1,4 +1,4 @@
-import type { NextAuthConfig } from 'next-auth';
+import type { NextAuthConfig, User } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { z } from 'zod';
@@ -51,7 +51,7 @@ export const authConfig: NextAuthConfig = {
     },
     providers: [
       Credentials({
-        async authorize(credentials) {
+        async authorize(credentials: Partial<Record<string, unknown>>): Promise<User | null> {
           const parsedCredentials = z
             .object({ email: z.string().email(), password: z.string().min(6) })
             .safeParse(credentials);
@@ -71,7 +71,14 @@ export const authConfig: NextAuthConfig = {
           if (!passwordsMatch) return null;
 
           const { password: pass, ...rest } = user;
-          return rest;
+
+
+          return {
+            id: String(user.id),
+            name: user.name,
+            email: user.email,
+          };
+          // return rest;
 
         },
       })
