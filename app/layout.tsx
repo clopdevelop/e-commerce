@@ -7,19 +7,60 @@ import type { Viewport } from 'next'
  
 export const viewport: Viewport = {
   themeColor: 'black',
-  
 }
 
 const inter = Inter({ subsets: ["latin"] });
 
+const { SITE_NAME } = process.env
 // todo Completar los metadatos https://nextjs.org/docs/app/api-reference/functions/generate-metadata
 export const metadata: Metadata = {
+  metadataBase: new URL('https://Tienda.com'),
+  alternates: {
+    canonical: '/',
+    languages: {
+      'en-US': '/en-US',
+      'de-DE': '/de-DE',
+    },
+  },
+  // openGraph: {
+  //   title: 'Next.js',
+  //   description: 'The React Framework for the Web',
+  //   url: 'https://nextjs.org',
+  //   siteName: 'Next.js',
+  //   images: [
+  //     {
+  //       url: 'https://nextjs.org/og.png', // Must be an absolute URL
+  //       width: 800,
+  //       height: 600,
+  //     },
+  //     {
+  //       url: 'https://nextjs.org/og-alt.png', // Must be an absolute URL
+  //       width: 1800,
+  //       height: 1600,
+  //       alt: 'My custom alt',
+  //     },
+  //   ],
+  //   locale: 'en_US',
+  //   type: 'website',
+  // },
   title: {
-    template: '',
-    default: "Tienda Web",
+    default: SITE_NAME!,
+    template: `%s | ${SITE_NAME}`
     // absolute: '',
   },
-  description: "Implementación General de una Tienda Web",
+  robots: {
+    index: false,
+    follow: true,
+    // nocache: true,
+    // googleBot: {
+    //   index: true,
+    //   follow: false,
+    //   noimageindex: true,
+    //   'max-video-preview': -1,
+    //   'max-image-preview': 'large',
+    //   'max-snippet': -1,
+    // },
+  },
   generator: 'Next.js',
   applicationName: 'Mi Tienda',
   // referrer: 'origin-when-cross-origin',

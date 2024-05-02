@@ -1,4 +1,4 @@
-import { auth,  } from "@/auth";
+import { auth } from "@/auth";
 import ProductsTable from "@/components/products/ProductsTable";
 import Search from "@/components/utils/Search";
 import MyPagination from "@/components/utils/myPagination";
@@ -13,16 +13,27 @@ import {
 } from "@/lib/data";
 import Link from "next/link";
 import { Suspense } from "react";
+import type { Metadata } from "next";
 
-export const dynamicParams = false
+export const dynamicParams = false;
 
 //! En tiempo de compilación
 export async function generateStaticParams() {
   const categories = await fetchAllCategories();
 
-  return categories.map( category => ({
+  return categories.map((category) => ({
     category: category,
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { currentCategory: string };
+}): Promise<Metadata> {
+  return { 
+    title: params.currentCategory,
+  };
 }
 
 export default async function Home({
@@ -37,7 +48,7 @@ export default async function Home({
     currentCategory: string;
   };
 }) {
-  const {currentCategory} = params;
+  const { currentCategory } = params;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
   const productOnPage = 3;
@@ -63,8 +74,8 @@ export default async function Home({
   }
 
   const Categories = await fetchAllCategories();
-  
-  console.log(currentCategory)
+
+  console.log(currentCategory);
   return (
     <>
       <h1 className="flex justify-center text-4xl mt-5">{currentCategory}</h1>
@@ -80,7 +91,9 @@ export default async function Home({
             <Link
               href={`/catalogo/${category}`}
               key={category}
-              className={`py-2 px-4 border-b hidden md:block ${currentCategory===category ? 'bg-secondary' : ''}`}
+              className={`py-2 px-4 border-b hidden md:block ${
+                currentCategory === category ? "bg-secondary" : ""
+              }`}
             >
               {category}
             </Link>

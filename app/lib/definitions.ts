@@ -1,3 +1,10 @@
+export type Connection<T> = {
+  edges: Array<Edge<T>>;
+}
+
+export type Edge<T> = {
+  node: T;
+}
 
 export type User = {
   id: number;
@@ -28,12 +35,16 @@ export type Product = {
   category?: Category | null;
   id_category?: number | null;
   OrderItem?: OrderItem[];
-  ProductImage?: ProductImage[];
+  images?: Connection<Image>;
+  thumbnail?: Image;
 }
 
-export type ProductImage = {
+export type Image = {
   id: number;
   url: string;
+  altText: string;
+  width: number;
+  height: number;
 }
 
 export type Category = {
