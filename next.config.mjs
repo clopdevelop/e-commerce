@@ -33,7 +33,7 @@ const nextConfig = {
         remotePatterns: [
           {
             // cambiar a https cuando cambie la imagen que acabo de subir
-            protocol: 'http',
+            protocol: 'https',
             hostname: 'res.cloudinary.com',
             // port: '',
             // pathname: '/account123/**',

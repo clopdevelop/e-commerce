@@ -49,7 +49,7 @@ export const ImageUploader: React.FC = () => {
         form.resetField("image");
       }
     },
-    [form],
+    [form]
   );
 
   const { getRootProps, getInputProps, isDragActive, fileRejections } =
@@ -92,15 +92,8 @@ export const ImageUploader: React.FC = () => {
               <FormControl>
                 <div
                   {...getRootProps()}
-                  className="mx-auto flex cursor-pointer flex-col items-center justify-center gap-y-2 rounded-lg border border-foreground p-8 shadow-sm shadow-foreground"
+                  className="mx-auto flex cursor-pointer flex-col items-center justify-center gap-y-2 rounded-lg border border-foreground shadow-sm shadow-foreground"
                 >
-                  {preview && (
-                    <Image
-                      src={preview as string}
-                      alt="Uploaded image"
-                      className="max-h-[400px] rounded-lg"
-                    />
-                  )}
                   <ImagePlus
                     className={`size-40 ${preview ? "hidden" : "block"}`}
                   />
@@ -122,6 +115,15 @@ export const ImageUploader: React.FC = () => {
             </FormItem>
           )}
         />
+        {preview && (
+          <Image
+            src={preview as string}
+            alt="Uploaded image"
+            className="max-h-[400px] rounded-lg"
+            width={300}
+            height={300}
+          />
+        )}
         <Button
           type="submit"
           disabled={form.formState.isSubmitting}

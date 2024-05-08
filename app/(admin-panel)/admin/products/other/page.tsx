@@ -15,7 +15,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/shadcn/form";
-import { addProductTEST } from "@/lib/actionscommands";
 
 
 export default function ExampleForm() {

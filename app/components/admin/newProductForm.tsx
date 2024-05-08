@@ -65,7 +65,7 @@ import {
 } from "@/components/shadcn/form";
 import { useForm } from "react-hook-form";
 import { Key, useState } from "react";
-import { addProductTEST } from "@/lib/actionscommands";
+import { addProduct } from "@/lib/actionscommands";
 import Image from "next/image";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
@@ -80,6 +80,8 @@ interface Props {
 
 export default function NewProductForm({ categories }: Props) {
 
+  const form = useForm();
+
   const states = ["Disponible", "Agotado"];
   const [selectedStatus, setSelectedStatus] = useState("Disponible");
   const handleStatusChange = (value: any) => {
@@ -93,15 +95,13 @@ export default function NewProductForm({ categories }: Props) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
-    addProductTEST(values);
+    addProduct(values);
   }
 
-    const form = useForm();
 
   return (
     <>
       <Form {...form}>
-        {/* <form action={addProductTEST} className="space-y-8"> */}
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="flex min-h-screen w-full flex-col">
             <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -134,9 +134,6 @@ export default function NewProductForm({ categories }: Props) {
                       <Card x-chunk="dashboard-07-chunk-0">
                         <CardHeader>
                           <CardTitle>Detalles del producto</CardTitle>
-                          <CardDescription>
-                            Lipsum dolor sit amet, consectetur adipiscing elit
-                          </CardDescription>
                         </CardHeader>
                         <CardContent>
                           <div className="grid gap-6">
@@ -184,20 +181,17 @@ export default function NewProductForm({ categories }: Props) {
                       </Card>
                       <Card x-chunk="dashboard-07-chunk-1">
                         <CardHeader>
-                          <CardTitle>Stock</CardTitle>
-                          <CardDescription>
-                            Lipsum dolor sit amet, consectetur adipiscing elit
-                          </CardDescription>
+                          <CardTitle>Variables</CardTitle>
                         </CardHeader>
                         <CardContent>
                           <Table>
                             <TableHeader>
                               <TableRow>
-                                <TableHead className="w-[100px]">SKU</TableHead>
-                                <TableHead>Stock</TableHead>
-                                <TableHead>Price</TableHead>
+                                <TableHead className="w-[100px]">Código</TableHead>
+                                <TableHead>Cantidad</TableHead>
+                                <TableHead>Precio</TableHead>
                                 <TableHead className="w-[100px]">
-                                  Size
+                                 Talla
                                 </TableHead>
                               </TableRow>
                             </TableHeader>
@@ -284,7 +278,7 @@ export default function NewProductForm({ categories }: Props) {
                         <CardFooter className="justify-center border-t p-4">
                           <Button size="sm" variant="ghost" className="gap-1">
                             <PlusCircle className="h-3.5 w-3.5" />
-                            Add Variant
+                            Añadir Variante
                           </Button>
                         </CardFooter>
                       </Card>
@@ -348,11 +342,6 @@ export default function NewProductForm({ categories }: Props) {
                                             );
                                           }}
                                         />
-                                        {/* <Input
-                                          {...field}
-                                          type="number"
-                                          className="w-full"
-                                        /> */}
                                       </FormControl>
                                     </FormItem>
                                   )}
@@ -426,10 +415,7 @@ export default function NewProductForm({ categories }: Props) {
                         x-chunk="dashboard-07-chunk-4"
                       >
                         <CardHeader>
-                          <CardTitle>Product Images</CardTitle>
-                          <CardDescription>
-                            Lipsum dolor sit amet, consectetur adipiscing elit
-                          </CardDescription>
+                          <CardTitle>Imágenes del producto</CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="grid gap-2">
@@ -465,8 +451,8 @@ export default function NewProductForm({ categories }: Props) {
                                       {/* <button className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
                                         <Upload className="h-4 w-4 text-muted-foreground" />
                                         <span className="sr-only">Upload</span>
-                                      </button> */}
-                                      {/* <Input
+                                      </button>  */}
+                                      <Input
                                         {...field}
                                         id="image"
                                         type="file"
@@ -485,8 +471,8 @@ export default function NewProductForm({ categories }: Props) {
                                             setFile(e.target.files[0]);
                                           }
                                         }}
-                                      /> */}
-                                      <ImageUploader />
+                                      />
+                                      {/* <ImageUploader /> */}
                                     </FormControl>
                                   </FormItem>
                                 )}

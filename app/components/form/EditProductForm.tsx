@@ -69,6 +69,7 @@ import Image from "next/image";
 import { Product } from "@/lib/definitions";
 import Link from "next/link";
 import { useFormStatus } from "react-dom";
+import { FancyMultiSelect } from "../admin/fancy-multi-select";
 
 interface Props {
   product: Product;
@@ -76,6 +77,7 @@ interface Props {
 }
 
 export default function EditProductForm({ product, categories }: Props) {
+
   const form = useForm();
 
   const states = ["Disponible", "Agotado"];
@@ -83,6 +85,10 @@ export default function EditProductForm({ product, categories }: Props) {
   const handleStatusChange = (value: any) => {
     setSelectedStatus(value);
   };
+
+  const { ProductImage } = product
+
+  console.log(product)
 
   const [file, setFile] = useState<File | null>(null);
 
@@ -115,7 +121,7 @@ export default function EditProductForm({ product, categories }: Props) {
                     </Badge>
                     <div className="hidden items-center gap-2 md:ml-auto md:flex">
                       <Button variant="outline" size="sm">
-                        Discard
+                        Cancelar
                       </Button>  
                       <SubmitButton/>
                     </div>
@@ -125,9 +131,6 @@ export default function EditProductForm({ product, categories }: Props) {
                       <Card x-chunk="dashboard-07-chunk-0">
                         <CardHeader>
                           <CardTitle>Detalles del producto</CardTitle>
-                          <CardDescription>
-                            Lipsum dolor sit amet, consectetur adipiscing elit
-                          </CardDescription>
                         </CardHeader>
                         <CardContent>
                           <div className="grid gap-6">
@@ -154,6 +157,7 @@ export default function EditProductForm({ product, categories }: Props) {
                             <div className="grid gap-3">
                               <FormField
                                 control={form.control}
+                                defaultValue={product.description ?? ""}
                                 {...form.register("description")}
                                 render={({ field }) => (
                                   <FormItem>
@@ -163,7 +167,6 @@ export default function EditProductForm({ product, categories }: Props) {
                                         {...field}
                                         id="description"
                                         className="min-h-32"
-                                        defaultValue={product.description ?? ""}
                                       />
                                     </FormControl>
                                   </FormItem>
@@ -175,20 +178,17 @@ export default function EditProductForm({ product, categories }: Props) {
                       </Card>
                       <Card x-chunk="dashboard-07-chunk-1">
                         <CardHeader>
-                          <CardTitle>Stock</CardTitle>
-                          <CardDescription>
-                            Lipsum dolor sit amet, consectetur adipiscing elit
-                          </CardDescription>
+                          <CardTitle>Variables</CardTitle>
                         </CardHeader>
                         <CardContent>
                           <Table>
                             <TableHeader>
                               <TableRow>
-                                <TableHead className="w-[100px]">SKU</TableHead>
-                                <TableHead>Stock</TableHead>
-                                <TableHead>Price</TableHead>
+                                <TableHead className="w-[100px]">Código</TableHead>
+                                <TableHead>Cantidad</TableHead>
+                                <TableHead>Precio</TableHead>
                                 <TableHead className="w-[100px]">
-                                  Size
+                                  Talla
                                 </TableHead>
                               </TableRow>
                             </TableHeader>
@@ -272,9 +272,10 @@ export default function EditProductForm({ product, categories }: Props) {
                           </Table>
                         </CardContent>
                         <CardFooter className="justify-center border-t p-4">
+                          // todo este botón deberá crear una fila para una variacion del producto
                           <Button size="sm" variant="ghost" className="gap-1">
                             <PlusCircle className="h-3.5 w-3.5" />
-                            Add Variant
+                            Añadir Variante
                           </Button>
                         </CardFooter>
                       </Card>
@@ -285,70 +286,64 @@ export default function EditProductForm({ product, categories }: Props) {
                         <CardContent>
                           <div className="grid gap-6 sm:grid-cols-3">
                             <div className="grid gap-3">
-                              <Label htmlFor="category">Category</Label>
-                              <FormField
+                            <FormField
                                 control={form.control}
+                                defaultValue=""
                                 {...form.register("category")}
-                                defaultValue={product.category}
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormControl>
-                                      <Select {...field}>
-                                        <SelectTrigger
-                                          id="category"
-                                          aria-label="Select category"
-                                        >
-                                          <SelectValue placeholder="Select category" />
+                                    <FormLabel htmlFor="category">
+                                      Categoría
+                                    </FormLabel>
+                                    <Select
+                                      {...field}
+                                      defaultValue={field.value}
+                                      value={field.value}
+                                      onValueChange={field.onChange}
+                                    >
+                                      <FormControl>
+                                        <SelectTrigger aria-label="Selecciona la categoría">
+                                          <SelectValue placeholder="Selecciona la categoría" />
                                         </SelectTrigger>
-                                        <SelectContent>
-                                          {categories.map((category) => (
-                                            <SelectItem
-                                              key={category}
-                                              value={category}
-                                            >
-                                              {category}
-                                            </SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                    </FormControl>
+                                      </FormControl>
+                                      <SelectContent>
+                                        {categories.map((category, i) => (
+                                          <SelectItem
+                                            key={i}
+                                            value={String(i + 1)}
+                                          >
+                                            {category}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
                                   </FormItem>
                                 )}
                               />
                             </div>
-                            <div className="grid gap-3">
-                              <Label htmlFor="subcategory">
-                                Subcategory (optional)
-                              </Label>
-                              <FormField
-                                control={form.control}
-                                {...form.register("subcategory")}
-                                defaultValue=""
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormControl>
-                                      <Select {...field}>
-                                        <SelectTrigger
-                                          id="subcategory"
-                                          aria-label="Select subcategory"
-                                        >
-                                          <SelectValue placeholder="Select subcategory" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          {categories.map((category) => (
-                                            <SelectItem
-                                              key={category}
-                                              value={category}
-                                            >
-                                              {category}
-                                            </SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                    </FormControl>
-                                  </FormItem>
-                                )}
-                              />
+                            <div className="grid gap-3 w-80">
+                              <div className="grid gap-3">
+                                <FormField
+                                  control={form.control}
+                                  defaultValue={[]}
+                                  {...form.register("tags")}
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Etiquetas</FormLabel>
+                                      <FormControl>
+                                        <FancyMultiSelect
+                                          {...field}
+                                          onChange={(values) => {
+                                            field.onChange(
+                                              values.map(({ value }) => value)
+                                            );
+                                          }}
+                                        />
+                                      </FormControl>
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
                             </div>
                           </div>
                         </CardContent>
@@ -411,57 +406,39 @@ export default function EditProductForm({ product, categories }: Props) {
                           </div>
                         </CardContent>
                       </Card>
+                      <Card x-chunk="dashboard-07-chunk-5">
+                        <CardContent className="pt-5">
+                          {ProductImage && (
+                            <Image
+                              alt=""
+                              src={ProductImage[0].url}
+                              width={100}
+                              height={100}
+                              className="w-full"
+                            />
+                          )}
+                        </CardContent>
+                      </Card>
                       <Card
                         className="overflow-hidden"
                         x-chunk="dashboard-07-chunk-4"
                       >
                         <CardHeader>
-                          <CardTitle>Product Images</CardTitle>
-                          <CardDescription>
-                            Lipsum dolor sit amet, consectetur adipiscing elit
-                          </CardDescription>
+                          <CardTitle>Imágenes del</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <div className="grid gap-2">
-                            {/* <Image
-                              alt="Product image"
-                              className="aspect-square w-full rounded-md object-cover"
-                              height="300"
-                              src="/placeholder.svg"
-                              width="300" /> */}
-                            <div className="grid grid-cols-3 gap-2">
-                              {/* <button>
-                                <Image
-                                  alt="Product image"
-                                  className="aspect-square w-full rounded-md object-cover"
-                                  height="84"
-                                  src="/placeholder.svg"
-                                  width="84" />
-                              </button>
-                              <button>
-                                <Image
-                                  alt="Product image"
-                                  className="aspect-square w-full rounded-md object-cover"
-                                  height="84"
-                                  src="/placeholder.svg"
-                                  width="84" />
-                              </button> */}
                               <FormField
                                 control={form.control}
                                 {...form.register("image")}
-                                defaultValue=""
                                 render={({ field }) => (
                                   <FormItem>
                                     <FormControl>
-                                      {/* <button className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
-                                        <Upload className="h-4 w-4 text-muted-foreground" />
-                                        <span className="sr-only">Upload</span>
-                                      </button> */}
                                       <Input
                                         {...field}
                                         id="image"
                                         type="file"
                                         className="w-auto max-w-52"
+                                        accept="image/jpeg"
                                         src={
                                           file
                                             ? URL.createObjectURL(file)
@@ -473,53 +450,35 @@ export default function EditProductForm({ product, categories }: Props) {
                                             e.target.files.length > 0
                                           ) {
                                             setFile(e.target.files[0]);
-                                            console.log(e.target.files[0]);
                                           }
                                         }}
                                       />
+                                      {/* <ImageUploader /> */}
                                     </FormControl>
                                   </FormItem>
                                 )}
                               />
+                            <div className="pt-5">
+                              {file && (
+                                <Image
+                                  alt=""
+                                  src={URL.createObjectURL(file)}
+                                  width={100}
+                                  height={100}
+                                  className="w-full"
+                                />
+                              )}
                             </div>
-                          </div>
                         </CardContent>
                       </Card>
-                      <Card x-chunk="dashboard-07-chunk-5">
-                        <CardContent className="pt-5">
-                          {file && (
-                            <Image
-                              alt=""
-                              src={URL.createObjectURL(file)}
-                              width={100}
-                              height={100}
-                              className="w-full"
-                            />
-                          )}
-                        </CardContent>
-                      </Card>
-                      {/* <Card x-chunk="dashboard-07-chunk-5">
-                        <CardHeader>
-                          <CardTitle>Archive Product</CardTitle>
-                          <CardDescription>
-                            Lipsum dolor sit amet, consectetur adipiscing elit.
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <div></div>
-                          <Button size="sm" variant="secondary">
-                            Archive Product
-                          </Button>
-                        </CardContent>
-                      </Card> */}
                     </div>
                   </div>
                   {/* Responsive Save */}
                   <div className="flex items-center justify-center gap-2 md:hidden">
                     <Button variant="outline" size="sm">
-                      Discard
+                      Cancelar
                     </Button>
-                    <Button size="sm">Save Product</Button>
+                    <Button size="sm">Editar</Button>
                   </div>
                 </div>
               </main>
@@ -538,7 +497,7 @@ function SubmitButton(){
 
   return(
     <Button type="submit" size="sm" disabled={pending}>
-      EDIT PRODUCT
+      Editar
     </Button>
   )
 }

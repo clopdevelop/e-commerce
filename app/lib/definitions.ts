@@ -1,3 +1,4 @@
+// UTILS 
 export type Connection<T> = {
   edges: Array<Edge<T>>;
 }
@@ -6,6 +7,26 @@ export type Edge<T> = {
   node: T;
 }
 
+export enum ERROR_TYPES {
+  NOT_FOUND,
+  UNAUTHORIZED,
+  FORBIDDEN
+}
+
+export const enum CATEGORIES {
+  ELECTRONICS,
+  CLOTHING,
+  BOOKS,
+  HOME,
+  SPORTS,
+  BEAUTY,
+  TOYS,
+  FOOD,
+  HEALTH,
+  AUTOMOTIVE
+}
+
+// USER
 export type User = {
   id: number;
   name: string;
@@ -19,6 +40,17 @@ export type User = {
   Order?: Order[] | null;
 }
 
+export type PaymentMethod = {
+  id_p_method: number;
+  payment_method: string;
+  Invoice: Invoice[];
+}
+
+export type Address = {
+  // Assuming Address is another model not defined here. Properties would need to be filled in.
+}
+
+// PRODUCT
 export type Product = {
   id: number;
   code?: string | null;
@@ -35,16 +67,17 @@ export type Product = {
   category?: Category | null;
   id_category?: number | null;
   OrderItem?: OrderItem[];
-  images?: Connection<Image>;
+  // images?: Connection<Image>;
+  ProductImage: Image[];
   thumbnail?: Image;
 }
 
 export type Image = {
   id: number;
   url: string;
-  altText: string;
-  width: number;
-  height: number;
+  altText?: string;
+  width?: number;
+  height?: number;
 }
 
 export type Category = {
@@ -67,6 +100,7 @@ export type Provider = {
   products: Product[];
 }
 
+// ORDER
 export type Order = {
   id: number;
   code?: string;
@@ -90,17 +124,17 @@ export type DeliveryType = {
   Order: Order[];
 }
 
-enum delivery_type {
+const enum delivery_type {
   "Standar"
 }
 
-enum Order_Type {
+const enum Order_Type {
   "Subscripción",
   "Recogida",
   "Envío",
 }
 
-enum Order_Status {
+const enum Order_Status {
   "Pendiente",
   "Entregado",
   "Cancelado"
@@ -116,6 +150,7 @@ export type OrderItem = {
   id_product: number;
 }
 
+// INVOICE
 export type Invoice = {
   id_invoice: number;
   invoice_n: string;
@@ -129,16 +164,7 @@ export type Invoice = {
   id_p_method: number;
 }
 
-export type PaymentMethod = {
-  id_p_method: number;
-  payment_method: string;
-  Invoice: Invoice[];
-}
-
-export type Address = {
-  // Assuming Address is another model not defined here. Properties would need to be filled in.
-}
-
+// CART
 export type CartItem = {
   id: number;
   id_product: number;
