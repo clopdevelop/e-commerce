@@ -31,16 +31,14 @@ function Cart() {
       {products.map((product, index) => (
         <div key={product.id}>
           <div className="flex items-center gap-4">
-            {/* {product.image &&
-              <Image
-                alt="Product image"
-                className="aspect-square rounded-md object-cover"
-                height="100"
-                width="100"
-                src={product.image}
-              />
-            } */}
-            <div className="grid gap-1.5">
+            <Image
+              alt="Product image"
+              className="aspect-square rounded-md object-cover"
+              src={product.thumbnail?.url ?? ''}
+              width={100}
+              height={100}
+            />
+            <div className="grid gap-2">
               <h3 className="font-semibold text-sm leading-none">
                 {product.name}
               </h3>

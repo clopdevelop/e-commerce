@@ -36,6 +36,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
       // Si el ítem no está en el carrito, agregarlo con la cantidad especificada
       const newItem = { ...item, quantity };
       setItems((prevItems) => [...prevItems, newItem]);
+      console.log(item)
     }
   };
 

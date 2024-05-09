@@ -171,5 +171,5 @@ export type CartItem = {
   name: string;
   unit_price: number;
   quantity: number;
-  image?: string;
+  thumbnail?: Image;
 };

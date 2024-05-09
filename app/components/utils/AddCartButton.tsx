@@ -4,6 +4,7 @@ import { Button } from "../shadcn/button";
 import { CartItem, Product } from "@/lib/definitions";
 import React from "react";
 import { useCart } from "@/context/CartProvider";
+import { ShoppingCartIcon } from 'lucide-react'
 
 export default function AddCartButton({
   product,
@@ -28,6 +29,8 @@ export default function AddCartButton({
         
         throw new Error('items are undefined');
       }
+      if(!product.ProductImage)
+        return 0;
       
       const newItem: CartItem = {
         id: items.length,
@@ -35,7 +38,7 @@ export default function AddCartButton({
         name: product.name,
         unit_price: product.price,
         quantity: quantity,
-        // image: product.ProductImage?.[0].url ?? ''
+        thumbnail: product.ProductImage[0]
       };
       
       addItem(newItem, quantity);
@@ -48,49 +51,8 @@ export default function AddCartButton({
   return (
   <>
     <Button onClick={() => addProduct(product, quantity)} className="text-white">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"
-      >
-        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-        <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-        <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-        <path d="M17 17h-11v-14h-2" />
-        <path d="M6 5l14 1l-1 7h-13" />
-      </svg>
+      <ShoppingCartIcon/>
       </Button>
   </>
-    //     <Button
-    //     disabled
-    //     onClick={() => addProduct(product)}
-    //     className="text-white"
-    //   >
-    //     <svg
-    //       xmlns="http://www.w3.org/2000/svg"
-    //       width="24"
-    //       height="24"
-    //       viewBox="0 0 24 24"
-    //       fill="none"
-    //       stroke="currentColor"
-    //       strokeWidth="2"
-    //       strokeLinecap="round"
-    //       strokeLinejoin="round"
-    //       className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"
-    //     >
-    //       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-    //       <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-    //       <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-    //       <path d="M17 17h-11v-14h-2" />
-    //       <path d="M6 5l14 1l-1 7h-13" />
-    //     </svg>
-    //   </Button>
   );
 }

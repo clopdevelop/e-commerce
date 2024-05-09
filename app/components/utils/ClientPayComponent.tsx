@@ -32,7 +32,7 @@ import {
 import { Separator } from "@/components/shadcn/separator";
 import { useCart } from "@/context/CartProvider";
 import { useEffect, useState } from "react";
-import { CartItem, User } from "@/lib/definitions";
+import { CartItem, Order, User } from "@/lib/definitions";
 import { Apple, EuroIcon, Link } from "lucide-react";
 import {
   Input,
@@ -54,11 +54,23 @@ import {
 import UserAddress from "@/components/client/AddressConfig";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { useForm } from "react-hook-form";
+import { ComboboxDemo } from "@/components/order/CitySelector";
 
 interface Props {
   user: any;
 }
 export default function ClientPay({ user }: Props) {
+  //Recu
+  const order: Order = {
+    id: 0,
+    total: 0,
+    status: "",
+    paid: false,
+    discount: 0,
+    created_at: new Date(),
+    id_user: 0,
+  };
+
   const [open, setOpen] = useState(true);
 
   const [products, setProducts] = useState<CartItem[]>();
@@ -75,42 +87,7 @@ export default function ClientPay({ user }: Props) {
       {open && (
         <Card className="overflow-hidden w-9/12 mx-auto">
           <CardHeader className="flex flex-row items-start bg-muted/50">
-            <div className="grid gap-0.5">
-              <CardTitle className="group flex items-center gap-2 text-lg">
-                Order Oe31b70H
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                >
-                  <Copy className="h-3 w-3" />
-                  <span className="sr-only">Copy Order ID</span>
-                </Button>
-              </CardTitle>
-              <CardDescription>Date: November 23, 2023</CardDescription>
-            </div>
-            <div className="ml-auto flex items-center gap-1">
-              <Button size="sm" variant="outline" className="h-8 gap-1">
-                <Truck className="h-3.5 w-3.5" />
-                <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                  Track Order
-                </span>
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button size="icon" variant="outline" className="h-8 w-8">
-                    <MoreVertical className="h-3.5 w-3.5" />
-                    <span className="sr-only">More</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuItem>Export</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Trash</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+            <CardTitle className="text-lg pt-2">Introduce tus datos</CardTitle>
           </CardHeader>
           <CardContent className="p-6 text-sm">
             <Form {...form}>
@@ -126,10 +103,10 @@ export default function ClientPay({ user }: Props) {
                       <Input placeholder="Letra" type="text" />
                     </div>
                     <div className="grid gap-4 md:grid-cols-2">
-                      <Input placeholder="Provincia" type="text" />
-                      <Input placeholder="Ciudad" type="text" />
+                      <ComboboxDemo></ComboboxDemo>
+                      <ComboboxDemo></ComboboxDemo>
                     </div>
-                    <Input placeholder="Postal code" type="text" />
+                    {/* <Input placeholder="Postal code" type="text" /> */}
                   </div>
                   <FormField
                     control={form.control}
@@ -153,15 +130,31 @@ export default function ClientPay({ user }: Props) {
                     )}
                   />
                   <div className="grid gap-5 mt-12">
-                    <Label htmlFor="shippingMethod">Método de Envío:</Label>
-                    <Select name="shippingMethod">
+                    <Label htmlFor="shippingMethod">
+                      Selecciona tu método de envío:
+                    </Label>
+                    <Select
+                      name="shippingMethod"
+                    >
                       <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Vacío" />
+                        <SelectValue placeholder="Elige un método" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="light">Envío Estándar</SelectItem>
-                        <SelectItem value="dark">Envío Exprés</SelectItem>
-                        <SelectItem value="system">Otro Método</SelectItem>
+                      <SelectContent className="bg-white rounded-md shadow-md">
+                        <SelectItem value="standard">
+                          Envío Estándar (3-5 días hábiles)
+                        </SelectItem>
+                        <SelectItem value="express">
+                          Envío Exprés (1-2 días hábiles)
+                        </SelectItem>
+                        <SelectItem value="premium">
+                          Envío Premium (Entrega prioritaria)
+                        </SelectItem>
+                        <SelectItem value="international">
+                          Envío Internacional (Tiempo variable)
+                        </SelectItem>
+                        <SelectItem value="subscribe">
+                          Suscripción de Envío (Descuentos exclusivos)
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -242,7 +235,7 @@ export default function ClientPay({ user }: Props) {
                     <div className="grid grid-cols-3 gap-4 mt-2">
                       <Select>
                         <SelectTrigger id="month">
-                          <SelectValue placeholder="Month" />
+                          <SelectValue placeholder="Mes" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="1">January</SelectItem>
@@ -261,7 +254,7 @@ export default function ClientPay({ user }: Props) {
                       </Select>
                       <Select>
                         <SelectTrigger id="year">
-                          <SelectValue placeholder="Year" />
+                          <SelectValue placeholder="Año" />
                         </SelectTrigger>
                         <SelectContent>
                           {Array.from({ length: 10 }, (_, i) => (
@@ -318,7 +311,7 @@ export default function ClientPay({ user }: Props) {
       )}
       {!open && (
         <Card className="overflow-hidden w-9/12 mx-auto">
-        <CardHeader className="flex flex-row items-start bg-muted/50">
+          <CardHeader className="flex flex-row items-start bg-muted/50">
             <div className="grid gap-0.5">
               <CardTitle className="group flex items-center gap-2 text-lg">
                 <Button
@@ -328,23 +321,12 @@ export default function ClientPay({ user }: Props) {
                   className="h-6 w-6 mr-3 my-3"
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  <span className="sr-only">Previous Order</span>
+                  <span className="sr-only">Volver</span>
                 </Button>
-                {/* // todo añadir id o código del pedido */}
-                CÓDIGO: Oe31b70H
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                >
-                  <Copy className="h-3 w-3" />
-                  <span className="sr-only">Copy Order ID</span>
-                </Button>
+                Resumen del Pedido
               </CardTitle>
-              {/* //todo agregar fecha */}
-              <CardDescription>Date: </CardDescription>
             </div>
-            <div className="ml-auto flex items-center gap-1">
+            {/* <div className="ml-auto flex items-center gap-1">
               <Button size="sm" variant="outline" className="h-8 gap-1">
                 <Truck className="h-3.5 w-3.5" />
                 <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -365,7 +347,7 @@ export default function ClientPay({ user }: Props) {
                   <DropdownMenuItem>Trash</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </div>
+            </div> */}
           </CardHeader>
           <CardContent className="p-6 text-sm flex gap-10">
             <div className="w-full">
@@ -373,11 +355,14 @@ export default function ClientPay({ user }: Props) {
                 <div className="font-semibold">Detalles del Pedido</div>
                 <ul className="grid gap-3">
                   {items?.map((item) => (
-                    <li key={item.id} className="flex items-center justify-between">
+                    <li
+                      key={item.id}
+                      className="flex items-center justify-between"
+                    >
                       <span className="text-muted-foreground">
                         {item.name} x <span>{item.quantity}</span>
                       </span>
-                      <span>${item.unit_price * item.quantity}</span>
+                      <span>{item.unit_price * item.quantity} €</span>
                     </li>
                   ))}
                 </ul>
@@ -386,33 +371,30 @@ export default function ClientPay({ user }: Props) {
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span>
-                      $
                       {items.reduce((acumulador, item) => {
                         return acumulador + item.unit_price * item.quantity;
-                      }, 0)}
+                      }, 0)} €
                     </span>
                   </li>
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Envío</span>
                     {/* //todo añadir precio segun el tipo de envio */}
-                    <span>$5.00</span>
+                    <span>5 €</span>
                   </li>
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Impuestos</span>
                     <span>
-                      $
-                      {items.reduce((acumulador, item) => {
+                      {(items.reduce((acumulador, item) => {
                         return acumulador + item.unit_price * item.quantity;
-                      }, 0) * 0.21}
+                      }, 0) * 0.21).toFixed(2)} €
                     </span>
                   </li>
                   <li className="flex items-center justify-between font-semibold">
                     <span className="text-muted-foreground">Total</span>
                     <span>
-                      $
-                      {items.reduce((acumulador, item) => {
+                      {(items.reduce((acumulador, item) => {
                         return acumulador + item.unit_price * item.quantity;
-                      }, 0) * 1.21}
+                      }, 0) * 1.21).toFixed(2)} €
                     </span>
                   </li>
                 </ul>
@@ -432,7 +414,7 @@ export default function ClientPay({ user }: Props) {
                   </address>
                 </div>
               </div>
-                <Separator className="my-4"/>
+              <Separator className="my-4" />
               <div className="grid gap-3">
                 <div className="font-semibold">Información del cliente</div>
                 <dl className="grid gap-3">
