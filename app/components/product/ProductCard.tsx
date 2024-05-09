@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { Heart } from "lucide-react"
 import { setCookie, getCookie } from "cookies-next";
 import Image from 'next/image';
+import { Badge } from "../shadcn";
 
 export default function ProductCard({ product, id_user }: { product: Product, id_user: number }) {
 
@@ -49,7 +50,6 @@ export default function ProductCard({ product, id_user }: { product: Product, id
     return (
         <Card
             className="border rounded-lg p-4 min-w-full"
-            key={product.id}
         >
             <CardHeader>
                 <div className="flex justify-between">
@@ -69,19 +69,23 @@ export default function ProductCard({ product, id_user }: { product: Product, id
                     </div>
                 </div>
             </CardHeader>
-            <CardContent className="h-52">
+            <CardContent className="h-47">
                 {product.ProductImage && product.ProductImage[0] && (
 
                     <div className="relative item-detail w-58 h-40" >
                         <Image
                             alt="Product image"
                             className="aspect-square rounded-md object-cover"
-                            src={product.ProductImage[0].url ?? ''}
-                            layout="fill" 
-                            objectFit="cover"                         />
+                            src={product.ProductImage[0].url ?? ''}  
+                            width={100}
+                            height={100}
+                        />
                     </div>
                 )}
-                <Input className='my-3' type="number" defaultValue={1} min={1} max={99} onChange={(e) => setQuantity(Number(e.target.value))}></Input>
+                <div className="flex flex-col gap-2">
+                <Badge className="w-20">Stock: {product?.stock}</Badge>
+                <Input  type="number" defaultValue={1} min={1} max={product?.stock} onChange={(e) => setQuantity(Number(e.target.value))}></Input>
+                </div>
             </CardContent>
             <CardFooter className="p-0 flex justify-between items-center h-auto md:h-24">
           <p className="font-bold">{product.price}€</p>

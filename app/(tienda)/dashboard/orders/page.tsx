@@ -6,22 +6,22 @@ import { fetchOrdersByUserId, fetchInvoicesByUserId } from "@/lib/data";
 import OrderTable from "@/components/ui/OrderTable";
 
 
-async function getData(): Promise<Order[]> {
+// async function getData(): Promise<Order[]> {
 
-  const authentication = await auth()
-  const user_id = Number(authentication?.user?.id);
+//   const authentication = await auth()
+//   const user_id = Number(authentication?.user?.id);
 
-  const orders = await fetchOrdersByUserId(user_id);
+//   const orders = await fetchOrdersByUserId(user_id);
   
-  return orders;
-}
+//   return orders;
+// }
 
 
 export default async function DemoPage() {
-  const data = await getData()
+  // const data = await getData()
   return (
     <div className="container mx-auto">
-      <DataTable columns={columns} data={data} />
+      {/* <DataTable columns={columns} data={data} /> */}
       {/* <OrderTable></OrderTable> */}
     </div>
   )

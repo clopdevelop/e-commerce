@@ -18,7 +18,7 @@ export async function CarouselProducts() {
       <ul className="flex animate-carousel gap-4">
         {carouselProducts.map((product) => (
           <li
-            key={`${product.id}`}
+            // key={`${product.id}`}
             className="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-1/3"
           >
             <Link href={`/product/${product.id}`} className="relative h-full w-full">

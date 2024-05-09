@@ -35,8 +35,11 @@ export default async function FavsTable({ favorites }: Props) {
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-stretch py-4">
         {favproducts
-          ? Products.map((product) => (
-            // todo Renderizar solo 3 elementos
+          ? Products.filter((product,index) => {
+            while(index<3){
+              return product
+            }
+          }).map((product) => (
               <Card key={product.id}>
               {/* <Link className="absolute inset-0 rounded-lg overflow-hidden z-10" href="#" /> */}
               <div className="grid gap-2.5 p-4">

@@ -218,7 +218,6 @@ export async function editProduct(formData: FormData) {
     };
 
     const { id_product, name, price, description, stock } = editProductSchema.parse(rawFormData)
-
         const updatedProduct = await prisma.product.update({
           where: { id: id_product },
           data: {

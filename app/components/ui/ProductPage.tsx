@@ -1,9 +1,10 @@
+"use client"
 /**
  * v0 by Vercel.
  * @see https://v0.dev/t/jnO31LGLBI6
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
-import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/shadcn/button";
 import { Badge } from "@/components/shadcn/badge";
 import {
@@ -30,22 +31,28 @@ import {
   SelectContent,
   Select,
 } from "@/components/shadcn/select";
-import { JSX, SVGProps } from "react";
+import { JSX, SVGProps, useState } from "react";
 import { Product } from "@/lib/definitions";
 import AddCartButton from "../utils/AddCartButton";
 import { Toaster } from "sonner";
 import PayBotton from "../utils/PayButton";
 
 export default function Component({ product }: { product: Product }) {
-  console.log(product);
+  const [quantity, setQuantity] = useState(1);
 
   return (
     <div className="flex min-h-screen w-full">
       <div className="grid w-9/12 mx-auto">
         <main className="flex flex-col gap-4 p-4 md:gap-8 md:p-6 border">
-          <div>
-            <div className="flex flex-row justify-center w-full border ">
-              <div className="w-96 h-96">Imagen</div>
+            <div className="flex flex-row justify-around w-full border p-10 ">
+              <Image
+                alt="Product image"
+                className="aspect-square rounded-md object-cover"
+                src={product.ProductImage[0].url ?? ""}
+                width={300}
+                height={300}
+                priority={true}
+              />
               <div className="grid gap-4">
                 <h1 className="text-2xl font-semibold tracking-tight lg:text-4xl md:tracking-tighter">
                   {product?.name}
@@ -145,10 +152,19 @@ export default function Component({ product }: { product: Product }) {
                       </Label>
                     </RadioGroup>
                   </div>
-                </div> */}
+                </div> 
+                 <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label className="text-base" htmlFor="description">
+                      Description
+                    </Label>
+                    <p>Descripcion</p>
+                  </div>
+                </div>
+                */}
                 <div className="grid gap-2">
                   <Label className="text-base" htmlFor="quantity">
-                    Quantity
+                    Cantidad
                     <Badge className="ml-4">Stock: {product?.stock}</Badge>
                   </Label>
                   <Input
@@ -157,25 +173,13 @@ export default function Component({ product }: { product: Product }) {
                     min={1}
                     max={product?.stock}
                     className="w-24"
+                    onChange={(e) => setQuantity(Number(e.target.value))}
                   ></Input>
                 </div>
-                <AddCartButton product={product} quantity={1}></AddCartButton>
-                {/* <Button size="lg">Comprar</Button> */}
-                {/* <PayBotton id_user={id_user} product={product} /> */}
+                <AddCartButton product={product} quantity={quantity}></AddCartButton>
                 <PayBotton />
               </div>
             </div>
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Label className="text-base" htmlFor="description">
-                  Description
-                </Label>
-                <p>
-                  Descripcion
-                </p>
-              </div>
-            </div>
-          </div>
           <Toaster></Toaster>
         </main>
       </div>

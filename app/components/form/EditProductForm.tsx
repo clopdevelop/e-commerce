@@ -73,10 +73,9 @@ import { FancyMultiSelect } from "../admin/fancy-multi-select";
 
 interface Props {
   product: Product;
-  categories: string[];
 }
 
-export default function EditProductForm({ product, categories }: Props) {
+export default function EditProductForm({ product }: Props) {
 
   const form = useForm();
 
@@ -135,43 +134,10 @@ export default function EditProductForm({ product, categories }: Props) {
                         <CardContent>
                           <div className="grid gap-6">
                             <div className="grid gap-3">
-                              <FormField
-                                control={form.control}
-                                defaultValue={product.name}
-                                {...form.register("name")}
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Nombre</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        {...field}
-                                        id="name"
-                                        type="text"
-                                        className="w-full"
-                                      />
-                                    </FormControl>
-                                  </FormItem>
-                                )}
-                              />
+                             
                             </div>
                             <div className="grid gap-3">
-                              <FormField
-                                control={form.control}
-                                defaultValue={product.description ?? ""}
-                                {...form.register("description")}
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Descripción</FormLabel>
-                                    <FormControl>
-                                      <Textarea
-                                        {...field}
-                                        id="description"
-                                        className="min-h-32"
-                                      />
-                                    </FormControl>
-                                  </FormItem>
-                                )}
-                              />
+                              
                             </div>
                           </div>
                         </CardContent>
@@ -205,24 +171,7 @@ export default function EditProductForm({ product, categories }: Props) {
                                     id="stock-1"
                                     type="number"
                                     defaultValue="" /> */}
-                                  <FormField
-                                    control={form.control}
-                                    {...form.register("stock")}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        {/* <FormLabel>Name</FormLabel> */}
-                                        <FormControl>
-                                          <Input
-                                            {...field}
-                                            id="stock"
-                                            type="number"
-                                            className="w-full"
-                                            defaultValue={product.stock}
-                                          />
-                                        </FormControl>
-                                      </FormItem>
-                                    )}
-                                  />
+                                  
                                 </TableCell>
                                 <TableCell>
                                   {/* <Label htmlFor="price-1" className="sr-only">
@@ -232,23 +181,7 @@ export default function EditProductForm({ product, categories }: Props) {
                                     id="price-1"
                                     type="number"
                                     defaultValue="" /> */}
-                                  <FormField
-                                    control={form.control}
-                                    {...form.register("price")}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormControl>
-                                          <Input
-                                            {...field}
-                                            id="price"
-                                            type="number"
-                                            className="w-full"
-                                            defaultValue={product.price}
-                                          />
-                                        </FormControl>
-                                      </FormItem>
-                                    )}
-                                  />
+                                  
                                 </TableCell>
                                 <TableCell>
                                   <ToggleGroup
@@ -286,63 +219,11 @@ export default function EditProductForm({ product, categories }: Props) {
                         <CardContent>
                           <div className="grid gap-6 sm:grid-cols-3">
                             <div className="grid gap-3">
-                            <FormField
-                                control={form.control}
-                                defaultValue=""
-                                {...form.register("category")}
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel htmlFor="category">
-                                      Categoría
-                                    </FormLabel>
-                                    <Select
-                                      {...field}
-                                      defaultValue={field.value}
-                                      value={field.value}
-                                      onValueChange={field.onChange}
-                                    >
-                                      <FormControl>
-                                        <SelectTrigger aria-label="Selecciona la categoría">
-                                          <SelectValue placeholder="Selecciona la categoría" />
-                                        </SelectTrigger>
-                                      </FormControl>
-                                      <SelectContent>
-                                        {categories.map((category, i) => (
-                                          <SelectItem
-                                            key={i}
-                                            value={String(i + 1)}
-                                          >
-                                            {category}
-                                          </SelectItem>
-                                        ))}
-                                      </SelectContent>
-                                    </Select>
-                                  </FormItem>
-                                )}
-                              />
+                           
                             </div>
                             <div className="grid gap-3 w-80">
                               <div className="grid gap-3">
-                                <FormField
-                                  control={form.control}
-                                  defaultValue={[]}
-                                  {...form.register("tags")}
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>Etiquetas</FormLabel>
-                                      <FormControl>
-                                        <FancyMultiSelect
-                                          {...field}
-                                          onChange={(values) => {
-                                            field.onChange(
-                                              values.map(({ value }) => value)
-                                            );
-                                          }}
-                                        />
-                                      </FormControl>
-                                    </FormItem>
-                                  )}
-                                />
+                                
                               </div>
                             </div>
                           </div>
@@ -365,43 +246,7 @@ export default function EditProductForm({ product, categories }: Props) {
                         <CardContent>
                           <div className="grid gap-6">
                             <div className="grid gap-3">
-                              <FormField
-                                control={form.control}
-                                defaultValue={product.state}
-                                {...form.register("status")}
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Estado</FormLabel>
-                                    <FormControl>
-                                      <Select
-                                        {...field}
-                                        value={selectedStatus || ""}
-                                        onValueChange={handleStatusChange}
-                                      >
-                                        <SelectTrigger
-                                          className="bg-card"
-                                          id="status"
-                                          aria-label="Select status"
-                                        >
-                                          <SelectValue placeholder="Select status">
-                                            {selectedStatus || "Select status"}
-                                          </SelectValue>
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          {states.map((state) => (
-                                            <SelectItem
-                                              key={state}
-                                              value={state}
-                                            >
-                                              {state}
-                                            </SelectItem>
-                                          ))}
-                                        </SelectContent>
-                                      </Select>
-                                    </FormControl>
-                                  </FormItem>
-                                )}
-                              />
+                              
                             </div>
                           </div>
                         </CardContent>
@@ -427,37 +272,7 @@ export default function EditProductForm({ product, categories }: Props) {
                           <CardTitle>Imágenes del</CardTitle>
                         </CardHeader>
                         <CardContent>
-                              <FormField
-                                control={form.control}
-                                {...form.register("image")}
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormControl>
-                                      <Input
-                                        {...field}
-                                        id="image"
-                                        type="file"
-                                        className="w-auto max-w-52"
-                                        accept="image/jpeg"
-                                        src={
-                                          file
-                                            ? URL.createObjectURL(file)
-                                            : undefined
-                                        } // Verifica si file es null antes de llamar a createObjectURL
-                                        onChange={(e) => {
-                                          if (
-                                            e.target.files &&
-                                            e.target.files.length > 0
-                                          ) {
-                                            setFile(e.target.files[0]);
-                                          }
-                                        }}
-                                      />
-                                      {/* <ImageUploader /> */}
-                                    </FormControl>
-                                  </FormItem>
-                                )}
-                              />
+                              
                             <div className="pt-5">
                               {file && (
                                 <Image

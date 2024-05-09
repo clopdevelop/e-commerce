@@ -84,18 +84,18 @@ export default function RootLayout({
   return (
       <html lang="es">
         <body className={inter.className}>
-        <ThemeProvider
+        {/* <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
-          >
+          > */}
             {children}
           <CookieConsent />
           <footer className="relative bottom-0 w-full text-white text-center p-6">
             Proyecto final de Ciclo
           </footer>
-          </ThemeProvider>
+          {/* </ThemeProvider> */}
         </body>
       </html>
   );

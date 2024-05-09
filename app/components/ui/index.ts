@@ -1,2 +1,2 @@
 export * from './NavBar';
-export * from './nav';
+export * from './nav-links';

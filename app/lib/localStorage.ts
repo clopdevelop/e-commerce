@@ -17,10 +17,10 @@ export function saveToLocalStorage(items: CartItem[]) {
   export function loadFromLocalStorage(): CartItem[] {
     if (typeof localStorage !== 'undefined') {
       const savedCart = localStorage.getItem('shopping-cart') ?? "[]";
-      console.log("available");
+      // console.log("available");
       return JSON.parse(savedCart);
     } else {
-      console.log("not available");
+      // console.log("not available");
       return [];
     }
   }

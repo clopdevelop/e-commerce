@@ -10,11 +10,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
   return (
         <div className="flex">
-              <SideBar></SideBar>
-              <div className="flex flex-col items-center gap-10 p-5 border border-4">
-              {children}
+          <SideBar></SideBar>
+          <div className="flex flex-col items-center gap-10 p-5 border-4 w-full">
+            {children}
           </div>
-          {/* <CommandMenu></CommandMenu> */}
         </div>
   );
 }

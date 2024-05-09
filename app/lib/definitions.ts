@@ -68,7 +68,7 @@ export type Product = {
   id_category?: number | null;
   OrderItem?: OrderItem[];
   // images?: Connection<Image>;
-  ProductImage: Image[];
+  ProductImage?: Image[];
   thumbnail?: Image;
 }
 

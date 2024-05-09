@@ -13,7 +13,6 @@ export default async function ProductsTable({
 }) {
 
   return (
-  
       <Suspense fallback={<div>Cargando...</div>}>
         <div className="grid grid-cols-3 gap-2 md:w-3/4">
         {products.length!==0 ? (

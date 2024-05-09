@@ -56,9 +56,9 @@ export default async function Inventory({ products }: { products: Product[] }) {
               <TableHead className="hidden w-[100px] sm:table-cell">
                 <span className="sr-only">Image</span>
               </TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Price</TableHead>
+              <TableHead>Nombre</TableHead>
+              <TableHead>Estado</TableHead>
+              <TableHead>Precio</TableHead>
               <TableHead className="hidden md:table-cell">
                 Stock
               </TableHead>
@@ -88,7 +88,7 @@ export default async function Inventory({ products }: { products: Product[] }) {
                 <TableCell>
                   <Badge variant="outline">{product.state}</Badge>
                 </TableCell>
-                <TableCell>${product.price}</TableCell>
+                <TableCell>{product.price} €</TableCell>
                 {/* <TableCell className="hidden md:table-cell">X</TableCell> */}
                 <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
                 <TableCell className="hidden md:table-cell">
@@ -99,12 +99,12 @@ export default async function Inventory({ products }: { products: Product[] }) {
                     <DropdownMenuTrigger asChild>
                       <Button aria-haspopup="true" size="icon" variant="ghost">
                         <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Toggle menu</span>
+                        <span className="sr-only">Alternar menú</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <Link href={`/admin/products/edit/${product.id}`}><DropdownMenuItem>Editar</DropdownMenuItem></Link>
+                      <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                      <Link href={`/admin/products/edit/{product.id}`}><DropdownMenuItem>Editar</DropdownMenuItem></Link>
                       <DeleteProduct id_product={product.id}></DeleteProduct>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -114,9 +114,10 @@ export default async function Inventory({ products }: { products: Product[] }) {
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex flex-row-reverse">
         <div className="text-xs text-muted-foreground">
-          Showing <strong>1-10</strong> of <strong>32</strong> products
+          {/* Showing <strong>1-10</strong> of <strong>32</strong> products */}
+          Hay {products.length} productos en el Inventario.
         </div>
       </CardFooter>
     </Card>
