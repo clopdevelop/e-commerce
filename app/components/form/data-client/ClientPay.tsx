@@ -7,7 +7,6 @@ import {
   MoreVertical,
   Truck,
 } from "lucide-react";
-
 import { Button } from "@/components/shadcn/button";
 import {
   Card,
@@ -32,7 +31,7 @@ import {
 import { Separator } from "@/components/shadcn/separator";
 import { useCart } from "@/context/CartProvider";
 import { useEffect, useState } from "react";
-import { CartItem, Order, User } from "@/lib/definitions";
+import { CartItem, Order, ShippingPrices, User } from "@/lib/definitions";
 import { Apple, EuroIcon, Link } from "lucide-react";
 import {
   Input,
@@ -54,12 +53,22 @@ import {
 import UserAddress from "@/components/client/AddressConfig";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { useForm } from "react-hook-form";
-import { ComboboxDemo } from "@/components/order/CitySelector";
+import { CityAndProvinceSelector } from "@/components/form/data-client/CityAndProvinceSelector";
+import { Address, PaymentMethod } from "@prisma/client";
+import { BuyProduct } from "@/lib/payFunctions";
+import { loadFromLocalStorage } from "@/lib/localStorage";
+import { Elements, CardElement } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 interface Props {
-  user: any;
+  user: User;
+  address: Address | null;
+  payment: PaymentMethod[] | null;
+  // user: any;
+  // address: any;
+  // payment: any;
 }
-export default function ClientPay({ user }: Props) {
+export default function ClientPay({ user, address, payment }: Props) {
   //Recu
   const order: Order = {
     id: 0,
@@ -70,23 +79,57 @@ export default function ClientPay({ user }: Props) {
     created_at: new Date(),
     id_user: 0,
   };
+  // console.log(user)
+  // console.log(address)
+  // console.log(payment)
+  const stripePromise = loadStripe("pk_test");
 
   const [open, setOpen] = useState(true);
 
-  const [products, setProducts] = useState<CartItem[]>();
-  // todo Recuperar los productos en el servidor , quizás almacenando el carrito en las cookies
+  const productInCart = loadFromLocalStorage()
+
+  const [products, setProducts] = useState<CartItem[]>(productInCart);
+
+
   const { items } = useCart();
   useEffect(() => {
     setProducts(products);
   }, [products]);
 
+  const product = products ? products[0] : '';
+
+
+
+  const [deliveryType, setDeliveryType] = useState("");
+  const [shippingPrice, setShippingPrice] = useState(0);
+
+  useEffect(() => {
+    const shippingPrices: ShippingPrices = {
+      standard: 5, // Precio del envío estándar
+      express: 10, // Precio del envío exprés
+      premium: 15, // Precio del envío premium
+      international: 20, // Precio del envío internacional
+      subscribe: 0, // Envío gratuito para la suscripción de envío
+    };
+
+    // Actualizar el precio del envío cuando cambie el método de envío seleccionado
+    if (deliveryType && deliveryType in shippingPrices) {
+      setShippingPrice(shippingPrices[deliveryType as keyof ShippingPrices]);
+    } else {
+      setShippingPrice(0); // Reiniciar el precio del envío si no se selecciona un método válido
+    }
+  }, [deliveryType]);
+
   const form = useForm();
 
+
   return (
+    <Elements stripe={stripePromise}>
     <div className="mt-5">
       {open && (
         <Card className="overflow-hidden w-9/12 mx-auto">
           <CardHeader className="flex flex-row items-start bg-muted/50">
+            
             <CardTitle className="text-lg pt-2">Introduce tus datos</CardTitle>
           </CardHeader>
           <CardContent className="p-6 text-sm">
@@ -95,19 +138,41 @@ export default function ClientPay({ user }: Props) {
                 <div className="w-full">
                   <div className="grid gap-4 mb-5">
                     <div className="font-semibold">Información de Envío</div>
-                    <Input placeholder="Calle" type="text" />
+
+                    <Input
+                      placeholder={address?.name ?? "C/, Avda, ctra ...."}
+                      type="text"
+                    />
                     <div className="grid gap-4 md:grid-cols-4">
-                      <Input placeholder="Número" type="number" />
-                      <Input placeholder="Bloque" type="number" />
-                      <Input placeholder="Escalera" type="number" />
-                      <Input placeholder="Letra" type="text" />
+                      <Input
+                        defaultValue={
+                          Number(address?.number) ? Number(address?.number) : 2
+                        }
+                        type="number"
+                      />
+                      <Input
+                        placeholder={address?.letter ?? "Letra"}
+                        type="text"
+                      />
+                      <Input
+                        placeholder={address?.staircase ?? "Escalera"}
+                        type="number"
+                      />
+                      <Input
+                        placeholder={address?.block ?? "Bloque"}
+                        type="number"
+                      />
                     </div>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <ComboboxDemo></ComboboxDemo>
-                      <ComboboxDemo></ComboboxDemo>
+                    <div className="flex gap-4 items-center">
+                      <CityAndProvinceSelector />
+                      <Input
+                        className="w-2/12"
+                        placeholder="C. P"
+                        type="text"
+                      />
                     </div>
-                    {/* <Input placeholder="Postal code" type="text" /> */}
                   </div>
+
                   <FormField
                     control={form.control}
                     name="mobile"
@@ -135,6 +200,10 @@ export default function ClientPay({ user }: Props) {
                     </Label>
                     <Select
                       name="shippingMethod"
+                      onValueChange={(value) => {
+                        setDeliveryType(value);
+                      }}
+                      value={deliveryType}
                     >
                       <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Elige un método" />
@@ -159,7 +228,6 @@ export default function ClientPay({ user }: Props) {
                     </Select>
                   </div>
                 </div>
-                {/* <Separator className="my-4" /> */}
                 <div className="w-full">
                   <div className="grid gap-4">
                     <Label htmlFor="invoicingMethod">Método de Pago:</Label>
@@ -172,6 +240,11 @@ export default function ClientPay({ user }: Props) {
                           value="card"
                           id="card"
                           className="peer sr-only"
+                          checked={
+                            payment && payment[0].name == "Tarjeta de crédito"
+                              ? true
+                              : false
+                          }
                         />
                         <Label
                           htmlFor="card"
@@ -186,6 +259,11 @@ export default function ClientPay({ user }: Props) {
                           value="paypal"
                           id="paypal"
                           className="peer sr-only"
+                          checked={
+                            payment && payment[0].name == "PayPal"
+                              ? true
+                              : false
+                          }
                         />
                         <Label
                           htmlFor="paypal"
@@ -200,6 +278,9 @@ export default function ClientPay({ user }: Props) {
                           value="apple"
                           id="apple"
                           className="peer sr-only"
+                          checked={
+                            payment && payment[0].name == "Apple" ? true : false
+                          }
                         />
                         <Label
                           htmlFor="apple"
@@ -217,16 +298,25 @@ export default function ClientPay({ user }: Props) {
                       type="text"
                       id="cardHolderName"
                       name="cardHolderName"
-                      placeholder="Ingrese el nombre del titular de la tarjeta"
+                      placeholder={
+                        payment
+                          ? payment[0]?.cardHolderName
+                          : "Ingrese el nombre del titular de la tarjeta"
+                      }
                       className="input"
                       required
                     />
                     <Label htmlFor="cardNumber">Número de Tarjeta:</Label>
-                    <Input
+                    <CardElement></CardElement>
+                    {/* <Input
                       type="text"
                       id="cardNumber"
                       name="cardNumber"
-                      placeholder="Ingrese el número de la tarjeta"
+                      placeholder={
+                        payment
+                          ? payment[0]?.cardNumber
+                          : "Ingrese el número de la tarjetaIngrese el número de la tarjeta"
+                      }
                       className="input"
                       required
                       min="16"
@@ -235,7 +325,11 @@ export default function ClientPay({ user }: Props) {
                     <div className="grid grid-cols-3 gap-4 mt-2">
                       <Select>
                         <SelectTrigger id="month">
-                          <SelectValue placeholder="Mes" />
+                          <SelectValue
+                            placeholder={
+                              payment ? payment[0]?.expirationMonth : "Mes"
+                            }
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="1">January</SelectItem>
@@ -254,7 +348,11 @@ export default function ClientPay({ user }: Props) {
                       </Select>
                       <Select>
                         <SelectTrigger id="year">
-                          <SelectValue placeholder="Año" />
+                          <SelectValue
+                            placeholder={
+                              payment ? payment[0]?.expirationMonth : "Año"
+                            }
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           {Array.from({ length: 10 }, (_, i) => (
@@ -268,7 +366,7 @@ export default function ClientPay({ user }: Props) {
                         </SelectContent>
                       </Select>
                       <Input id="cvc" placeholder="CVC" />
-                    </div>
+                    </div> */}
                     <FormField
                       control={form.control}
                       name="mobile"
@@ -373,28 +471,34 @@ export default function ClientPay({ user }: Props) {
                     <span>
                       {items.reduce((acumulador, item) => {
                         return acumulador + item.unit_price * item.quantity;
-                      }, 0)} €
+                      }, 0)}{" "}
+                      €
                     </span>
                   </li>
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Envío</span>
-                    {/* //todo añadir precio segun el tipo de envio */}
-                    <span>5 €</span>
+                    <span>{shippingPrice} €</span>
                   </li>
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Impuestos</span>
                     <span>
-                      {(items.reduce((acumulador, item) => {
-                        return acumulador + item.unit_price * item.quantity;
-                      }, 0) * 0.21).toFixed(2)} €
+                      {(
+                        items.reduce((acumulador, item) => {
+                          return acumulador + item.unit_price * item.quantity;
+                        }, 0) * 0.21
+                      ).toFixed(2)}{" "}
+                      €
                     </span>
                   </li>
                   <li className="flex items-center justify-between font-semibold">
                     <span className="text-muted-foreground">Total</span>
                     <span>
-                      {(items.reduce((acumulador, item) => {
-                        return acumulador + item.unit_price * item.quantity;
-                      }, 0) * 1.21).toFixed(2)} €
+                      {(
+                        items.reduce((acumulador, item) => {
+                          return acumulador + item.unit_price * item.quantity;
+                        }, 0) * 1.21
+                      ).toFixed(2)}{" "}
+                      €
                     </span>
                   </li>
                 </ul>
@@ -405,12 +509,27 @@ export default function ClientPay({ user }: Props) {
               <div className="flex flex-col gap-4">
                 <div className="grid gap-3">
                   <div className="font-semibold">Información de envío</div>
-                  {/* todo Recuperar y mostra informacion de envío */}
                   <address className="grid gap-0.5 not-italic text-muted-foreground">
-                    <span>Liam Johnson</span>
-                    <span>{user?.address}a</span>
-                    <span>1234 Main St.</span>
-                    <span>Anytown, CA 12345</span>
+                    <span>
+                      <strong>Nombre:</strong> {user?.name}
+                    </span>
+                    <span>
+                      <strong>Dirección:</strong> {address?.name}{" "}
+                      {address?.number}
+                      {address?.letter && (
+                        <span> letra: {address?.letter}</span>
+                      )}
+                      {address?.staircase && (
+                        <span>, escalera: {address?.staircase}</span>
+                      )}
+                      {address?.block && (
+                        <span>, bloque: {address?.block}</span>
+                      )}
+                    </span>
+                    <span>
+                      <strong>Código Postal:</strong>
+                      {/* todo {address?.postcode} */}
+                    </span>
                   </address>
                 </div>
               </div>
@@ -433,7 +552,10 @@ export default function ClientPay({ user }: Props) {
                   <div className="flex items-center justify-between">
                     <dt className="text-muted-foreground">Teléfono</dt>
                     <dd>
-                      <a href="tel:">+1 {user?.phone}</a>
+                      <a href="tel:">
+                        +1
+                        {/* todo {user?.phone} */}
+                      </a>
                     </dd>
                   </div>
                 </dl>
@@ -442,19 +564,54 @@ export default function ClientPay({ user }: Props) {
               <div className="grid gap-3">
                 <div className="font-semibold">Información de pago</div>
                 <dl className="grid gap-3">
-                  <div className="flex items-center justify-between">
-                    <dt className="flex items-center gap-1 text-muted-foreground">
-                      <CreditCard className="h-4 w-4" />
-                      {/* todo Añadir información de pago */}
-                      Visa
-                    </dt>
-                    <dd>**** **** **** 4532</dd>
-                  </div>
+                  {payment && (
+                    <>
+                      {payment[0].name === "Tarjeta de crédito" && (
+                        <div className="flex items-center justify-between">
+                          <dt className="flex items-center gap-2 text-muted-foreground">
+                            <CreditCard className="h-4 w-4" />
+                            Visa
+                          </dt>
+                          <dd>
+                            {`**** **** **** ${payment[0].cardNumber.substring(
+                              payment[0].cardNumber.length - 4
+                            )}`}
+                          </dd>
+                        </div>
+                      )}
+
+                      {payment[0].name === "PayPal" && (
+                        <div className="flex items-center justify-between">
+                          <dt className="flex items-center gap-2 text-muted-foreground">
+                            <EuroIcon className="h-4 w-4" />
+                            PayPal
+                          </dt>
+                          <dd>**** **** **** {payment[0].cardNumber}</dd>
+                        </div>
+                      )}
+
+                      {payment[0].name === "Apple" && (
+                        <div className="flex items-center justify-between">
+                          <dt className="flex items-center gap-2 text-muted-foreground">
+                            <Apple className="h-4 w-4" />
+                            Apple
+                          </dt>
+                          <dd>**** **** **** {payment[0].cardNumber}</dd>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </dl>
               </div>
               <div className="flex justify-end mt-8">
-                {/* Integrar stripe para pagar directamente desde la página */}
-                <Button type="submit" size="sm">
+                {/* todo Integrar stripe para pagar directamente desde la página */}
+                <Button type="submit" onClick={() => {
+                  console.log(products)
+                  console.log(user.id)
+                //   if(products && user.id)
+                //   BuyProduct(Number(user.id),products[0])
+                }
+                } size="sm">
                   Hacer Pedido
                 </Button>
               </div>
@@ -466,5 +623,6 @@ export default function ClientPay({ user }: Props) {
         </Card>
       )}
     </div>
+    </Elements>
   );
 }

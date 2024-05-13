@@ -67,12 +67,7 @@ export default async function Home({
     productOnPage,
     query
   );
-
-  function SearchBarFallback() {
-    //todo cambiar por un skeleton
-    return <div>Cargando...</div>;
-  }
-
+  
   const Categories = await fetchAllCategories();
 
   console.log(currentCategory);

@@ -7,39 +7,50 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Address {
-  id_address  Int        @id @default(autoincrement())
-  address     String
-  city        City       @relation(fields: [id_city], references: [id_city])
-  id_city     Int
-  last_update DateTime   @default(now()) @updatedAt
-  User        User[]
-  Provider    Provider[]
-}
 
-model City {
-  id_city     Int       @id @default(autoincrement())
-  city        String
-  province    Province  @relation(fields: [id_province], references: [id_province])
-  id_province Int
-  Address     Address[]
-}
+
+// model City {
+//   id_city     Int       @id @default(autoincrement())
+//   city        String
+//   province    Province  @relation(fields: [id_province], references: [id_province])
+//   id_province Int
+//   Address     Address[]
+// }
+
+// model Province {
+//   id_province Int     @id @default(autoincrement())
+//   iso_code    String  @unique
+//   province    String
+//   country     Country @relation(fields: [id_country], references: [id_country])
+//   id_country  Int
+//   City        City[]
+// }
+
+// model Country {
+//   id_country Int        @id @default(autoincrement())
+//   iso_code   String     @unique
+//   country    String
+//   Province   Province[]
+// }
 
 model Province {
-  id_province Int     @id @default(autoincrement())
-  iso_code    String  @unique
-  province    String
-  country     Country @relation(fields: [id_country], references: [id_country])
-  id_country  Int
-  City        City[]
+  id        String   @id
+  nombre    String
+  // Ciudades  Ciudad[]
 }
 
-model Country {
-  id_country Int        @id @default(autoincrement())
-  iso_code   String     @unique
-  country    String
-  Province   Province[]
-}
+
+
+
+// model Ciudad {
+//   id          Int       @id @default(autoincrement())
+//   nombre      String
+//   ProvinciaId Int
+//   Provincia   Provincia @relation(fields: [ProvinciaId], references: [id])
+// }
+
+
+
 
 model Product {
   id          Int       @id @default(autoincrement())
@@ -53,8 +64,8 @@ model Product {
   last_update DateTime? @updatedAt
   stock       Int
 
-  provider    Provider? @relation(fields: [id_provider], references: [id_provider])
-  id_provider Int?
+  // provider    Provider? @relation(fields: [id_provider], references: [id_provider])
+  // id_provider Int?
   category    Category? @relation(fields: [id_category], references: [id])
   id_category Int?
 
@@ -70,24 +81,35 @@ model ProductImage {
   id_product Int
 }
 
+// model Image {
+// id  Int    @id @default(autoincrement())
+//   url String
+  // altText?: string;
+  // width?: number;
+  // height?: number;
+// }
+
+
+
+
 model Category {
   id      Int       @id @default(autoincrement())
   name    String    @unique
   Product Product[]
 }
 
-model Provider {
-  id_provider Int       @id @default(autoincrement())
-  cuit        String
-  name        String
-  address     Address?  @relation(fields: [id_address], references: [id_address])
-  id_address  Int?
-  postcode    String
-  phone       String?
-  email       String
-  created_at  DateTime  @default(now())
-  products    Product[]
-}
+// model Provider {
+//   id_provider Int       @id @default(autoincrement())
+//   cuit        String
+//   name        String
+//   address     Address?  @relation(fields: [id_address], references: [id])
+//   id_address  Int?
+//   postcode    String
+//   phone       String?
+//   email       String
+//   created_at  DateTime  @default(now())
+//   products    Product[]
+// }
 
 model Order {
   id         Int      @id @default(autoincrement())
@@ -138,37 +160,103 @@ model Invoice {
   id_payment_method Int
 }
 
-model PaymentMethod {
-  id      Int       @id @default(autoincrement())
-  name    String
-  Invoice Invoice[]
-}
 
-// Auth.js
+
 
 //  SQLITE
-model User {
-  // id            String          @id @default(cuid())
-  id            Int       @id @default(autoincrement())
-  name          String
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  role          String      @default("user")
-  phone         String?
-  password      String
-  address       Address?  @relation(fields: [id_address], references: [id_address])
-  id_address    Int?
-  postcode      String?
-  created_at    DateTime  @default(now())
+// model User {
+//   // id            String          @id @default(cuid())
+//   id            Int       @id @default(autoincrement())
+//   name          String
+//   username      String?
+//   bio           String?
+//   email         String    @unique
+//   emailVerified DateTime?
+//   image         String?
+//   role          String      @default("user")
+//   phone         String?
+//   password      String
+//   address       Address?  @relation(fields: [id_address], references: [id])
+//   id_address    Int?
+//   postcode      String?
+//   created_at    DateTime  @default(now())
 
-  accounts      Account[]
-  sessions      Session[]
-  // Optional for WebAuthn support
-  Authenticator Authenticator[]
-  Order         Order[]
+//   accounts      Account[]
+//   sessions      Session[]
+//   // Optional for WebAuthn support
+//   Authenticator Authenticator[]
+//   Order         Order[]
+// }
+// model Address {
+//   id          Int        @id @default(autoincrement())
+//   name        String
+//   number      Int
+//   letter      String?
+//   block       String?
+//   staircase   String?
+//   // city        City       @relation(fields: [id_city], references: [id_city])
+//   // id_city     Int
+//   last_update DateTime   @default(now()) @updatedAt
+//   User        User[]
+//   // Provider    Provider[]
+// }
+model User {
+  id               Int          @id @default(autoincrement())
+  name             String
+  username         String?
+  bio              String?
+  email            String       @unique
+  emailVerified    DateTime?
+  image            String?
+  role             String       @default("user")
+  phone            String?
+  password         String
+  address          Address?     @relation(fields: [id_address], references: [id])
+  id_address       Int?
+  postcode         String?
+  created_at       DateTime     @default(now())
+
+  paymentMethods   PaymentMethod[]
+  accounts         Account[]
+  sessions         Session[]
+  Authenticator    Authenticator[]
+  Order            Order[]
+}
+model PaymentMethod {
+  id               Int      @id @default(autoincrement())
+  name             String
+  // PaymentMethodName             String
+  cardHolderName   String
+  cardNumber       String
+  expirationMonth  Int
+  expirationYear   Int
+  cvc              String
+  saveBillingInfo  Boolean
+  user             User?     @relation(fields: [id_user], references: [id])
+  id_user          Int?
+  Invoice          Invoice[]
 }
 
+// const enum PaymentMethodName {
+//   CARD,
+//   PAYPAL,
+//   APPLE
+// }
+
+
+model Address {
+  id          Int        @id @default(autoincrement())
+  name        String
+  number      Int
+  letter      String?
+  block       String?
+  staircase   String?
+  last_update DateTime   @default(now()) @updatedAt
+  users       User[]     // Change to plural form to represent many-to-one relation
+}
+
+
+// NEXT-AUTH
 model Account {
   id                String  @id @default(cuid())
   // userId            String
@@ -299,3 +387,4 @@ model Authenticator {
 
 //   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 // }
+

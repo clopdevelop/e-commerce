@@ -4,19 +4,29 @@ import { auth } from "@/auth";
 import { User } from "@/lib/definitions";
 import { User as NextAuthUser } from 'next-auth';
 import { convertNextAuthUserToMyUser } from '@/lib/utils';
+import { getUser } from "@/lib/data";
+
 
 export default async function SettingsProfilePage() {
   // todo averiguar si esto se guarda en caché
-  const authentication = await auth()
-  if(!authentication) 
-    return null
-  else{
-    if(!authentication.user)
-      return null
-  }
+  // if(!authentication || !authentication.user) 
+  //   return null
 
-  const nextAuthUser: NextAuthUser = authentication.user;
-  const user : User  = convertNextAuthUserToMyUser(nextAuthUser);
+  // const nextAuthUser: NextAuthUser = authentication.user;
+  // const user : User  = convertNextAuthUserToMyUser(nextAuthUser);
+
+  // console.log(nextAuthUser)
+
+  
+  const authentication = await auth()
+  const user = String(authentication?.user?.email);
+  const completeUser = await getUser(user);
+  
+
+  if(!completeUser)
+    return 0;
+
+  console.log(user)
 
   return (
     <div className="space-y-6">
@@ -27,7 +37,7 @@ export default async function SettingsProfilePage() {
         </p>
       </div>
       <Separator />
-      <ProfileForm user={user} />
+      <ProfileForm user={completeUser} />
     </div>
   );
 }

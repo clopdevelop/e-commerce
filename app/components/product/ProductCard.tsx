@@ -7,7 +7,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/shadcn/card";
-import AddCartButton from "@/components/utils/AddCartButton";
+import AddCartButton from "@/components/cart/AddCartButton";
 
 import PayButton from "../utils/PayButton";
 import Link from "next/link";

@@ -30,6 +30,8 @@ export const enum CATEGORIES {
 export type User = {
   id: number;
   name: string;
+  username?: string;
+  bio?: string;
   email: string;
   phone?: string | null;
   password?: string;
@@ -40,9 +42,15 @@ export type User = {
   Order?: Order[] | null;
 }
 
+export const enum PaymentMethodName {
+  CARD,
+  PAYPAL,
+  APPLE
+}
+
 export type PaymentMethod = {
   id_p_method: number;
-  payment_method: string;
+  payment_method: PaymentMethodName;
   Invoice: Invoice[];
 }
 
@@ -71,7 +79,14 @@ export type Product = {
   ProductImage?: Image[];
   thumbnail?: Image;
 }
-
+export type CartItem = {
+  id: number;
+  id_product: number;
+  name: string;
+  unit_price: number;
+  quantity: number;
+  thumbnail?: Image;
+};
 export type Image = {
   id: number;
   url: string;
@@ -100,6 +115,9 @@ export type Provider = {
   products: Product[];
 }
 
+// CART
+
+
 // ORDER
 export type Order = {
   id: number;
@@ -117,6 +135,14 @@ export type Order = {
   OrderItem?: OrderItem[];
   invoice?: Invoice[];
 }
+
+export type ShippingPrices = {
+  standard: number;
+  express: number;
+  premium: number;
+  international: number;
+  subscribe: number;
+};
 
 export type DeliveryType = {
   id_delivery: number;
@@ -164,12 +190,3 @@ export type Invoice = {
   id_p_method: number;
 }
 
-// CART
-export type CartItem = {
-  id: number;
-  id_product: number;
-  name: string;
-  unit_price: number;
-  quantity: number;
-  thumbnail?: Image;
-};

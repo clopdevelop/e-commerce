@@ -19,15 +19,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/shadcn/radio-group";
 import { toast } from "@/components/shadcn/use-toast";
 
-const appearanceFormSchema = z.object({
-  theme: z.enum(["light", "dark"], {
-    required_error: "Please select a theme.",
-  }),
-  font: z.enum(["inter", "manrope", "system"], {
-    invalid_type_error: "Select a font",
-    required_error: "Please select a font.",
-  }),
-});
+
 
 type AppearanceFormValues = z.infer<typeof appearanceFormSchema>;
 

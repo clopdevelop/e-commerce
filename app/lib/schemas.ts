@@ -88,11 +88,141 @@ export const editProductSchema = z.object({
     quantity: z.number(),
   });
 
-  export const responseSchema = z.object({
-    //todo añadir los datos y sus tipos esperados
-  })
-
   export const UserLogInFormSchema = userSchema.pick({
     email: true,
     password: true,
   });
+
+
+
+  // SETTING
+  export const profileFormSchema = z.object({
+    username: z
+      .string()
+      .min(2, {
+        message: "Username must be at least 2 characters.",
+      })
+      .max(30, {
+        message: "Username must not be longer than 30 characters.",
+      }),
+    email: z
+      .string({
+        required_error: "Please select an email to display.",
+      })
+      .email(),
+    bio: z.string().max(160).min(4),
+    urls: z
+      .array(
+        z.object({
+          value: z.string().url({ message: "Please enter a valid URL." }),
+        }),
+      )
+      .optional(),
+  });
+  
+export const accountFormSchema = z.object({
+  name: z
+    .string()
+    .min(2, {
+      message: "Name must be at least 2 characters.",
+    })
+    .max(30, {
+      message: "Name must not be longer than 30 characters.",
+    }),
+  dob: z.date({
+    required_error: "A date of birth is required.",
+  }),
+  language: z.string({
+    required_error: "Please select a language.",
+  }),
+  email: z.string({
+    required_error: "Please select a language.",
+  })
+});
+
+export const displayFormSchema = z.object({
+  items: z.array(z.string()).refine((value) => value.some((item) => item), {
+    message: "You have to select at least one item.",
+  }),
+});
+
+export const appearanceFormSchema = z.object({
+  theme: z.enum(["light", "dark"], {
+    required_error: "Please select a theme.",
+  }),
+  font: z.enum(["inter", "manrope", "system"], {
+    invalid_type_error: "Select a font",
+    required_error: "Please select a font.",
+  }),
+});
+
+export const notificationsFormSchema = z.object({
+  type: z.enum(["all", "mentions", "none"], {
+    required_error: "You need to select a notification type.",
+  }),
+  mobile: z.boolean().default(false).optional(),
+  communication_emails: z.boolean().default(false).optional(),
+  social_emails: z.boolean().default(false).optional(),
+  marketing_emails: z.boolean().default(false).optional(),
+  security_emails: z.boolean(),
+});
+
+
+export const formSchema = z.object({
+  username: z
+    .string({
+      required_error: "Username is required.",
+    })
+    // You can use zod's built-in validation as normal
+    .min(2, {
+      message: "Username must be at least 2 characters.",
+    }),
+
+  password: z
+    .string({
+      required_error: "Password is required.",
+    })
+    // Use the "describe" method to set the label
+    // If no label is set, the field name will be used
+    // and un-camel-cased
+    .describe("Your secure password")
+    .min(8, {
+      message: "Password must be at least 8 characters.",
+    }),
+
+  favouriteNumber: z.coerce // When using numbers and dates, you must use coerce
+    .number({
+      invalid_type_error: "Favourite number must be a number.",
+    })
+    .min(1, {
+      message: "Favourite number must be at least 1.",
+    })
+    .max(10, {
+      message: "Favourite number must be at most 10.",
+    })
+    .default(5) // You can set a default value
+    .optional(),
+
+  acceptTerms: z
+    .boolean()
+    .describe("Accept terms and conditions.")
+    .refine((value) => value, {
+      message: "You must accept the terms and conditions.",
+      path: ["acceptTerms"],
+    }),
+
+  // Date will show a date picker
+  birthday: z.coerce.date().optional(),
+
+  sendMeMails: z.boolean().optional(),
+
+  // Enum will show a select
+  color: z.enum(["red", "green", "blue"]),
+
+  // Create sub-objects to create accordion sections
+  address: z.object({
+    street: z.string(),
+    city: z.string(),
+    zip: z.string(),
+  }),
+});

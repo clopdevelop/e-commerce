@@ -1,34 +1,7 @@
 -- CreateTable
-CREATE TABLE "Address" (
-    "id_address" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "address" TEXT NOT NULL,
-    "id_city" INTEGER NOT NULL,
-    "last_update" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "Address_id_city_fkey" FOREIGN KEY ("id_city") REFERENCES "City" ("id_city") ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
--- CreateTable
-CREATE TABLE "City" (
-    "id_city" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "city" TEXT NOT NULL,
-    "id_province" INTEGER NOT NULL,
-    CONSTRAINT "City_id_province_fkey" FOREIGN KEY ("id_province") REFERENCES "Province" ("id_province") ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
--- CreateTable
 CREATE TABLE "Province" (
-    "id_province" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "iso_code" TEXT NOT NULL,
-    "province" TEXT NOT NULL,
-    "id_country" INTEGER NOT NULL,
-    CONSTRAINT "Province_id_country_fkey" FOREIGN KEY ("id_country") REFERENCES "Country" ("id_country") ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
--- CreateTable
-CREATE TABLE "Country" (
-    "id_country" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "iso_code" TEXT NOT NULL,
-    "country" TEXT NOT NULL
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "nombre" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -43,9 +16,7 @@ CREATE TABLE "Product" (
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "last_update" DATETIME,
     "stock" INTEGER NOT NULL,
-    "id_provider" INTEGER,
     "id_category" INTEGER,
-    CONSTRAINT "Product_id_provider_fkey" FOREIGN KEY ("id_provider") REFERENCES "Provider" ("id_provider") ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT "Product_id_category_fkey" FOREIGN KEY ("id_category") REFERENCES "Category" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
@@ -61,19 +32,6 @@ CREATE TABLE "ProductImage" (
 CREATE TABLE "Category" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "Provider" (
-    "id_provider" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "cuit" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "id_address" INTEGER,
-    "postcode" TEXT NOT NULL,
-    "phone" TEXT,
-    "email" TEXT NOT NULL,
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "Provider_id_address_fkey" FOREIGN KEY ("id_address") REFERENCES "Address" ("id_address") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -126,13 +84,21 @@ CREATE TABLE "Invoice" (
 -- CreateTable
 CREATE TABLE "PaymentMethod" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL
+    "name" TEXT NOT NULL,
+    "cardHolderName" TEXT NOT NULL,
+    "cardNumber" TEXT NOT NULL,
+    "expirationMonth" INTEGER NOT NULL,
+    "expirationYear" INTEGER NOT NULL,
+    "cvc" TEXT NOT NULL,
+    "saveBillingInfo" BOOLEAN NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "User" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL,
+    "username" TEXT,
+    "bio" TEXT,
     "email" TEXT NOT NULL,
     "emailVerified" DATETIME,
     "image" TEXT,
@@ -142,7 +108,18 @@ CREATE TABLE "User" (
     "id_address" INTEGER,
     "postcode" TEXT,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "User_id_address_fkey" FOREIGN KEY ("id_address") REFERENCES "Address" ("id_address") ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT "User_id_address_fkey" FOREIGN KEY ("id_address") REFERENCES "Address" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Address" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "number" INTEGER NOT NULL,
+    "letter" TEXT,
+    "block" TEXT,
+    "staircase" TEXT,
+    "last_update" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
@@ -195,12 +172,6 @@ CREATE TABLE "Authenticator" (
     "transports" TEXT,
     CONSTRAINT "Authenticator_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "Province_iso_code_key" ON "Province"("iso_code");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Country_iso_code_key" ON "Country"("iso_code");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");

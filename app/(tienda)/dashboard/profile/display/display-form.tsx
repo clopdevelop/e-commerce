@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/shadcn/form";
 import { toast } from "@/components/shadcn/use-toast";
+import { displayFormSchema } from "@/lib/schemas";
 
 const items = [
   {
@@ -44,11 +45,7 @@ const items = [
   },
 ] as const;
 
-const displayFormSchema = z.object({
-  items: z.array(z.string()).refine((value) => value.some((item) => item), {
-    message: "You have to select at least one item.",
-  }),
-});
+
 
 type DisplayFormValues = z.infer<typeof displayFormSchema>;
 

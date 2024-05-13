@@ -1,39 +1,32 @@
-import { auth } from "@/auth"
-import ClientPay from "@/components/utils/ClientPayComponent";
+import ClientPay from "@/components/form/data-client/ClientPay";
+import {
+  getAddresByUserLog,
+  getPaymentMethodsByUser,
+  login,
+} from "@/lib/actionscommands";
+import { User } from "@/lib/definitions";
+import { Address, PaymentMethod } from "@prisma/client";
+
 
 import { redirect } from "next/navigation";
 
 export default async function Home() {
+  const address: Address | null = await getAddresByUserLog();
 
-  // export async function BuyProduct(id_user: number, product: Product) {
-//     try {
-//       const res = await fetch("api/checkout", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ product: product, id_user },),
-//       });
+  const payment: PaymentMethod[] | null = await getPaymentMethodsByUser();
 
-//       if (!res.ok) {
-//         throw new Error("Failed to create checkout session");
-//       }
+  console.log(payment);
 
-  
-//       const session = await res.json();
-//       window.location = session.url;
-//     } catch (error: any) {
-//       console.error("Error buying product:", error);
-//       toast("error: " + error.message);
-//     }
-//   }
 
-  const authentication = await auth()
-  const user = authentication?.user;
-  if(!user)
-    redirect('/')
+ 
+
+  // const authentication = await auth()
+  // const user : User | undefined = authentication?.user;
+  const user: User | null = await login();
+  console.log(user);
+  if (!user) redirect("/");
 
   return (
-    <ClientPay user={user}></ClientPay>
-  )
+      <ClientPay user={user} address={address} payment={payment}></ClientPay>
+  );
 }

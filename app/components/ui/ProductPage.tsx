@@ -33,7 +33,7 @@ import {
 } from "@/components/shadcn/select";
 import { JSX, SVGProps, useState } from "react";
 import { Product } from "@/lib/definitions";
-import AddCartButton from "../utils/AddCartButton";
+import AddCartButton from "../cart/AddCartButton";
 import { Toaster } from "sonner";
 import PayBotton from "../utils/PayButton";
 

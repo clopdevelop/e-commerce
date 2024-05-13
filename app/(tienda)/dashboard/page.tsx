@@ -5,7 +5,7 @@ import { getUser } from "@/lib/data";
 export default async function Home() {
 
   const authentication = await auth();
-  // ! Otra forma de manejar el acceso a rutas
+  //? Otra forma de manejar el acceso a rutas
   // if (!authentication) {
   //   redirect("/entrada");
   // }
@@ -19,7 +19,7 @@ export default async function Home() {
       {completeUser ? (
         <>
           <h1>Hola {completeUser.name}</h1>
-          <p>{JSON.stringify(authentication?.user)}</p>
+          {/* <p>{JSON.stringify(authentication?.user)}</p> */}
         </>
       ) : (
         <>

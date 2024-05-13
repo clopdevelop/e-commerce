@@ -28,7 +28,7 @@ import {
 } from "@/components/shadcn/table"
 import Link from "next/link"
 import { Product } from "@/lib/definitions"
-import DeleteProduct from "../utils/DeleteProduct"
+import DeleteProduct from "../product/DeleteProduct"
 
 
 
