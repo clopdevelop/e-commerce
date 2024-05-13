@@ -9,6 +9,7 @@ import { Address, PaymentMethod } from "@prisma/client";
 
 
 import { redirect } from "next/navigation";
+import Acomponenr from "./Acomponenr";
 
 export default async function Home() {
   const address: Address | null = await getAddresByUserLog();
@@ -27,6 +28,6 @@ export default async function Home() {
   if (!user) redirect("/");
 
   return (
-      <ClientPay user={user} address={address} payment={payment}></ClientPay>
+      <Acomponenr user={user} address={address} payment={payment}></Acomponenr>
   );
 }

@@ -689,3 +689,85 @@ import { getUser } from "./data";
 //     return { mensaje: "Error al enviar: ", error };
 //   }
 // }
+
+const stripe = new Stripe("sk_test_51OxXxKRxuIsR3WCz8Ztm83HlPvRBwH4SqObd6cumXxEStd6ATzFwoxJ6bJPLoFkMQrHvuE9jFNE424RQ1TAfi8u100OvxLfAUr", {});
+// STRIPE
+export async function stripePay(formdata: FormData){
+
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: 1099,
+        currency: "eur",
+        description: '',
+
+        // Verify your integration in this guide by including this parameter
+        metadata: { integration_check: "accept_a_payment" },
+    });
+
+    return paymentIntent;
+
+}
+
+// export async function stripePay(formdata: FormData){
+//     // Aquí se deben extraer los datos del formulario y asignarlos a las variables correspondientes
+//     const {
+//         cardHolderName,
+//         cardNumber,
+//         expirationMonth,
+//         expirationYear,
+//         cvc,
+//         shippingMethod,
+//         saveShippingInfo,
+//         saveBillingInfo
+//     } = formdata;
+
+//     const paymentIntent = await stripe.paymentIntents.create({
+//         amount: 1099,
+//         currency: "eur",
+//         description: '',
+//         // Aquí se pueden agregar los datos del formulario al objeto metadata
+//         metadata: { 
+//             integration_check: "accept_a_payment",
+//             cardHolderName,
+//             cardNumber,
+//             expirationMonth,
+//             expirationYear,
+//             cvc,
+//             shippingMethod,
+//             saveShippingInfo,
+//             saveBillingInfo
+//         },
+//     });
+
+//     return paymentIntent;
+// }
+
+// export async function stripePay(formdata: FormData){
+//   // Aquí se deben extraer los datos del formulario y asignarlos a las variables correspondientes
+//   const {
+//       items,
+//       user,
+//       address,
+//       shippingPrice,
+//       payment
+//   } = formdata;
+
+//   const paymentIntent = await stripe.paymentIntents.create({
+//       amount: items.reduce((acumulador, item) => {
+//           return acumulador + item.unit_price * item.quantity;
+//       }, 0) * 1.21 * 100, // Stripe requiere el monto en centavos
+//       currency: "eur",
+//       description: `Pedido de ${user.name}`,
+//       // Aquí se pueden agregar los datos del formulario al objeto metadata
+//       metadata: { 
+//           integration_check: "accept_a_payment",
+//           email: user.email,
+//           phone: user.phone,
+//           address: `${address.name} ${address.number} ${address.letter ? 'letra: ' + address.letter : ''} ${address.staircase ? ', escalera: ' + address.staircase : ''} ${address.block ? ', bloque: ' + address.block : ''}`,
+//           shippingPrice,
+//           paymentMethod: payment[0].name,
+//           cardLastFourDigits: payment[0].cardNumber.substring(payment[0].cardNumber.length - 4)
+//       },
+//   });
+
+//   return paymentIntent;
+// }

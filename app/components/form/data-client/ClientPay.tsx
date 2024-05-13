@@ -57,8 +57,13 @@ import { CityAndProvinceSelector } from "@/components/form/data-client/CityAndPr
 import { Address, PaymentMethod } from "@prisma/client";
 import { BuyProduct } from "@/lib/payFunctions";
 import { loadFromLocalStorage } from "@/lib/localStorage";
-import { Elements, CardElement } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+import {
+  CardElement,
+  AddressElement,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 
 interface Props {
   user: User;
@@ -68,6 +73,7 @@ interface Props {
   // address: any;
   // payment: any;
 }
+
 export default function ClientPay({ user, address, payment }: Props) {
   //Recu
   const order: Order = {
@@ -82,23 +88,19 @@ export default function ClientPay({ user, address, payment }: Props) {
   // console.log(user)
   // console.log(address)
   // console.log(payment)
-  const stripePromise = loadStripe("pk_test");
 
   const [open, setOpen] = useState(true);
 
-  const productInCart = loadFromLocalStorage()
+  const productInCart = loadFromLocalStorage();
 
   const [products, setProducts] = useState<CartItem[]>(productInCart);
-
 
   const { items } = useCart();
   useEffect(() => {
     setProducts(products);
   }, [products]);
 
-  const product = products ? products[0] : '';
-
-
+  const product = products ? products[0] : "";
 
   const [deliveryType, setDeliveryType] = useState("");
   const [shippingPrice, setShippingPrice] = useState(0);
@@ -122,14 +124,14 @@ export default function ClientPay({ user, address, payment }: Props) {
 
   const form = useForm();
 
+  const stripe = useStripe();
+  const elements = useElements();
 
   return (
-    <Elements stripe={stripePromise}>
     <div className="mt-5">
       {open && (
         <Card className="overflow-hidden w-9/12 mx-auto">
           <CardHeader className="flex flex-row items-start bg-muted/50">
-            
             <CardTitle className="text-lg pt-2">Introduce tus datos</CardTitle>
           </CardHeader>
           <CardContent className="p-6 text-sm">
@@ -138,7 +140,12 @@ export default function ClientPay({ user, address, payment }: Props) {
                 <div className="w-full">
                   <div className="grid gap-4 mb-5">
                     <div className="font-semibold">Información de Envío</div>
-
+                    <AddressElement
+                      options={{
+                        mode:"shipping",
+                      }}
+                    ></AddressElement>
+                    <PaymentElement></PaymentElement>
                     <Input
                       placeholder={address?.name ?? "C/, Avda, ctra ...."}
                       type="text"
@@ -424,28 +431,6 @@ export default function ClientPay({ user, address, payment }: Props) {
                 Resumen del Pedido
               </CardTitle>
             </div>
-            {/* <div className="ml-auto flex items-center gap-1">
-              <Button size="sm" variant="outline" className="h-8 gap-1">
-                <Truck className="h-3.5 w-3.5" />
-                <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                  Track Order
-                </span>
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button size="icon" variant="outline" className="h-8 w-8">
-                    <MoreVertical className="h-3.5 w-3.5" />
-                    <span className="sr-only">More</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuItem>Export</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Trash</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div> */}
           </CardHeader>
           <CardContent className="p-6 text-sm flex gap-10">
             <div className="w-full">
@@ -605,13 +590,34 @@ export default function ClientPay({ user, address, payment }: Props) {
               </div>
               <div className="flex justify-end mt-8">
                 {/* todo Integrar stripe para pagar directamente desde la página */}
-                <Button type="submit" onClick={() => {
-                  console.log(products)
-                  console.log(user.id)
-                //   if(products && user.id)
-                //   BuyProduct(Number(user.id),products[0])
-                }
-                } size="sm">
+                <Button
+                  type="submit"
+                  onClick={async () => {
+                    console.log(products);
+                    console.log(user.id);
+                    if (stripe && elements) {
+                      const cardElement = elements.getElement(CardElement);
+                      if (cardElement) {
+                        const { error, paymentMethod } =
+                          await stripe.createPaymentMethod({
+                            type: "card",
+                            card: cardElement,
+                          });
+                        console.log(paymentMethod);
+                        if (error) {
+                          console.log("[error]", error);
+                        } else {
+                          console.log("[PaymentMethod]", paymentMethod);
+                        }
+                      } else {
+                        console.log("CardElement no está disponible");
+                      }
+                    } else {
+                      console.log("Stripe o Elements es null");
+                    }
+                  }}
+                  size="sm"
+                >
                   Hacer Pedido
                 </Button>
               </div>
@@ -623,6 +629,38 @@ export default function ClientPay({ user, address, payment }: Props) {
         </Card>
       )}
     </div>
-    </Elements>
   );
+}
+// const { id } = paymentMethod;
+// const response = await fetch("/api/charge", {
+//   method: "POST",
+//   headers: { "Content-Type": "application/json" },
+//   body: JSON.stringify({ id, amount: 1000 }),})
+// })
+//   if(products && user.id)
+//   BuyProduct(Number(user.id),products[0])
+
+{
+  /* <div className="ml-auto flex items-center gap-1">
+              <Button size="sm" variant="outline" className="h-8 gap-1">
+                <Truck className="h-3.5 w-3.5" />
+                <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                  Track Order
+                </span>
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="icon" variant="outline" className="h-8 w-8">
+                    <MoreVertical className="h-3.5 w-3.5" />
+                    <span className="sr-only">More</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>Edit</DropdownMenuItem>
+                  <DropdownMenuItem>Export</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Trash</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div> */
 }
