@@ -67,7 +67,9 @@ export async function NavBar() {
           </div>
         </MenubarMenu>
         <div className="flex">
+          <div className='flex justify-center items-center'>
         <ModeToggle></ModeToggle>
+          </div>
         {account && <Profile></Profile>}
         </div>
       </Menubar>

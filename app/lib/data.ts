@@ -191,7 +191,7 @@ export async function getUser(email: string): Promise<User | null> {
   }
 }
 
-
+// ORDERS
 export async function fetchAllOrders() {
   try {
     const orders = await prisma.order.findMany();
@@ -202,6 +202,22 @@ export async function fetchAllOrders() {
   }
 }
 
+export async function fetchOrder(id: number) {
+  try {
+    const order = await prisma.order.findFirst({
+      where: {
+        id: id,
+      },
+      include: {
+        OrderItem : true
+      }
+    });
+    return order;
+  } catch (error) {
+    console.error('Error fetching orders by user ID:', error);
+    throw error;
+  }}
+
 export async function fetchOrdersByUserId(userId: number) {
   try {
     const orders = await prisma.order.findMany({
@@ -210,6 +226,9 @@ export async function fetchOrdersByUserId(userId: number) {
            id : Number(userId),
         }
       },
+      include: {
+        OrderItem : true
+      }
     });
     return orders;
   } catch (error) {
@@ -233,7 +252,6 @@ export async function fetchInvoicesByUserId(userId: number) {
   });
 }
 
-
 export async function fetchProductsByOrder(orderId: number) {
   try {
     const orders = await prisma.order.findMany({
@@ -255,11 +273,9 @@ export async function fetchProductsByOrder(orderId: number) {
   }
 }
 
-
 export async function consolelog() {
   console.log("Hola");
 }
-
 
 export async function fetchAllCategories() {
     const categories = await prisma.category.findMany({

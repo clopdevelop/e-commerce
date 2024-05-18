@@ -1,12 +1,12 @@
-import { Order, Invoice } from "@/lib/definitions"
 import { columns } from "./columns"
 import { auth } from "@/auth";
 import { DataTable } from "./data-table"
 import { fetchOrdersByUserId, fetchInvoicesByUserId } from "@/lib/data";
 import OrderTable from "@/components/ui/OrderTable";
+import { Order, OrderItem } from ".prisma/client";
 
 
-async function getData(): Promise<Order[]> {
+async function getData() {
 
   const authentication = await auth()
   const user_id = Number(authentication?.user?.id);
@@ -18,7 +18,7 @@ async function getData(): Promise<Order[]> {
 
 
 export default async function DemoPage() {
-  const data = await getData()
+  const data: (OrderItem & Order)[] = await getData()
   console.log(data)
   return (
     <div className="container mx-auto">

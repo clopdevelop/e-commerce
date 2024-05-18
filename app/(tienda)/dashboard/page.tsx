@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { getUser } from "@/lib/data";
+import Image from "next/image";
 
 export default async function Home() {
 
@@ -18,8 +19,12 @@ export default async function Home() {
     <>
       {completeUser ? (
         <>
-          <h1>Hola {completeUser.name}</h1>
-          {/* <p>{JSON.stringify(authentication?.user)}</p> */}
+          <Image src={''} alt='Foto de Perfil' width={100} height={100}></Image>
+          <h1>Hola {completeUser.name}!</h1>
+          <h2>Biografía: {completeUser.bio}</h2>
+          <h2>en la plataforma desde hace: {completeUser.created_at?.toString()}</h2>
+          <p>{JSON.stringify(authentication?.user)}</p>
+          <p className="text-xs">{JSON.stringify(completeUser)}</p>
         </>
       ) : (
         <>

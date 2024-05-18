@@ -62,7 +62,7 @@ export async function getAddresByUserLog() {
   const userId = await getUserID();
   try {
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { id: 1 },
       include: { address: true },
     });
 
@@ -82,7 +82,7 @@ export async function getPaymentMethodsByUser() {
   const userId = await getUserID();
   try {
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { id: 1 },
       include: { paymentMethods: true },
     });
 
@@ -510,6 +510,230 @@ export async function editProduct(formData: FormData) {
   }
 }
 
+export async function deleteProduct(formData: FormData) {
+  const data = formData.get("id_product");
+  const id_product = Number(data);
+  try {
+    const deletedProductImages = await prisma.productImage.deleteMany({
+      where: { id_product: id_product },
+    });
+
+    const deletedOrderItems = await prisma.orderItem.deleteMany({
+      where: { id_product: id_product },
+    });
+
+    const deletedProduct = await prisma.product.delete({
+      where: { id: id_product },
+    });
+    revalidatePath("/admin/products/");
+    return deletedProduct;
+  } catch (error) {
+    console.error("Error al eliminar el producto:", error);
+    throw error;
+  }
+}
+
+export async function deleteProductonClick(product: { id_product: number }) {
+  const { id_product } = product;
+  try {
+    const deletedProduct = await prisma.product.delete({
+      where: { id: id_product },
+    });
+    return deletedProduct;
+  } catch (error) {
+    console.error("Error al eliminar el producto:", error);
+    throw error;
+  }
+}
+
+import { EmailTemplate } from "@/components/contact/email-template";
+import { Resend } from "resend";
+import { revalidatePath } from "next/cache";
+import { Address, CartItem } from "./definitions";
+import { getUser } from "./data";
+
+// export async function enviarEmail(formData: { name: string; email: string; text: string; }) {
+// const resend = new Resend(process.env.RESEND_API_KEY);
+
+//   const firstName = formData.name ?? '';
+//   const email = formData.email ?? '';
+//   const text = formData.text ?? '';
+
+//   try {
+//     const emailContent = EmailTemplate({ firstName: firstName, email: text, text: text });
+
+//     const formDataToSend = new FormData();
+//     formDataToSend.append('name', firstName);
+//     formDataToSend.append('email', email);
+//     formDataToSend.append('text', text);
+
+//     const data = await resend.emails.send({
+//       from: 'Acme <onboarding@resend.dev>',
+//       to: ["yakiiloop@gmail.com"],
+//       subject: text,
+//       react: emailContent,
+//       text: ''
+//     });
+
+//     return { message: "Email enviado" };
+//   } catch (error) {
+//     return { mensaje: "Error al enviar: ", error };
+//   }
+// }
+
+
+
+
+
+// ORDERS
+// ! Esto se debe ejecutar en el webHook una vez que el pago está completado
+  export async function addOrder(products: CartItem[]) {
+
+  const productData = products.map((product)=>({
+    id: product.id,
+    id_product: product.id_product,
+    name: product.name,
+    quantity: product.quantity,
+    unit_price : product.unit_price
+  }))
+
+  console.log(productData)
+
+  const amount = 100;
+
+  //   //todo En produccion se creará una secuencia cuando se migre a Postgree para crear un codigo de factura
+  const lastInvoice = await prisma.invoice.findFirst({
+    orderBy: {
+      id: 'desc',
+    },
+    select: {
+      invoice_n: true,
+    },
+  });
+
+  const nextInvoiceNumber = lastInvoice
+    ? parseInt(lastInvoice.invoice_n.replace('INV', '')) + 1
+    : 1;
+
+  const formattedInvoiceNumber = `INV-${nextInvoiceNumber.toString().padStart(3, '0')}`;
+
+  const lastOrder = await prisma.order.findFirst({
+    orderBy: {
+      id: 'desc',
+    },
+    select: {
+      code: true,
+    },
+  });
+
+  const nextOrderNumber = lastOrder
+    ? parseInt(lastOrder.code.replace('INV', '')) + 1
+    : 1;
+
+  const formattedOrder = `INV-${nextOrderNumber.toString().padStart(3, '0')}`;
+
+  console.log(formattedInvoiceNumber)
+  console.log(formattedOrder)
+
+  // Crear la orden con detalles y factura en la base de datos.
+  try {
+    //TEST
+    const newOrder = await prisma.order.create({
+      data: {
+        id:2,
+        code: 'INV-002',
+        type:'BUY', // SUBCRIPTION, BUY, REGRET
+        total: amount, 
+        status: "Processing", // Estado inicial del pedido
+        paid: false, // Asume que el pedido inicialmente no está pagado
+        discount: 0, // Sin descuento inicialmente
+        id_user: 1,
+        id_delivery_type: 1,//"Standard",
+        OrderItem: {
+          createMany: {
+            data:   [
+              {
+                id: 1,
+                id_product: 1,
+                name: 'Backpack',
+                quantity: 1,
+                unit_price: 40
+              },
+              {
+                id: 2,
+                id_product: 2,
+                name: 'Pintura famosa',
+                quantity: 1,
+                unit_price: 1000
+              },
+              {
+                id: 3,
+                id_product: 3,
+                name: 'Laptopos',
+                quantity: 26,
+                unit_price: 3333
+              }
+            ],
+          }
+        },
+        invoice: {
+          create: {
+        id:2,
+            invoice_n: "INV-002",
+            id_payment_method: 1,
+            type: "A",
+            amount: amount,
+            state: 'ok'
+          },
+        },
+      },
+      include: {
+        OrderItem: true,
+        invoice: true,
+      },
+    });
+
+    // const newOrder = await prisma.order.create({
+    //   data: {
+    //     code: formattedOrder,
+    //     type: 'BUY', // Puedes proporcionar un valor para el tipo de orden aquí si no es un valor por defecto.
+    //     total: amount, 
+    //     status: "Processing", // Estado inicial del pedido
+    //     // Los campos que no proporcionas se establecerán automáticamente según sus valores por defecto en el modelo.
+    //     id_user: 1, // Conecta la orden con el usuario existente que tiene id igual a 1.
+    //     id_delivery_type: 1, // Conecta la orden con el tipo de entrega existente que tiene id igual a 1.
+    //     OrderItem: {
+    //       createMany: {
+    //         data: productData,
+    //       }
+    //     },
+    //     invoice: {
+    //       create: {
+    //         invoice_n: formattedInvoiceNumber,
+    //         id_payment_method: 1,
+    //         type: "A",
+    //         amount: amount,
+    //         state: 'ok'
+    //       },
+    //     },
+    //   },
+    //   include: {
+    //     OrderItem: true,
+    //     invoice: true,
+    //   },
+    // });
+    
+    
+
+    console.log("Orden guardada:", newOrder);
+
+    return newOrder;
+  } catch (error) {
+    console.error("Error guardando la orden en la base de datos:", error);
+  }
+}
+
+// ! Esto se debe ejecutar en el webHook una vez que el pago está completado
 // export async function addOrder(session: Stripe.Checkout.Session, lineItems: Stripe.LineItem[]) {
 //   const { amount_total, status, metadata } = session;
 
@@ -619,79 +843,9 @@ export async function editProduct(formData: FormData) {
 //     console.error("Error guardando la orden en la base de datos:", error);
 //   }
 // }
-export async function deleteProduct(formData: FormData) {
-  const data = formData.get("id_product");
-  const id_product = Number(data);
-  try {
-    const deletedProductImages = await prisma.productImage.deleteMany({
-      where: { id_product: id_product },
-    });
 
-    const deletedOrderItems = await prisma.orderItem.deleteMany({
-      where: { id_product: id_product },
-    });
-
-    const deletedProduct = await prisma.product.delete({
-      where: { id: id_product },
-    });
-    revalidatePath("/admin/products/");
-    return deletedProduct;
-  } catch (error) {
-    console.error("Error al eliminar el producto:", error);
-    throw error;
-  }
-}
-
-export async function deleteProductonClick(product: { id_product: number }) {
-  const { id_product } = product;
-  try {
-    const deletedProduct = await prisma.product.delete({
-      where: { id: id_product },
-    });
-    return deletedProduct;
-  } catch (error) {
-    console.error("Error al eliminar el producto:", error);
-    throw error;
-  }
-}
-
-import { EmailTemplate } from "@/components/contact/email-template";
-import { Resend } from "resend";
-import { revalidatePath } from "next/cache";
-import { Address } from "./definitions";
-import { getUser } from "./data";
-
-// export async function enviarEmail(formData: { name: string; email: string; text: string; }) {
-// const resend = new Resend(process.env.RESEND_API_KEY);
-
-//   const firstName = formData.name ?? '';
-//   const email = formData.email ?? '';
-//   const text = formData.text ?? '';
-
-//   try {
-//     const emailContent = EmailTemplate({ firstName: firstName, email: text, text: text });
-
-//     const formDataToSend = new FormData();
-//     formDataToSend.append('name', firstName);
-//     formDataToSend.append('email', email);
-//     formDataToSend.append('text', text);
-
-//     const data = await resend.emails.send({
-//       from: 'Acme <onboarding@resend.dev>',
-//       to: ["yakiiloop@gmail.com"],
-//       subject: text,
-//       react: emailContent,
-//       text: ''
-//     });
-
-//     return { message: "Email enviado" };
-//   } catch (error) {
-//     return { mensaje: "Error al enviar: ", error };
-//   }
-// }
-
-const stripe = new Stripe("sk_test_51OxXxKRxuIsR3WCz8Ztm83HlPvRBwH4SqObd6cumXxEStd6ATzFwoxJ6bJPLoFkMQrHvuE9jFNE424RQ1TAfi8u100OvxLfAUr", {});
 // STRIPE
+const stripe = new Stripe("sk_test_51OxXxKRxuIsR3WCz8Ztm83HlPvRBwH4SqObd6cumXxEStd6ATzFwoxJ6bJPLoFkMQrHvuE9jFNE424RQ1TAfi8u100OvxLfAUr", {});
 export async function stripePay(formdata: FormData){
 
     const paymentIntent = await stripe.paymentIntents.create({

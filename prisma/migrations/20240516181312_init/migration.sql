@@ -51,20 +51,21 @@ CREATE TABLE "Order" (
 );
 
 -- CreateTable
-CREATE TABLE "DeliveryType" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL
-);
-
--- CreateTable
 CREATE TABLE "OrderItem" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
     "unit_price" REAL NOT NULL,
     "id_order" INTEGER NOT NULL,
     "id_product" INTEGER NOT NULL,
     CONSTRAINT "OrderItem_id_order_fkey" FOREIGN KEY ("id_order") REFERENCES "Order" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "OrderItem_id_product_fkey" FOREIGN KEY ("id_product") REFERENCES "Product" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "DeliveryType" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -79,18 +80,6 @@ CREATE TABLE "Invoice" (
     "id_payment_method" INTEGER NOT NULL,
     CONSTRAINT "Invoice_id_order_fkey" FOREIGN KEY ("id_order") REFERENCES "Order" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Invoice_id_payment_method_fkey" FOREIGN KEY ("id_payment_method") REFERENCES "PaymentMethod" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
--- CreateTable
-CREATE TABLE "PaymentMethod" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL,
-    "cardHolderName" TEXT NOT NULL,
-    "cardNumber" TEXT NOT NULL,
-    "expirationMonth" INTEGER NOT NULL,
-    "expirationYear" INTEGER NOT NULL,
-    "cvc" TEXT NOT NULL,
-    "saveBillingInfo" BOOLEAN NOT NULL
 );
 
 -- CreateTable
@@ -109,6 +98,20 @@ CREATE TABLE "User" (
     "postcode" TEXT,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "User_id_address_fkey" FOREIGN KEY ("id_address") REFERENCES "Address" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "PaymentMethod" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "cardHolderName" TEXT NOT NULL,
+    "cardNumber" TEXT NOT NULL,
+    "expirationMonth" INTEGER NOT NULL,
+    "expirationYear" INTEGER NOT NULL,
+    "cvc" TEXT NOT NULL,
+    "saveBillingInfo" BOOLEAN NOT NULL,
+    "id_user" INTEGER,
+    CONSTRAINT "PaymentMethod_id_user_fkey" FOREIGN KEY ("id_user") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable

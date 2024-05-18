@@ -130,14 +130,10 @@ model Order {
   invoice   Invoice[]
 }
 
-model DeliveryType {
-  id    Int     @id @default(autoincrement())
-  name  String  @unique
-  Order Order[]
-}
 
 model OrderItem {
   id         Int   @id @default(autoincrement())
+  name       String
   quantity   Int
   unit_price Float
 
@@ -145,6 +141,12 @@ model OrderItem {
   id_order   Int
   product    Product @relation(fields: [id_product], references: [id])
   id_product Int
+}
+
+model DeliveryType {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  Order Order[]
 }
 
 model Invoice {

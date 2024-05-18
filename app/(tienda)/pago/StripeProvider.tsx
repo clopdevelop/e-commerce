@@ -70,27 +70,10 @@ interface Props {
   user: User;
   address: Address | null;
   payment: PaymentMethod[] | null;
-  // user: any;
-  // address: any;
-  // payment: any;
 }
 const stripePromise = loadStripe("pk_test_51OxXxKRxuIsR3WCzXgi3vVpqg78fTrX5zAO846IeyfGWRNcE37lljo7FSs6jGlGIsQkYVbBISeNjxS4L8DeM9Vuj00hcGpjRXR");
-export default function Acomponenr({ user, address, payment }: Props) {
-  //Recu
-  const order: Order = {
-    id: 0,
-    total: 0,
-    status: "",
-    paid: false,
-    discount: 0,
-    created_at: new Date(),
-    id_user: 0,
-  };
-  // console.log(user)
-  // console.log(address)
-  // console.log(payment)
- 
 
+export default function StripeProvider({ user, address, payment }: Props) {
 
   return (
     <Elements stripe={stripePromise}>

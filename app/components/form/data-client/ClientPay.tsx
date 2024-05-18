@@ -64,30 +64,15 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
+import { addOrder } from "@/lib/actionscommands";
 
 interface Props {
   user: User;
   address: Address | null;
   payment: PaymentMethod[] | null;
-  // user: any;
-  // address: any;
-  // payment: any;
 }
 
 export default function ClientPay({ user, address, payment }: Props) {
-  //Recu
-  const order: Order = {
-    id: 0,
-    total: 0,
-    status: "",
-    paid: false,
-    discount: 0,
-    created_at: new Date(),
-    id_user: 0,
-  };
-  // console.log(user)
-  // console.log(address)
-  // console.log(payment)
 
   const [open, setOpen] = useState(true);
 
@@ -145,7 +130,6 @@ export default function ClientPay({ user, address, payment }: Props) {
                         mode:"shipping",
                       }}
                     ></AddressElement>
-                    <PaymentElement></PaymentElement>
                     <Input
                       placeholder={address?.name ?? "C/, Avda, ctra ...."}
                       type="text"
@@ -595,26 +579,9 @@ export default function ClientPay({ user, address, payment }: Props) {
                   onClick={async () => {
                     console.log(products);
                     console.log(user.id);
-                    if (stripe && elements) {
-                      const cardElement = elements.getElement(CardElement);
-                      if (cardElement) {
-                        const { error, paymentMethod } =
-                          await stripe.createPaymentMethod({
-                            type: "card",
-                            card: cardElement,
-                          });
-                        console.log(paymentMethod);
-                        if (error) {
-                          console.log("[error]", error);
-                        } else {
-                          console.log("[PaymentMethod]", paymentMethod);
-                        }
-                      } else {
-                        console.log("CardElement no está disponible");
-                      }
-                    } else {
-                      console.log("Stripe o Elements es null");
-                    }
+                    const order = await addOrder(products)
+                    console.log(order)
+                    // Añadir función Stripe
                   }}
                   size="sm"
                 >
@@ -631,6 +598,10 @@ export default function ClientPay({ user, address, payment }: Props) {
     </div>
   );
 }
+
+
+
+
 // const { id } = paymentMethod;
 // const response = await fetch("/api/charge", {
 //   method: "POST",
@@ -640,7 +611,6 @@ export default function ClientPay({ user, address, payment }: Props) {
 //   if(products && user.id)
 //   BuyProduct(Number(user.id),products[0])
 
-{
   /* <div className="ml-auto flex items-center gap-1">
               <Button size="sm" variant="outline" className="h-8 gap-1">
                 <Truck className="h-3.5 w-3.5" />
@@ -663,4 +633,25 @@ export default function ClientPay({ user, address, payment }: Props) {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div> */
-}
+
+// FUNCION STRIPE
+            // if (stripe && elements) {
+            //   const cardElement = elements.getElement(CardElement);
+            //   if (cardElement) {
+            //     const { error, paymentMethod } =
+            //       await stripe.createPaymentMethod({
+            //         type: "card",
+            //         card: cardElement,
+            //       });
+            //     console.log(paymentMethod);
+            //     if (error) {
+            //       console.log("[error]", error);
+            //     } else {
+            //       console.log("[PaymentMethod]", paymentMethod);
+            //     }
+            //   } else {
+            //     console.log("CardElement no está disponible");
+            //   }
+            // } else {
+            //   console.log("Stripe o Elements es null");
+            // }

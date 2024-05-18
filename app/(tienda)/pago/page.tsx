@@ -1,4 +1,3 @@
-import ClientPay from "@/components/form/data-client/ClientPay";
 import {
   getAddresByUserLog,
   getPaymentMethodsByUser,
@@ -7,27 +6,23 @@ import {
 import { User } from "@/lib/definitions";
 import { Address, PaymentMethod } from "@prisma/client";
 
-
 import { redirect } from "next/navigation";
-import Acomponenr from "./Acomponenr";
+import StripeProvider from "./StripeProvider";
 
 export default async function Home() {
   const address: Address | null = await getAddresByUserLog();
 
   const payment: PaymentMethod[] | null = await getPaymentMethodsByUser();
 
-  console.log(payment);
-
-
- 
-
-  // const authentication = await auth()
-  // const user : User | undefined = authentication?.user;
   const user: User | null = await login();
-  console.log(user);
   if (!user) redirect("/");
+  
+  
+  console.log(payment);
+  console.log(address);
+  console.log(user);
 
   return (
-      <Acomponenr user={user} address={address} payment={payment}></Acomponenr>
+      <StripeProvider user={user} address={address} payment={payment}></StripeProvider>
   );
 }

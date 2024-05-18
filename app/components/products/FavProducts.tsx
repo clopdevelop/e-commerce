@@ -29,9 +29,6 @@ export default async function FavsTable({ favorites }: Props) {
     <div className="divide-y">
       <div className="flex items-center justify-between pb-4">
         <h1 className="text-2xl font-bold">Tus productos favoritos</h1>
-        <Link className="text-sm font-medium underline" href="/dashboard/fav/all">
-        Ver todo
-        </Link>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-stretch py-4">
         {favproducts
