@@ -69,8 +69,8 @@ export default async function Home({
   );
   
   const Categories = await fetchAllCategories();
-
   console.log(currentCategory);
+
   return (
     <>
       <h1 className="flex justify-center text-4xl mt-5">{currentCategory}</h1>

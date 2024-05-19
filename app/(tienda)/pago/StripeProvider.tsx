@@ -1,83 +1,84 @@
 "use client";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Copy,
-  CreditCard,
-  MoreVertical,
-  Truck,
-} from "lucide-react";
-import { Button } from "@/components/shadcn/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/shadcn/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/shadcn/dropdown-menu";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-} from "@/components/shadcn/pagination";
-import { Separator } from "@/components/shadcn/separator";
-import { useCart } from "@/context/CartProvider";
-import { useEffect, useState } from "react";
-import { CartItem, Order, ShippingPrices, User } from "@/lib/definitions";
-import { Apple, EuroIcon, Link } from "lucide-react";
-import {
-  Input,
-  Select,
-  Label,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  Form,
-  RadioGroup,
-  RadioGroupItem,
-} from "@/components/shadcn";
-import UserAddress from "@/components/client/AddressConfig";
-import { Checkbox } from "@/components/shadcn/checkbox";
-import { useForm } from "react-hook-form";
-import { CityAndProvinceSelector } from "@/components/form/data-client/CityAndProvinceSelector";
-import { Address, PaymentMethod } from "@prisma/client";
-import { BuyProduct } from "@/lib/payFunctions";
-import { loadFromLocalStorage } from "@/lib/localStorage";
-import {
-  Elements,
-  CardElement,
-  useElements,
-  useStripe,
-} from "@stripe/react-stripe-js";
+import React, { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 import ClientPay from "@/components/form/data-client/ClientPay";
+import CheckoutForm from "@/components/form/pay/checkoutForm";
+import { Address, PaymentMethod, User } from "@prisma/client";
 
 interface Props {
   user: User;
   address: Address | null;
   payment: PaymentMethod[] | null;
 }
-const stripePromise = loadStripe("pk_test_51OxXxKRxuIsR3WCzXgi3vVpqg78fTrX5zAO846IeyfGWRNcE37lljo7FSs6jGlGIsQkYVbBISeNjxS4L8DeM9Vuj00hcGpjRXR");
+// This is your test publishable API key.
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "",
+  { apiVersion: "2024-04-10" }
+);
 
 export default function StripeProvider({ user, address, payment }: Props) {
+  const [clientSecret, setClientSecret] = useState("");
+
+  useEffect(() => {
+    // Create PaymentIntent as soon as the page loads
+    fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(
+        {
+
+        items: [{ id: "xl-tshirt", price: 1000 }],
+        customer: {
+          name: "John Doe",
+          email: "johndoe@example.com",
+          address: {
+            line1: "123 Main St",
+            line2: "",
+            city: "Anytown",
+            state: "CA",
+            postal_code: "12345",
+            country: "US",
+          },
+        },
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => setClientSecret(data.clientSecret));
+  }, []);
+
+  type ThemeType = "stripe" | "night" | "flat" | undefined;
+
+  interface Appearance {
+    theme: ThemeType;
+  }
+
+  const appearance: Appearance = {
+    theme: "stripe",
+  };
+  const options = {
+    layout: {
+      type: "",
+      defaultCollapsed: false,
+      business: "Tu Tienda",
+    },
+    clientSecret,
+    appearance,
+  };
+  console.log(clientSecret);
 
   return (
-    <Elements stripe={stripePromise}>
-      <ClientPay user={user} address={address} payment={payment}></ClientPay>
-    </Elements>
+    <>
+      {clientSecret && (
+        <Elements options={options} stripe={stripePromise}>
+          <ClientPay
+            user={user}
+            address={address}
+            payment={payment}
+          ></ClientPay>
+          <CheckoutForm></CheckoutForm>
+        </Elements>
+      )}
+    </>
   );
 }

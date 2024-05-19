@@ -2,9 +2,9 @@
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
 import { Textarea } from "@/components/shadcn/textarea";
-import { User } from "@/lib/definitions";
 import { Label } from "@/components/shadcn";
 import { updateProfile } from "@/lib/actionscommands";
+import { User } from "@prisma/client";
 
 interface Props {
   user: User;
@@ -20,7 +20,7 @@ export function ProfileForm({user}:Props) {
               <Label>Nombre de Usuario</Label>
                <Input 
                 name="username"
-                placeholder={user.username} 
+                placeholder={user?.username ?? ''} 
                 />
                 <div className="text-muted-foreground text-sm">
                 Este es tu nombre público que aparecerá en los comentarios y valoraciones de los productos.

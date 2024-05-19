@@ -1,11 +1,13 @@
-'use client'
-
-import { useSearchParams } from 'next/navigation';
-
-export default function Home() { // Obtiene el parámetro `success` de la URL
-  const searchParams = useSearchParams();
-  const success = searchParams.get('success')
-
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: {
+    success?: string;
+  };
+}) {
+  // Obtiene el parámetro `success` de la URL
+  const success = searchParams?.success
+// redirect_status=succeeded
   return (
     <>
       {success ? (

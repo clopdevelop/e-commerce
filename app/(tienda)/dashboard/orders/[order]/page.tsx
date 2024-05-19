@@ -18,7 +18,9 @@ export default async function NamePage({
       <h1>ID created_at: {order?.created_at.toString()}</h1>
       <div>
       {order?.OrderItem.map((item) => (
-        <h1>{item.name} x{item.quantity} ---  {item.unit_price*item.quantity}</h1>
+        <div key={item.id}>
+          <h1>{item.name} x{item.quantity} ---  {item.unit_price*item.quantity}</h1>
+        </div>
       ))}
       <h1>Total:</h1>
       <span>

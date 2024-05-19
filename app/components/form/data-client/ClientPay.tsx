@@ -31,7 +31,7 @@ import {
 import { Separator } from "@/components/shadcn/separator";
 import { useCart } from "@/context/CartProvider";
 import { useEffect, useState } from "react";
-import { CartItem, Order, ShippingPrices, User } from "@/lib/definitions";
+import { CartItem, Order, ShippingPrices } from "@/lib/definitions";
 import { Apple, EuroIcon, Link } from "lucide-react";
 import {
   Input,
@@ -54,7 +54,7 @@ import UserAddress from "@/components/client/AddressConfig";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { useForm } from "react-hook-form";
 import { CityAndProvinceSelector } from "@/components/form/data-client/CityAndProvinceSelector";
-import { Address, PaymentMethod } from "@prisma/client";
+import { Address, PaymentMethod, User } from "@prisma/client";
 import { BuyProduct } from "@/lib/payFunctions";
 import { loadFromLocalStorage } from "@/lib/localStorage";
 import {
@@ -65,6 +65,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import { addOrder } from "@/lib/actionscommands";
+import CheckoutForm from "../pay/checkoutForm";
 
 interface Props {
   user: User;
@@ -73,7 +74,6 @@ interface Props {
 }
 
 export default function ClientPay({ user, address, payment }: Props) {
-
   const [open, setOpen] = useState(true);
 
   const productInCart = loadFromLocalStorage();
@@ -85,27 +85,10 @@ export default function ClientPay({ user, address, payment }: Props) {
     setProducts(products);
   }, [products]);
 
-  const product = products ? products[0] : "";
+  // const product = products ? products[0] : "";
 
   const [deliveryType, setDeliveryType] = useState("");
   const [shippingPrice, setShippingPrice] = useState(0);
-
-  useEffect(() => {
-    const shippingPrices: ShippingPrices = {
-      standard: 5, // Precio del envío estándar
-      express: 10, // Precio del envío exprés
-      premium: 15, // Precio del envío premium
-      international: 20, // Precio del envío internacional
-      subscribe: 0, // Envío gratuito para la suscripción de envío
-    };
-
-    // Actualizar el precio del envío cuando cambie el método de envío seleccionado
-    if (deliveryType && deliveryType in shippingPrices) {
-      setShippingPrice(shippingPrices[deliveryType as keyof ShippingPrices]);
-    } else {
-      setShippingPrice(0); // Reiniciar el precio del envío si no se selecciona un método válido
-    }
-  }, [deliveryType]);
 
   const form = useForm();
 
@@ -125,11 +108,7 @@ export default function ClientPay({ user, address, payment }: Props) {
                 <div className="w-full">
                   <div className="grid gap-4 mb-5">
                     <div className="font-semibold">Información de Envío</div>
-                    <AddressElement
-                      options={{
-                        mode:"shipping",
-                      }}
-                    ></AddressElement>
+
                     <Input
                       placeholder={address?.name ?? "C/, Avda, ctra ...."}
                       type="text"
@@ -220,174 +199,20 @@ export default function ClientPay({ user, address, payment }: Props) {
                   </div>
                 </div>
                 <div className="w-full">
-                  <div className="grid gap-4">
+                  <div>
                     <Label htmlFor="invoicingMethod">Método de Pago:</Label>
-                    <RadioGroup
-                      defaultValue="card"
-                      className="grid grid-cols-3 gap-4 my-2"
-                    >
-                      <div>
-                        <RadioGroupItem
-                          value="card"
-                          id="card"
-                          className="peer sr-only"
-                          checked={
-                            payment && payment[0].name == "Tarjeta de crédito"
-                              ? true
-                              : false
-                          }
-                        />
-                        <Label
-                          htmlFor="card"
-                          className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                        >
-                          <CreditCard className="mb-3"></CreditCard>
-                          Card
-                        </Label>
-                      </div>
-                      <div>
-                        <RadioGroupItem
-                          value="paypal"
-                          id="paypal"
-                          className="peer sr-only"
-                          checked={
-                            payment && payment[0].name == "PayPal"
-                              ? true
-                              : false
-                          }
-                        />
-                        <Label
-                          htmlFor="paypal"
-                          className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                        >
-                          <EuroIcon className="mb-3 h-6 w-6" />
-                          Paypal
-                        </Label>
-                      </div>
-                      <div>
-                        <RadioGroupItem
-                          value="apple"
-                          id="apple"
-                          className="peer sr-only"
-                          checked={
-                            payment && payment[0].name == "Apple" ? true : false
-                          }
-                        />
-                        <Label
-                          htmlFor="apple"
-                          className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                        >
-                          <Apple className="mb-3 h-6 w-6" />
-                          Apple
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                    <Label htmlFor="cardHolderName">
-                      Nombre del Titular de la Tarjeta:
-                    </Label>
-                    <Input
-                      type="text"
-                      id="cardHolderName"
-                      name="cardHolderName"
-                      placeholder={
-                        payment
-                          ? payment[0]?.cardHolderName
-                          : "Ingrese el nombre del titular de la tarjeta"
-                      }
-                      className="input"
-                      required
-                    />
-                    <Label htmlFor="cardNumber">Número de Tarjeta:</Label>
-                    <CardElement></CardElement>
-                    {/* <Input
-                      type="text"
-                      id="cardNumber"
-                      name="cardNumber"
-                      placeholder={
-                        payment
-                          ? payment[0]?.cardNumber
-                          : "Ingrese el número de la tarjetaIngrese el número de la tarjeta"
-                      }
-                      className="input"
-                      required
-                      min="16"
-                      max="16"
-                    />
-                    <div className="grid grid-cols-3 gap-4 mt-2">
-                      <Select>
-                        <SelectTrigger id="month">
-                          <SelectValue
-                            placeholder={
-                              payment ? payment[0]?.expirationMonth : "Mes"
-                            }
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1">January</SelectItem>
-                          <SelectItem value="2">February</SelectItem>
-                          <SelectItem value="3">March</SelectItem>
-                          <SelectItem value="4">April</SelectItem>
-                          <SelectItem value="5">May</SelectItem>
-                          <SelectItem value="6">June</SelectItem>
-                          <SelectItem value="7">July</SelectItem>
-                          <SelectItem value="8">August</SelectItem>
-                          <SelectItem value="9">September</SelectItem>
-                          <SelectItem value="10">October</SelectItem>
-                          <SelectItem value="11">November</SelectItem>
-                          <SelectItem value="12">December</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Select>
-                        <SelectTrigger id="year">
-                          <SelectValue
-                            placeholder={
-                              payment ? payment[0]?.expirationMonth : "Año"
-                            }
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Array.from({ length: 10 }, (_, i) => (
-                            <SelectItem
-                              key={i}
-                              value={`${new Date().getFullYear() + i}`}
-                            >
-                              {new Date().getFullYear() + i}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Input id="cvc" placeholder="CVC" />
-                    </div> */}
-                    <FormField
-                      control={form.control}
-                      name="mobile"
-                      render={({ field }) => (
-                        <>
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel>
-                                Guardar información de Facturación
-                              </FormLabel>
-                            </div>
-                          </FormItem>
-                        </>
-                      )}
-                    />
-                  </div>
-                  <div className="flex justify-end mt-5">
-                    <Button
-                      onClick={() => setOpen(false)}
-                      type="button"
-                      size="sm"
-                    >
-                      Siguiente
-                    </Button>
+                    <div className="py-4">
+                      {/* <CheckoutForm></CheckoutForm> */}
+                    </div>
+                    <div className="flex justify-end mt-5">
+                      <Button
+                        onClick={() => setOpen(false)}
+                        type="button"
+                        size="sm"
+                      >
+                        Siguiente
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </form>
@@ -533,9 +358,9 @@ export default function ClientPay({ user, address, payment }: Props) {
               <div className="grid gap-3">
                 <div className="font-semibold">Información de pago</div>
                 <dl className="grid gap-3">
-                  {payment && (
+                  {/* {payment && (
                     <>
-                      {payment[0].name === "Tarjeta de crédito" && (
+                      {payment[0].cardHolderName === "Tarjeta de crédito" && (
                         <div className="flex items-center justify-between">
                           <dt className="flex items-center gap-2 text-muted-foreground">
                             <CreditCard className="h-4 w-4" />
@@ -569,7 +394,7 @@ export default function ClientPay({ user, address, payment }: Props) {
                         </div>
                       )}
                     </>
-                  )}
+                  )} */}
                 </dl>
               </div>
               <div className="flex justify-end mt-8">
@@ -579,8 +404,8 @@ export default function ClientPay({ user, address, payment }: Props) {
                   onClick={async () => {
                     console.log(products);
                     console.log(user.id);
-                    const order = await addOrder(products)
-                    console.log(order)
+                    const order = await addOrder(products);
+                    console.log(order);
                     // Añadir función Stripe
                   }}
                   size="sm"
@@ -599,9 +424,6 @@ export default function ClientPay({ user, address, payment }: Props) {
   );
 }
 
-
-
-
 // const { id } = paymentMethod;
 // const response = await fetch("/api/charge", {
 //   method: "POST",
@@ -611,7 +433,7 @@ export default function ClientPay({ user, address, payment }: Props) {
 //   if(products && user.id)
 //   BuyProduct(Number(user.id),products[0])
 
-  /* <div className="ml-auto flex items-center gap-1">
+/* <div className="ml-auto flex items-center gap-1">
               <Button size="sm" variant="outline" className="h-8 gap-1">
                 <Truck className="h-3.5 w-3.5" />
                 <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
@@ -635,23 +457,23 @@ export default function ClientPay({ user, address, payment }: Props) {
             </div> */
 
 // FUNCION STRIPE
-            // if (stripe && elements) {
-            //   const cardElement = elements.getElement(CardElement);
-            //   if (cardElement) {
-            //     const { error, paymentMethod } =
-            //       await stripe.createPaymentMethod({
-            //         type: "card",
-            //         card: cardElement,
-            //       });
-            //     console.log(paymentMethod);
-            //     if (error) {
-            //       console.log("[error]", error);
-            //     } else {
-            //       console.log("[PaymentMethod]", paymentMethod);
-            //     }
-            //   } else {
-            //     console.log("CardElement no está disponible");
-            //   }
-            // } else {
-            //   console.log("Stripe o Elements es null");
-            // }
+// if (stripe && elements) {
+//   const cardElement = elements.getElement(CardElement);
+//   if (cardElement) {
+//     const { error, paymentMethod } =
+//       await stripe.createPaymentMethod({
+//         type: "card",
+//         card: cardElement,
+//       });
+//     console.log(paymentMethod);
+//     if (error) {
+//       console.log("[error]", error);
+//     } else {
+//       console.log("[PaymentMethod]", paymentMethod);
+//     }
+//   } else {
+//     console.log("CardElement no está disponible");
+//   }
+// } else {
+//   console.log("Stripe o Elements es null");
+// }

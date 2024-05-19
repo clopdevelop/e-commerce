@@ -6,7 +6,7 @@ export default async function PayMethodForm() {
     const payment = await getPaymentMethodsByUser();
   return (
     <form action={savePayMethod} className="w-full">
-    <div className="grid gap-4">
+    {/* <div className="grid gap-4">
       <Label htmlFor="invoicingMethod">Método de Pago:</Label>
       <div className="grid grid-cols-3 gap-4 my-2">
         <div>
@@ -47,7 +47,7 @@ export default async function PayMethodForm() {
         type="text"
         id="cardHolderName"
         name="cardHolderName"
-        placeholder={payment?.name ?? "Ingrese el nombre del titular de la tarjeta"}
+        placeholder={payment[0]?.name ?? "Ingrese el nombre del titular de la tarjeta"}
         className="Input"
         required
       />
@@ -92,7 +92,7 @@ export default async function PayMethodForm() {
         <input type="checkbox" id="mobile" name="mobile" />
         <label htmlFor="mobile">Guardar información de Facturación</label>
       </div>
-    </div>
+    </div> */}
     <Button className="w-32" type="submit">
             Actualizar cuenta
           </Button>

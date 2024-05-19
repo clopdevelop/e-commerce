@@ -1,7 +1,9 @@
 "use server"
 import prisma from "@/lib/prisma";
-import { User, Category } from './definitions';
+import { Category } from './definitions';
 import { sleep } from "./utils";
+import { User } from "@prisma/client";
+
 
 /**
  * Devuelve todos los Productos
@@ -226,9 +228,9 @@ export async function fetchOrdersByUserId(userId: number) {
            id : Number(userId),
         }
       },
-      include: {
-        OrderItem : true
-      }
+      // include: {
+      //   OrderItem : true
+      // }
     });
     return orders;
   } catch (error) {

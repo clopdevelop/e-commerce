@@ -48,7 +48,7 @@ export default function Component({ product }: { product: Product }) {
               <Image
                 alt="Product image"
                 className="aspect-square rounded-md object-cover"
-                src={product.ProductImage[0].url ?? ""}
+                src={product?.ProductImage?.[0]?.url || ''}
                 width={300}
                 height={300}
                 priority={true}

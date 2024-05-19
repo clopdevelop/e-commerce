@@ -18,7 +18,7 @@ async function getData() {
 
 
 export default async function DemoPage() {
-  const data: (OrderItem & Order)[] = await getData()
+  const data = await getData()
   console.log(data)
   return (
     <div className="container mx-auto">

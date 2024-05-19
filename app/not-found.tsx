@@ -8,7 +8,7 @@ export default function NotFound() {
         <NavBar />
         <main className="flex flex-col items-center justify-between px-24 py-10">
         <div>
-          <h2>Not Found</h2>
+          <h2>Not Foundd</h2>
           <p>Could not find requested resource</p>
           <Link href="/">Return Home</Link>
         </div>

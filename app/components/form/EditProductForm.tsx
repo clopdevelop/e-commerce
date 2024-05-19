@@ -73,9 +73,10 @@ import { FancyMultiSelect } from "../admin/fancy-multi-select";
 
 interface Props {
   product: Product;
+  categories: string[];
 }
 
-export default function EditProductForm({ product }: Props) {
+export default function EditProductForm({ product, categories }: Props) {
 
   const form = useForm();
 
@@ -205,7 +206,7 @@ export default function EditProductForm({ product }: Props) {
                           </Table>
                         </CardContent>
                         <CardFooter className="justify-center border-t p-4">
-                          // todo este botón deberá crear una fila para una variacion del producto
+                          {/* // todo este botón deberá crear una fila para una variacion del producto */}
                           <Button size="sm" variant="ghost" className="gap-1">
                             <PlusCircle className="h-3.5 w-3.5" />
                             Añadir Variante

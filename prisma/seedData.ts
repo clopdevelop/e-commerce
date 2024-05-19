@@ -172,36 +172,27 @@ const productimages = [
 
 const categories = [
   {
-    name: "Electronics",
+    name: "Casuales",
   },
   {
-    name: "Clothing",
+    name: "Deportivos",
   },
   {
-    name: "Books",
+    name: "Botas",
   },
   {
-    name: "Home & Garden",
+    name: "Sandalias",
   },
   {
-    name: "Sports & Outdoors",
+    name: "Zapatillas",
   },
   {
-    name: "Beauty & Personal Care",
+    name: "Mocasines",
   },
   {
-    name: "Toys & Games",
-  },
-  {
-    name: "Food & Beverages",
-  },
-  {
-    name: "Health & Wellness",
-  },
-  {
-    name: "Automotive",
-  },
-];
+    name: "Trabajo"
+  }
+]
 
 const users = [
   {

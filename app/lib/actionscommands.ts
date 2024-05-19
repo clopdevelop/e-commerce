@@ -587,150 +587,199 @@ import { getUser } from "./data";
 
 // ORDERS
 // ! Esto se debe ejecutar en el webHook una vez que el pago está completado
-  export async function addOrder(products: CartItem[]) {
+  export async function addOrder(products: any[] | Stripe.PaymentIntent) {
 
-  const productData = products.map((product)=>({
-    id: product.id,
-    id_product: product.id_product,
-    name: product.name,
-    quantity: product.quantity,
-    unit_price : product.unit_price
-  }))
+  // const productData = products.map((product)=>({
+  //   id: product.id,
+  //   id_product: product.id_product,
+  //   name: product.name,
+  //   quantity: product.quantity,
+  //   unit_price : product.unit_price
+  // }))
 
-  console.log(productData)
-
+  console.log(products)
+  // {
+  //   id: 'pi_3PIEuSRxuIsR3WCz0GoPjuGj',
+  //   object: 'payment_intent',
+  //   amount: 1500,
+  //   amount_capturable: 0,
+  //   amount_details: { tip: {} },
+  //   amount_received: 1500,
+  //   application: null,
+  //   application_fee_amount: null,
+  //   automatic_payment_methods: { allow_redirects: 'always', enabled: true },
+  //   canceled_at: null,
+  //   cancellation_reason: null,
+  //   capture_method: 'automatic_async',
+  //   client_secret: 'pi_3PIEuSRxuIsR3WCz0GoPjuGj_secret_0BofRKTLgErFPSoA2Kp8hCXgW',
+  //   confirmation_method: 'automatic',
+  //   created: 1716145000,
+  //   currency: 'eur',
+  //   customer: null,
+  //   description: null,
+  //   invoice: null,
+  //   last_payment_error: null,
+  //   latest_charge: 'ch_3PIEuSRxuIsR3WCz0CQnd4MI',
+  //   livemode: false,
+  //   metadata: { item1_price: '1000', item1_id: 'xl-tshirt' },
+  //   next_action: null,
+  //   on_behalf_of: null,
+  //   payment_method: 'pm_1PIEukRxuIsR3WCzicW2i5Dh',
+  //   payment_method_configuration_details: { id: 'pmc_1PI6fARxuIsR3WCz6oQtY9yE', parent: null },
+  //   payment_method_options: {
+  //     card: {
+  //       installments: null,
+  //       mandate_options: null,
+  //       network: null,
+  //       request_three_d_secure: 'automatic'
+  //     },
+  //     link: { persistent_token: null }
+  //   },
+  //   payment_method_types: [ 'card', 'link' ],
+  //   processing: null,
+  //   receipt_email: null,
+  //   review: null,
+  //   setup_future_usage: null,
+  //   shipping: null,
+  //   source: null,
+  //   statement_descriptor: null,
+  //   statement_descriptor_suffix: null,
+  //   status: 'succeeded',
+  //   transfer_data: null,
+  //   transfer_group: null
+  // }
   const amount = 100;
 
   //   //todo En produccion se creará una secuencia cuando se migre a Postgree para crear un codigo de factura
-  const lastInvoice = await prisma.invoice.findFirst({
-    orderBy: {
-      id: 'desc',
-    },
-    select: {
-      invoice_n: true,
-    },
-  });
+  // const lastInvoice = await prisma.invoice.findFirst({
+  //   orderBy: {
+  //     id: 'desc',
+  //   },
+  //   select: {
+  //     invoice_n: true,
+  //   },
+  // });
 
-  const nextInvoiceNumber = lastInvoice
-    ? parseInt(lastInvoice.invoice_n.replace('INV', '')) + 1
-    : 1;
+  // const nextInvoiceNumber = lastInvoice
+  //   ? parseInt(lastInvoice.invoice_n.replace('INV', '')) + 1
+  //   : 1;
 
-  const formattedInvoiceNumber = `INV-${nextInvoiceNumber.toString().padStart(3, '0')}`;
+  // const formattedInvoiceNumber = `INV-${nextInvoiceNumber.toString().padStart(3, '0')}`;
 
-  const lastOrder = await prisma.order.findFirst({
-    orderBy: {
-      id: 'desc',
-    },
-    select: {
-      code: true,
-    },
-  });
+  // const lastOrder = await prisma.order.findFirst({
+  //   orderBy: {
+  //     id: 'desc',
+  //   },
+  //   select: {
+  //     code: true,
+  //   },
+  // });
 
-  const nextOrderNumber = lastOrder
-    ? parseInt(lastOrder.code.replace('INV', '')) + 1
-    : 1;
+  // const nextOrderNumber = lastOrder
+  //   ? parseInt(lastOrder.code.replace('INV', '')) + 1
+  //   : 1;
 
-  const formattedOrder = `INV-${nextOrderNumber.toString().padStart(3, '0')}`;
+  // const formattedOrder = `INV-${nextOrderNumber.toString().padStart(3, '0')}`;
 
-  console.log(formattedInvoiceNumber)
-  console.log(formattedOrder)
+  // console.log(formattedInvoiceNumber)
+  // console.log(formattedOrder)
 
-  // Crear la orden con detalles y factura en la base de datos.
-  try {
-    //TEST
-    const newOrder = await prisma.order.create({
-      data: {
-        id:2,
-        code: 'INV-002',
-        type:'BUY', // SUBCRIPTION, BUY, REGRET
-        total: amount, 
-        status: "Processing", // Estado inicial del pedido
-        paid: false, // Asume que el pedido inicialmente no está pagado
-        discount: 0, // Sin descuento inicialmente
-        id_user: 1,
-        id_delivery_type: 1,//"Standard",
-        OrderItem: {
-          createMany: {
-            data:   [
-              {
-                id: 1,
-                id_product: 1,
-                name: 'Backpack',
-                quantity: 1,
-                unit_price: 40
-              },
-              {
-                id: 2,
-                id_product: 2,
-                name: 'Pintura famosa',
-                quantity: 1,
-                unit_price: 1000
-              },
-              {
-                id: 3,
-                id_product: 3,
-                name: 'Laptopos',
-                quantity: 26,
-                unit_price: 3333
-              }
-            ],
-          }
-        },
-        invoice: {
-          create: {
-        id:2,
-            invoice_n: "INV-002",
-            id_payment_method: 1,
-            type: "A",
-            amount: amount,
-            state: 'ok'
-          },
-        },
-      },
-      include: {
-        OrderItem: true,
-        invoice: true,
-      },
-    });
+  // // Crear la orden con detalles y factura en la base de datos.
+  // try {
+  //   //TEST
+  //   const newOrder = await prisma.order.create({
+  //     data: {
+  //       id:2,
+  //       code: 'INV-002',
+  //       type:'BUY', // SUBCRIPTION, BUY, REGRET
+  //       total: amount, 
+  //       status: "Processing", // Estado inicial del pedido
+  //       paid: false, // Asume que el pedido inicialmente no está pagado
+  //       discount: 0, // Sin descuento inicialmente
+  //       id_user: 1,
+  //       id_delivery_type: 1,//"Standard",
+  //       OrderItem: {
+  //         createMany: {
+  //           data:   [
+  //             {
+  //               id: 1,
+  //               id_product: 1,
+  //               name: 'Backpack',
+  //               quantity: 1,
+  //               unit_price: 40
+  //             },
+  //             {
+  //               id: 2,
+  //               id_product: 2,
+  //               name: 'Pintura famosa',
+  //               quantity: 1,
+  //               unit_price: 1000
+  //             },
+  //             {
+  //               id: 3,
+  //               id_product: 3,
+  //               name: 'Laptopos',
+  //               quantity: 26,
+  //               unit_price: 3333
+  //             }
+  //           ],
+  //         }
+  //       },
+  //       invoice: {
+  //         create: {
+  //       id:2,
+  //           invoice_n: "INV-002",
+  //           id_payment_method: 1,
+  //           type: "A",
+  //           amount: amount,
+  //           state: 'ok'
+  //         },
+  //       },
+  //     },
+  //     include: {
+  //       OrderItem: true,
+  //       invoice: true,
+  //     },
+  //   });
 
-    // const newOrder = await prisma.order.create({
-    //   data: {
-    //     code: formattedOrder,
-    //     type: 'BUY', // Puedes proporcionar un valor para el tipo de orden aquí si no es un valor por defecto.
-    //     total: amount, 
-    //     status: "Processing", // Estado inicial del pedido
-    //     // Los campos que no proporcionas se establecerán automáticamente según sus valores por defecto en el modelo.
-    //     id_user: 1, // Conecta la orden con el usuario existente que tiene id igual a 1.
-    //     id_delivery_type: 1, // Conecta la orden con el tipo de entrega existente que tiene id igual a 1.
-    //     OrderItem: {
-    //       createMany: {
-    //         data: productData,
-    //       }
-    //     },
-    //     invoice: {
-    //       create: {
-    //         invoice_n: formattedInvoiceNumber,
-    //         id_payment_method: 1,
-    //         type: "A",
-    //         amount: amount,
-    //         state: 'ok'
-    //       },
-    //     },
-    //   },
-    //   include: {
-    //     OrderItem: true,
-    //     invoice: true,
-    //   },
-    // });
+  //   // const newOrder = await prisma.order.create({
+  //   //   data: {
+  //   //     code: formattedOrder,
+  //   //     type: 'BUY', // Puedes proporcionar un valor para el tipo de orden aquí si no es un valor por defecto.
+  //   //     total: amount, 
+  //   //     status: "Processing", // Estado inicial del pedido
+  //   //     // Los campos que no proporcionas se establecerán automáticamente según sus valores por defecto en el modelo.
+  //   //     id_user: 1, // Conecta la orden con el usuario existente que tiene id igual a 1.
+  //   //     id_delivery_type: 1, // Conecta la orden con el tipo de entrega existente que tiene id igual a 1.
+  //   //     OrderItem: {
+  //   //       createMany: {
+  //   //         data: productData,
+  //   //       }
+  //   //     },
+  //   //     invoice: {
+  //   //       create: {
+  //   //         invoice_n: formattedInvoiceNumber,
+  //   //         id_payment_method: 1,
+  //   //         type: "A",
+  //   //         amount: amount,
+  //   //         state: 'ok'
+  //   //       },
+  //   //     },
+  //   //   },
+  //   //   include: {
+  //   //     OrderItem: true,
+  //   //     invoice: true,
+  //   //   },
+  //   // });
     
     
 
-    console.log("Orden guardada:", newOrder);
+  //   console.log("Orden guardada:", newOrder);
 
-    return newOrder;
-  } catch (error) {
-    console.error("Error guardando la orden en la base de datos:", error);
-  }
+  //   return newOrder;
+  // } catch (error) {
+  //   console.error("Error guardando la orden en la base de datos:", error);
+  // }
 }
 
 // ! Esto se debe ejecutar en el webHook una vez que el pago está completado

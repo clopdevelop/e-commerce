@@ -3,8 +3,7 @@ import {
   getPaymentMethodsByUser,
   login,
 } from "@/lib/actionscommands";
-import { User } from "@/lib/definitions";
-import { Address, PaymentMethod } from "@prisma/client";
+import { Address, PaymentMethod,User } from "@prisma/client";
 
 import { redirect } from "next/navigation";
 import StripeProvider from "./StripeProvider";
