@@ -1,39 +1,7 @@
-"use client";
-// import { enviarEmail } from "@/lib/actionscommands";
-import React, { useState } from "react";
+import { enviarEmail } from "@/lib/actionscommands";
 import { Button, Card, Input, Textarea } from "../shadcn";
 
-const ContactForm: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    text: "",
-  });
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      // await enviarEmail(formData);
-      // // Optionally, you can reset the form here
-      // setFormData({
-      //   name: "",
-      //   email: "",
-      //   text: "",
-      // });
-    } catch (error) {
-      console.error("Error al enviar el correo:", error);
-    }
-  };
+function ContactForm() {
 
   return (
     <>
@@ -57,30 +25,24 @@ const ContactForm: React.FC = () => {
                 </h3>
                 <form
                   className="grid grid-cols-1 gap-4"
-                  onSubmit={handleSubmit}
+                  action={enviarEmail}
                 >
                   <Input
                     type="text"
                     name="name"
                     placeholder="Nombre"
-                    value={formData.name}
-                    onChange={handleChange}
                     className="block w-full border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-400"
                   />
                   <Input
                     name="email"
                     type="email"
                     placeholder="Correo Electrónico"
-                    value={formData.email}
-                    onChange={handleChange}
                     className="block w-full border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-400"
                   />
                   <Textarea
                     name="text"
                     placeholder="Mensaje"
                     rows={4}
-                    value={formData.text}
-                    onChange={handleChange}
                     className="block w-full border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-400"
                   ></Textarea>
                   <Button

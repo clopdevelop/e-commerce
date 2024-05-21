@@ -20,13 +20,6 @@ export default async function SettingsAccountPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">Cuenta</h3>
-        <p className="text-sm text-muted-foreground">
-          Actualiza los datos de tu cuenta.
-        </p>
-      </div>
-      <Separator />
       <AccountForm />
     </div>
   );

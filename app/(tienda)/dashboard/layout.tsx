@@ -1,5 +1,4 @@
 import SideBar from "@/components/client/sideBar";
-import { CommandMenu } from "@/components/utils/ComandMenu";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   

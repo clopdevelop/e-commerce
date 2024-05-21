@@ -1,8 +1,6 @@
 "use client";
-
 import * as React from "react";
 import { X } from "lucide-react";
-
 import { Badge } from "@/components/shadcn/badge";
 import {
   Command,
@@ -17,36 +15,36 @@ type Framework = Record<"value" | "label", string>;
 const FRAMEWORKS = [
   {
     value: "next.js",
-    label: "Next.js",
+    label: "Nuevo",
   },
   {
     value: "sveltekit",
-    label: "SvelteKit",
+    label: "Semi-nuevo",
   },
   {
     value: "nuxt.js",
-    label: "Nuxt.js",
+    label: "Coleccionista",
   },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-  {
-    value: "wordpress",
-    label: "WordPress",
-  },
-  {
-    value: "express.js",
-    label: "Express.js",
-  },
-  {
-    value: "nest.js",
-    label: "Nest.js",
-  },
+  // {
+  //   value: "remix",
+  //   label: "Remix",
+  // },
+  // {
+  //   value: "astro",
+  //   label: "Astro",
+  // },
+  // {
+  //   value: "wordpress",
+  //   label: "WordPress",
+  // },
+  // {
+  //   value: "express.js",
+  //   label: "Express.js",
+  // },
+  // {
+  //   value: "nest.js",
+  //   label: "Nest.js",
+  // },
 ] satisfies Framework[];
 
 interface Props {
@@ -56,7 +54,7 @@ interface Props {
 export const FancyMultiSelect = ({ onChange }: Props) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState<Framework[]>([FRAMEWORKS[4]]);
+  const [selected, setSelected] = React.useState<Framework[]>([]);
   const [inputValue, setInputValue] = React.useState("");
 
   const handleUnselect = React.useCallback((framework: Framework) => {
@@ -131,7 +129,7 @@ export const FancyMultiSelect = ({ onChange }: Props) => {
             onValueChange={setInputValue}
             onBlur={() => setOpen(false)}
             onFocus={() => setOpen(true)}
-            placeholder="Select frameworks..."
+            placeholder=""
             className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
           />
         </div>

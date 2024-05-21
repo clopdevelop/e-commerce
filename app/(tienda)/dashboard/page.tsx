@@ -11,7 +11,6 @@ export default async function Home() {
   // //   redirect("/entrada");
   // // }
 
-
   const completeUser = await getUser();
 
   return (

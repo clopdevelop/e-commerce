@@ -546,48 +546,13 @@ export async function deleteProductonClick(product: { id_product: number }) {
   }
 }
 
-import { EmailTemplate } from "@/components/contact/email-template";
-import { Resend } from "resend";
-import { revalidatePath } from "next/cache";
-import { Address, CartItem } from "./definitions";
-import { getUser } from "./data";
-
-// export async function enviarEmail(formData: { name: string; email: string; text: string; }) {
-// const resend = new Resend(process.env.RESEND_API_KEY);
-
-//   const firstName = formData.name ?? '';
-//   const email = formData.email ?? '';
-//   const text = formData.text ?? '';
-
-//   try {
-//     const emailContent = EmailTemplate({ firstName: firstName, email: text, text: text });
-
-//     const formDataToSend = new FormData();
-//     formDataToSend.append('name', firstName);
-//     formDataToSend.append('email', email);
-//     formDataToSend.append('text', text);
-
-//     const data = await resend.emails.send({
-//       from: 'Acme <onboarding@resend.dev>',
-//       to: ["yakiiloop@gmail.com"],
-//       subject: text,
-//       react: emailContent,
-//       text: ''
-//     });
-
-//     return { message: "Email enviado" };
-//   } catch (error) {
-//     return { mensaje: "Error al enviar: ", error };
-//   }
-// }
-
-
 
 
 
 // ORDERS
 // ! Esto se debe ejecutar en el webHook una vez que el pago está completado
-  export async function addOrder(products: any[] | Stripe.PaymentIntent) {
+  
+export async function addOrder(products: any[] | Stripe.PaymentIntent) {
 
   // const productData = products.map((product)=>({
   //   id: product.id,
@@ -974,3 +939,44 @@ export async function stripePay(formdata: FormData){
 
 //   return paymentIntent;
 // }
+
+
+
+
+// EMAIL
+
+import { EmailTemplate } from "@/components/contact/email-template";
+import { Resend } from "resend";
+import { revalidatePath } from "next/cache";
+import { Address, CartItem } from "./definitions";
+import { getUser } from "./data";
+
+export async function enviarEmail(formdata: FormData) {
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+  const firstName = formData.name ?? '';
+  const email = formData.email ?? '';
+  const text = formData.text ?? '';
+
+  try {
+    const emailContent = EmailTemplate({ firstName: firstName, email: text, text: text });
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('name', firstName);
+    formDataToSend.append('email', email);
+    formDataToSend.append('text', text);
+
+    const data = await resend.emails.send({
+      from: 'Acme <onboarding@resend.dev>',
+      to: ["yakiiloop@gmail.com"],
+      subject: text,
+      react: emailContent,
+      text: ''
+    });
+
+    return { message: "Email enviado" };
+  } catch (error) {
+    return { mensaje: "Error al enviar: ", error };
+  }
+}
+

@@ -6,15 +6,14 @@
 import { CardTitle, CardDescription, CardHeader, CardContent, CardFooter, Card } from "@/components/shadcn/card"
 import { Input } from "@/components/shadcn/input"
 import { Button } from "@/components/shadcn/button"
-// import  AddressAutoForm  from "@/components/form/AddressAutoForm"
 
-export default function Component() {
+export default function UserAddress() {
   return (
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Shipping address</CardTitle>
-          <CardDescription>Enter the shipping address for the customer.</CardDescription>
+          <CardTitle>Dirección de envío</CardTitle>
+          <CardDescription>Introduzca su dirección de envío.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
           <Input placeholder="Street" type="text" />
@@ -29,20 +28,6 @@ export default function Component() {
           <Button className="ml-auto">Save</Button>
         </CardFooter>
       </Card>
-      {/* <Card></Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Shipping address</CardTitle>
-          <CardDescription>Enter the shipping address for the customer.</CardDescription>
-        </CardHeader>
-        <CardContent >
-          <AddressForm></AddressForm>
-          <AddressAutoForm></AddressAutoForm>
-        </CardContent>
-        <CardFooter>
-          <Button className="ml-auto">Save</Button>
-        </CardFooter>
-      </Card> */}
     </>
   )
 }

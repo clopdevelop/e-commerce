@@ -7,8 +7,6 @@ export default async function DirPage() {
 
   
   return (
-    <div>
       <DirForm></DirForm>
-    </div>
   );
 }

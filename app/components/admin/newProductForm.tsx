@@ -79,7 +79,6 @@ interface Props {
 }
 
 export default function NewProductForm({ categories }: Props) {
-
   const form = useForm();
 
   const states = ["Disponible", "Agotado"];
@@ -98,6 +97,15 @@ export default function NewProductForm({ categories }: Props) {
     addProduct(values);
   }
 
+  // --------------------------------------------
+  const [rows, setRows] = useState([
+    { id: "001", stock: "", price: "", size: "s" },
+    // ... tus otras filas aquí
+  ]);
+
+  const addRow = () => {
+    setRows([...rows, { id: "", stock: "", price: "", size: "s" }]);
+  };
 
   return (
     <>
@@ -187,15 +195,119 @@ export default function NewProductForm({ categories }: Props) {
                           <Table>
                             <TableHeader>
                               <TableRow>
-                                <TableHead className="w-[100px]">Código</TableHead>
-                                <TableHead>Cantidad</TableHead>
-                                <TableHead>Precio</TableHead>
                                 <TableHead className="w-[100px]">
-                                 Talla
+                                  Código
+                                </TableHead>
+                                <TableHead>Cantidad</TableHead>
+                                <TableHead>Color</TableHead>
+                                <TableHead className="w-[100px]">
+                                  Talla
                                 </TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
+                              {/* {rows.map((row, index) => (
+                                <TableRow key={index}>
+                                  <TableCell className="font-semibold">
+                                    {row.id}
+                                  </TableCell>
+                                  <TableCell>
+                                    <FormField
+                                      control={form.control}
+                                      defaultValue={row.stock}
+                                      {...form.register(`stock${index}`)}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormControl>
+                                            <Input
+                                              {...field}
+                                              id={`stock${index}`}
+                                              type="number"
+                                              className="w-full"
+                                            />
+                                          </FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </TableCell>
+                                  <TableCell>
+                                    <FormField
+                                      control={form.control}
+                                      defaultValue={row.price}
+                                      {...form.register(`price${index}`)}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormControl>
+                                            <Input
+                                              {...field}
+                                              id={`price${index}`}
+                                              type="number"
+                                              className="w-full"
+                                            />
+                                          </FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </TableCell>
+                                  <TableCell>
+                                    <FormField
+                                      control={form.control}
+                                      defaultValue={row.size}
+                                      {...form.register(`size${index}`)}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormControl>
+                                            <Select>
+                                              <SelectTrigger
+                                                {...field}
+                                                id={`size${index}`}
+                                                className="w-full"
+                                              >
+                                                <SelectValue/>
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                <SelectItem value="36">
+                                                  36
+                                                </SelectItem>
+                                                <SelectItem value="37">
+                                                  37
+                                                </SelectItem>
+                                                <SelectItem value="38">
+                                                  38
+                                                </SelectItem>
+                                                <SelectItem value="39">
+                                                  39
+                                                </SelectItem>
+                                                <SelectItem value="40">
+                                                  40
+                                                </SelectItem>
+                                                <SelectItem value="41">
+                                                  41
+                                                </SelectItem>
+                                                <SelectItem value="42">
+                                                  42
+                                                </SelectItem>
+                                                <SelectItem value="43">
+                                                  43
+                                                </SelectItem>
+                                                <SelectItem value="44">
+                                                  44
+                                                </SelectItem>
+                                                <SelectItem value="45">
+                                                  45
+                                                </SelectItem>
+                                                <SelectItem value="46">
+                                                  46
+                                                </SelectItem>
+                                              </SelectContent>
+                                            </Select>
+                                          </FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </TableCell>
+                                </TableRow>
+                              ))} */}
                               <TableRow>
                                 <TableCell className="font-semibold">
                                   GGPC-001
@@ -243,44 +355,59 @@ export default function NewProductForm({ categories }: Props) {
                                       <FormItem>
                                         {/* <FormLabel>Name</FormLabel> */}
                                         <FormControl>
-                                          <Input
-                                            {...field}
-                                            id="price"
-                                            type="number"
-                                            className="w-full"
-                                          />
+                                          <Select>
+                                            <SelectTrigger
+                                              {...field}
+                                              id="price"
+                                              className="w-full"
+                                            >
+                                              <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              <SelectItem value="36">36</SelectItem>
+                                            </SelectContent>
+                                          </Select>
                                         </FormControl>
                                       </FormItem>
                                     )}
                                   />
                                 </TableCell>
                                 <TableCell>
-                                  <ToggleGroup
-                                    type="single"
-                                    defaultValue="s"
-                                    variant="outline"
-                                  >
-                                    <ToggleGroupItem value="s">
-                                      S
-                                    </ToggleGroupItem>
-                                    <ToggleGroupItem value="m">
-                                      M
-                                    </ToggleGroupItem>
-                                    <ToggleGroupItem value="l">
-                                      L
-                                    </ToggleGroupItem>
-                                  </ToggleGroup>
+                                  <Select>
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="36">36</SelectItem>
+                                      <SelectItem value="37">37</SelectItem>
+                                      <SelectItem value="38">38</SelectItem>
+                                      <SelectItem value="39">39</SelectItem>
+                                      <SelectItem value="40">40</SelectItem>
+                                      <SelectItem value="41">41</SelectItem>
+                                      <SelectItem value="42">42</SelectItem>
+                                      <SelectItem value="43">43</SelectItem>
+                                      <SelectItem value="44">44</SelectItem>
+                                      <SelectItem value="45">45</SelectItem>
+                                      <SelectItem value="46">46</SelectItem>
+                                    </SelectContent>
+                                  </Select>
                                 </TableCell>
                               </TableRow>
                             </TableBody>
                           </Table>
                         </CardContent>
-                        <CardFooter className="justify-center border-t p-4">
-                          <Button size="sm" variant="ghost" className="gap-1">
+                        {/* <CardFooter className="justify-center border-t p-4">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            className="gap-1"
+                            onClick={addRow}
+                          >
                             <PlusCircle className="h-3.5 w-3.5" />
                             Añadir Variante
                           </Button>
-                        </CardFooter>
+                        </CardFooter> */}
                       </Card>
                       <Card x-chunk="dashboard-07-chunk-2">
                         <CardHeader>
