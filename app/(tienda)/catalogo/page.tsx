@@ -18,15 +18,6 @@ import type { Metadata } from "next";
 
 export const dynamicParams = false;
 
-//! En tiempo de compilación
-export async function generateStaticParams() {
-  const categories = await fetchAllCategories();
-
-  return categories.map((category) => ({
-    category: category,
-  }));
-}
-
 export const metadata = {
   title: "La mejor Tienda",
   description: "Es una tienda que es la mejor.",
@@ -72,7 +63,7 @@ export default async function Home({
       <div className="my-5  md:mt-8">
         <Search placeholder="Buscar productos..." />
       </div>
-      <div className="flex flex-col gap-5 md:flex-row border p-5">
+      <div className="flex flex-col gap-5 md:flex-row border">
         <Categories></Categories>
         <Suspense
           key={query+currentPage}
@@ -88,7 +79,7 @@ export default async function Home({
           />
         </Suspense>
       </div>
-      <div className="mt-5 flex w-full justify-center">
+      <div className="mt-5 mx-auto pb-8 overflow-auto w-3/4">
         <MyPagination
           totalPages={totalPages}
         ></MyPagination>

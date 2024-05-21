@@ -8,7 +8,6 @@ import {
   MenubarTrigger,
 } from "@/components/shadcn/menubar";
 
-
 import Link from "next/link";
 
 import { auth } from "@/auth";
@@ -18,19 +17,40 @@ import Profile from "@/components/utils/Profile";
 import { NavigationMenuDemo } from "@/components/ui/nav-links";
 
 import { ModeToggle } from "../utils/ModeToggle";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/shadcn/navigation-menu";
+
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/shadcn/sheet";
+import { Button, buttonVariants } from "../shadcn/button";
+import Cart from "@/components/cart/Cart";
 
 export async function NavBar() {
-  
   const account = await auth();
   //todo si lo hago  con el id no funciona google auth
   const email = account ? account.user?.email ?? "" : "";
 
-
-
   return (
     <>
-      <Menubar className="py-10 px-3 flex items-center justify-between">
-        <svg className="block text-white w-36"
+      <Menubar className="py-10 flex w-full justify-center">
+        <svg
+          className="block text-white w-36"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 330 87"
@@ -46,7 +66,7 @@ export async function NavBar() {
         </svg>
         <NavigationMenuDemo></NavigationMenuDemo>
         <MenubarMenu>
-          <div className="p-2 items-center sm:hidden">
+          <div className="p-2 sm:hidden">
             <MenubarTrigger>Menu</MenubarTrigger>
             <MenubarContent>
               <Link href={"/dashboard"}>
@@ -55,6 +75,7 @@ export async function NavBar() {
               <Link href={"/catalogo"}>
                 <MenubarItem>Tienda</MenubarItem>
               </Link>
+              
               <MenubarSeparator />
               <Link href={"/entrada"}>
                 <MenubarItem>Iniciar sesión</MenubarItem>
@@ -67,10 +88,10 @@ export async function NavBar() {
           </div>
         </MenubarMenu>
         <div className="flex">
-          <div className='flex justify-center items-center'>
-        <ModeToggle></ModeToggle>
+          <div className="flex justify-center items-center">
+            <ModeToggle></ModeToggle>
           </div>
-        {account && <Profile></Profile>}
+          {account && <Profile></Profile>}
         </div>
       </Menubar>
     </>

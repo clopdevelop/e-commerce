@@ -1,3 +1,7 @@
+import Cart from "@/components/cart/Cart";
+import {Sheet, SheetTrigger, navigationMenuTriggerStyle, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter, SheetClose, buttonVariants } from "@/components/shadcn";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import Link from "next/link"
 export default async function Home({
   searchParams,
 }: {
@@ -19,6 +23,7 @@ export default async function Home({
           <h1>WELCOME</h1>
         </>
       )}
+
     </>
   );
 }

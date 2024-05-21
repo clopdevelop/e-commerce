@@ -12,12 +12,39 @@
 // }
 
 interface SeedProduct {
+  id: number;
   name: string;
-  description: string;
+  description?: string;
+  state?: string;
   price: number;
-  stock: number;
-  id_category: number;
+  discount?: number;
+  material?: string;
+  created_at: Date;
+  last_update?: Date;
+  id_category?: number;
 }
+
+interface SeedColor {
+  id: number;
+  name: string;
+  variants: SeedProductVariant[];
+}
+
+interface SeedSize {
+  id: number;
+  value: number;
+  variants: SeedProductVariant[];
+}
+
+interface SeedProductVariant {
+  id: number;
+  code: string;
+  stock: number;
+  productId: number;
+  colorId: number;
+  sizeId: number;
+}
+
 
 export type SeedImage = {
     url: string;
@@ -67,85 +94,99 @@ interface SeedData {
   orderItems: SeedOrderItem[];
 }
 
+  
+const colors = [
+  {
+    "id": 1,
+    "name": "azul"
+  },
+  {
+    "id": 2,
+    "name": "marrón"
+  },
+  {
+    "id": 3,
+    "name": "negro"
+  }
+];
+
+const sizes = [
+  {
+    "id": 1,
+    "value": 42
+  },
+  {
+    "id": 2,
+    "value": 44
+  },
+  {
+    "id": 3,
+    "value": 43
+  }
+];
+
+const productVariants = [
+  {
+    "id": 1,
+    "code": "SNDL-001",
+    "stock": 100,
+    "productId": 1,
+    "colorId": 1,
+    "sizeId": 1
+  },
+  {
+    "id": 2,
+    "code": "BOTA-001",
+    "stock": 50,
+    "productId": 2,
+    "colorId": 2,
+    "sizeId": 2
+  },
+  {
+    "id": 3,
+    "code": "ZPTA-001",
+    "stock": 200,
+    "productId": 3,
+    "colorId": 3,
+    "sizeId": 3
+  }
+];
+
 const products = [
   {
-    name: "Zapatos Casuales",
-    description: "Zapatos casuales cómodos y elegantes.",
-    price: 60.0,
-    stock: 20,
-    id_category: 1,
+    "id": 1,
+    "name": "Sandalia de verano",
+    "description": "Sandalia de cuero azul",
+    "state": "nuevo",
+    "price": 29.99,
+    "discount": 0.1,
+    "material": "cuero",
+    "created_at": new Date("2024-05-21T00:00:00.000Z"),
+    "last_update": new Date("2024-05-21T00:00:00.000Z"),
+    "id_category": 1
   },
   {
-    name: "Zapatos Deportivos",
-    description: "Zapatos deportivos duraderos y de alto rendimiento.",
-    price: 80.0,
-    stock: 30,
-    id_category: 2,
+    "id": 2,
+    "name": "Bota de montaña",
+    "description": "Bota de montaña resistente",
+    "state": "nuevo",
+    "price": 79.99,
+    "material": "cuero",
+    "created_at": new Date("2024-05-21T00:00:00.000Z"),
+    "id_category": 2
   },
   {
-    name: "Zapatos Deportivos Rojos",
-    description: "Zapatos deportivos rojos, perfectos para correr.",
-    price: 80.0,
-    stock: 30,
-    id_category: 2,
-  },
-  {
-    name: "Zapatos Deportivos Azules",
-    description: "Zapatos deportivos azules, ideales para el gimnasio.",
-    price: 85.0,
-    stock: 20,
-    id_category: 2,
-  },
-  {
-    name: "Zapatos Deportivos Verdes",
-    description: "Zapatos deportivos verdes, excelentes para actividades al aire libre.",
-    price: 90.0,
-    stock: 25,
-    id_category: 2,
-  },
-  {
-    name: "Zapatos Deportivos Negros",
-    description: "Zapatos deportivos negros, versátiles para cualquier actividad deportiva.",
-    price: 95.0,
-    stock: 15,
-    id_category: 2,
-  },
-  {
-    name: "Botas",
-    description: "Botas robustas y resistentes para el aire libre.",
-    price: 100.0,
-    stock: 15,
-    id_category: 3,
-  },
-  {
-    name: "Sandalias",
-    description: "Sandalias ligeras y transpirables para el verano.",
-    price: 40.0,
-    stock: 25,
-    id_category: 4,
-  },
-  {
-    name: "Zapatillas",
-    description: "Zapatillas suaves y cómodas para estar en casa.",
-    price: 30.0,
-    stock: 35,
-    id_category: 5,
-  },
-  {
-    name: "Mocasines",
-    description: "Mocasines clásicos para un look sofisticado.",
-    price: 70.0,
-    stock: 20,
-    id_category: 6,
-  },
-  {
-    name: "Zapatos de Trabajo",
-    description: "Zapatos de trabajo seguros y cómodos.",
-    price: 90.0,
-    stock: 10,
-    id_category: 7,
-  },
+    "id": 3,
+    "name": "Zapatilla deportiva",
+    "description": "Zapatilla deportiva ligera",
+    "state": "nuevo",
+    "price": 59.99,
+    "material": "tela",
+    "created_at": new Date("2024-05-21T00:00:00.000Z"),
+    "id_category": 3
+  }
 ];
+
 
 const categories = [
   {

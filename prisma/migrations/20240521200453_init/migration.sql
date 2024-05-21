@@ -7,17 +7,41 @@ CREATE TABLE "Province" (
 -- CreateTable
 CREATE TABLE "Product" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "code" TEXT,
     "name" TEXT NOT NULL,
     "description" TEXT,
     "state" TEXT,
     "price" REAL NOT NULL DEFAULT 0,
     "discount" INTEGER DEFAULT 0,
+    "material" TEXT,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "last_update" DATETIME,
-    "stock" INTEGER NOT NULL,
     "id_category" INTEGER,
     CONSTRAINT "Product_id_category_fkey" FOREIGN KEY ("id_category") REFERENCES "Category" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Color" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Size" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "value" INTEGER NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "ProductVariant" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "code" TEXT NOT NULL,
+    "stock" INTEGER NOT NULL,
+    "productId" INTEGER NOT NULL,
+    "colorId" INTEGER NOT NULL,
+    "sizeId" INTEGER NOT NULL,
+    CONSTRAINT "ProductVariant_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "ProductVariant_colorId_fkey" FOREIGN KEY ("colorId") REFERENCES "Color" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "ProductVariant_sizeId_fkey" FOREIGN KEY ("sizeId") REFERENCES "Size" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable

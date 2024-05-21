@@ -12,7 +12,6 @@ interface Props {
 export const dynamicParams = false;
 
 //! En tiempo de compilación
-// todo Consideración importante: En el slog hay que utilizar el nombre del producto para que las arañas de google entiendan las urls
 export async function generateStaticParams() {
   const totalProducts = await countProducts();
 

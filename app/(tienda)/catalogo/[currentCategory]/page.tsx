@@ -25,7 +25,7 @@ export async function generateStaticParams() {
   const categories = await fetchAllCategories();
 
   return categories.map((category) => ({
-    category: category,
+    currentCategory: category,
   }));
 }
 
@@ -51,7 +51,8 @@ export default async function Home({
     currentCategory: string;
   };
 }) {
-  const { currentCategory } = params;
+
+  const currentCategory  = params.currentCategory;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
   const productsOnPage = 3;

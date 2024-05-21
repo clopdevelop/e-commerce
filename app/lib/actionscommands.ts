@@ -21,7 +21,7 @@ export async function authenticate(
   formData: FormData
 ) {
   try {
-    await sleep(2);
+    // await sleep(2);
 
     await signIn("credentials", {
       ...Object.fromEntries(formData),
@@ -41,17 +41,13 @@ export async function signInGoogle() {
 }
 
 export async function login() {
-  const authentication = await auth();
-  const user = String(authentication?.user?.email);
-  const completeUser = await getUser(user);
+  const completeUser = await getUser();
 
   return completeUser;
 }
 
 export async function getUserID() {
-  const authentication = await auth();
-  const user = String(authentication?.user?.email);
-  const completeUser = await getUser(user);
+  const completeUser = await getUser();
   const id = completeUser?.id;
 
   return id;
@@ -395,18 +391,44 @@ cloudinary.config({
 });
 
 export async function addProduct(formData: FormData) {
-  await sleep(3);
+  // await sleep(3);
   try {
     // const rawFormData = Object.fromEntries(formData.entries());
 
     const rawFormData = {
       name: formData.get("name"),
-      price: Number(formData.get("price")),
       description: formData.get("description"),
+      price: Number(formData.get("price")),
+      material: Number(formData.get("material")),
       stock: Number(formData.get("stock")),
+      color: Number(formData.get("color")),
+      size: Number(formData.get("size")),
+      category: Number(formData.get("category")),
+      state: formData.get("state"),
       image: formData.get("image"),
     };
 
+    console.log(rawFormData)
+    // {
+    //   name: 'Cristian López Gómez',
+    //   description: 'asadf',
+    //   price: 0.11,
+    //   material: 0,
+    //   stock: 3,
+    //   color: 0,
+    //   size: 0,
+    //   category: 0,
+    //   state: '',
+    //   image: File {
+    //     name: 'undefined',
+    //     lastModified: 1716320463063,
+    //     type: 'application/octet-stream',
+    //     size: 0,
+    //     Symbol(kHandle): Blob {},
+    //     Symbol(kLength): 0,
+    //     Symbol(kType): 'application/octet-stream'
+    //   }
+    // }
     const { name, price, description, stock, image } =
       addProductSchema.parse(rawFormData);
 
@@ -483,7 +505,7 @@ export async function addProduct(formData: FormData) {
 // }
 
 export async function editProduct(formData: FormData) {
-  await sleep(3);
+  // await sleep(3);
   try {
     const rawFormData = {
       id_product: Number(formData.get("id_product")),
@@ -951,32 +973,32 @@ import { revalidatePath } from "next/cache";
 import { Address, CartItem } from "./definitions";
 import { getUser } from "./data";
 
-export async function enviarEmail(formdata: FormData) {
-const resend = new Resend(process.env.RESEND_API_KEY);
+// export async function enviarEmail(formData: FormData) {
+// const resend = new Resend(process.env.RESEND_API_KEY);
 
-  const firstName = formData.name ?? '';
-  const email = formData.email ?? '';
-  const text = formData.text ?? '';
+//   const firstName = formData.name ?? '';
+//   const email = formData.email ?? '';
+//   const text = formData.text ?? '';
 
-  try {
-    const emailContent = EmailTemplate({ firstName: firstName, email: text, text: text });
+//   try {
+//     const emailContent = EmailTemplate({ firstName: firstName, email: text, text: text });
 
-    const formDataToSend = new FormData();
-    formDataToSend.append('name', firstName);
-    formDataToSend.append('email', email);
-    formDataToSend.append('text', text);
+//     const formDataToSend = new FormData();
+//     formDataToSend.append('name', firstName);
+//     formDataToSend.append('email', email);
+//     formDataToSend.append('text', text);
 
-    const data = await resend.emails.send({
-      from: 'Acme <onboarding@resend.dev>',
-      to: ["yakiiloop@gmail.com"],
-      subject: text,
-      react: emailContent,
-      text: ''
-    });
+//     const data = await resend.emails.send({
+//       from: 'Acme <onboarding@resend.dev>',
+//       to: ["yakiiloop@gmail.com"],
+//       subject: text,
+//       react: emailContent,
+//       text: ''
+//     });
 
-    return { message: "Email enviado" };
-  } catch (error) {
-    return { mensaje: "Error al enviar: ", error };
-  }
-}
+//     return { message: "Email enviado" };
+//   } catch (error) {
+//     return { mensaje: "Error al enviar: ", error };
+//   }
+// }
 

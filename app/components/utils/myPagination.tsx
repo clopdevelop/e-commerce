@@ -4,12 +4,13 @@ import ResponsivePagination from "react-responsive-pagination";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 
 import "react-responsive-pagination/themes/minimal.css";
+import './pagination.css'; // see pagination.css example below
+
 
 function MyPagination({ totalPages }: { totalPages: number }) {
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
 
-  
   const pathname = usePathname();
   const { replace } = useRouter();
 

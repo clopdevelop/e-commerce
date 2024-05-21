@@ -1,4 +1,4 @@
-import { enviarEmail } from "@/lib/actionscommands";
+// import { enviarEmail } from "@/lib/actionscommands";
 import { Button, Card, Input, Textarea } from "../shadcn";
 
 function ContactForm() {
@@ -25,7 +25,7 @@ function ContactForm() {
                 </h3>
                 <form
                   className="grid grid-cols-1 gap-4"
-                  action={enviarEmail}
+                  // action={enviarEmail}
                 >
                   <Input
                     type="text"

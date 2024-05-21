@@ -62,7 +62,7 @@ export const authConfig: NextAuthConfig = {
           }
 
           const { email, password } = parsedCredentials.data;
-          const user = await getUser(email);
+          const user = await getUser();
           if (!user) return null;
           const passwordsMatch = (password == user.password) ? true : false;
           // todo const passwordsMatch = await bcrypt.compare(password, user.password);
@@ -88,6 +88,7 @@ export const authConfig: NextAuthConfig = {
         clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
       })
       ,],
+      trustHost: true,
     // adapter: PrismaAdapter(prisma),
     // basePath?: string, // La ruta base de los puntos de conexión de la API de Auth.js.
     // cookies?: Partial< CookiesOptions >,

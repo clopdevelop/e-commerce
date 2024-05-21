@@ -52,25 +52,51 @@ model Province {
 
 
 
+
 model Product {
   id          Int       @id @default(autoincrement())
-  code        String?
   name        String
   description String?
   state       String?
   price       Float     @default(0)
   discount    Int?      @default(0)
+  material    String?
   created_at  DateTime  @default(now())
   last_update DateTime? @updatedAt
-  stock       Int
 
+  
   // provider    Provider? @relation(fields: [id_provider], references: [id_provider])
   // id_provider Int?
   category    Category? @relation(fields: [id_category], references: [id])
   id_category Int?
 
+  variants    ProductVariant[]
   ProductImage ProductImage[]
   OrderItem    OrderItem[]
+}
+
+model Color {
+  id    Int    @id @default(autoincrement())
+  name  String
+  variants ProductVariant[]
+}
+
+model Size {
+  id    Int    @id @default(autoincrement())
+  value Int
+  variants ProductVariant[]
+}
+
+model ProductVariant {
+  id          Int       @id @default(autoincrement())
+  code        String
+  stock       Int
+  productId   Int
+  product     Product   @relation(fields: [productId], references: [id])
+  colorId     Int
+  color       Color     @relation(fields: [colorId], references: [id])
+  sizeId      Int
+  size        Size      @relation(fields: [sizeId], references: [id])
 }
 
 model ProductImage {

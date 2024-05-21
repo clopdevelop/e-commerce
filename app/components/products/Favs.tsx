@@ -57,7 +57,7 @@ export default async function FavsTable({ favorites }: Props) {
             //     </div>
             //   </div>
             // </Card>
-            <ProductCard product={product} id_user={1}></ProductCard>
+            <ProductCard key={product.id}  product={product} id_user={1}></ProductCard>
           ))
           : <h2>No has añadido productos a tus Favoritos</h2>
         }

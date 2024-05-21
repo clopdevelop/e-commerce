@@ -93,7 +93,7 @@ export async function fetchfilteredProductsperCategories( query:string, currentP
  * @returns 
  */
 export async function fetchFilteredProducts(query: string, currentPage: number, productsOnPage: number) {
-  sleep(3)
+  // sleep(3)
 
     const productsToSkip = (currentPage - 1) * productsOnPage;
   
@@ -293,7 +293,6 @@ export async function fetchProductsByOrder(orderId: number) {
 }
 
 export async function fetchAllCategories() {
-  sleep(3)
     const categories = await prisma.category.findMany({
       select:{
         name:true

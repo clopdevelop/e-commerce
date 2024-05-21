@@ -29,6 +29,7 @@ import {
 import Link from "next/link"
 import { Product } from "@/lib/definitions"
 import DeleteProduct from "../product/DeleteProduct"
+import MyPagination from "../utils/myPagination"
 
 
 
@@ -114,8 +115,11 @@ export default async function Inventory({ products }: { products: Product[] }) {
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter className="flex flex-row-reverse">
-        <div className="text-xs text-muted-foreground">
+      <CardFooter className="flex justify-between ">
+      <MyPagination
+          totalPages={5}
+        ></MyPagination>
+      <div className="text-xs text-muted-foreground">
           {/* Showing <strong>1-10</strong> of <strong>32</strong> products */}
           Hay {products.length} productos en el Inventario.
         </div>

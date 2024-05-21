@@ -13,7 +13,7 @@ export default async function NamePage() {
               <Link
                 href={`/catalogo/${category}`}
                 key={category}
-                className={`py-2 px-4 border-b hidden md:block hover:bg-secondary`}
+                className={`py-2 px-4 border-b hover:bg-secondary`}
               >
                 {category}
               </Link>

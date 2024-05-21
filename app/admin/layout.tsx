@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description: "Implementación General de una Tienda Web",
   generator: 'Next.js',
   applicationName: 'Mi Tienda',
-  // referrer: 'origin-when-cross-origin',
+  referrer: 'origin-when-cross-origin',
   keywords: ['Next.js', 'React', 'JavaScript'],
   authors: [{ name: "Next.js Team", url: "https://nextjs.org" }],
   creator: 'Nombre del creador de la web',

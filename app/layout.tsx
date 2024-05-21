@@ -63,7 +63,7 @@ export const metadata: Metadata = {
   },
   generator: 'Next.js',
   applicationName: 'Mi Tienda',
-  // referrer: 'origin-when-cross-origin',
+  referrer: 'origin-when-cross-origin',
   keywords: ['Next.js', 'React', 'JavaScript'],
   authors: [{ name: "@clopdevlop", url: "https://github.com/clopdevelop" }],
   creator: 'Nombre del creador de la web',
@@ -91,7 +91,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
-          <CookieConsent />
+          {/* <CookieConsent /> */}
           <footer className="relative bottom-0 w-full text-white text-center p-6">
             Proyecto final de Ciclo
           </footer>
