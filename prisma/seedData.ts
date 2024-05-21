@@ -16,7 +16,7 @@ interface SeedProduct {
   description: string;
   price: number;
   stock: number;
-  type: string;
+  id_category: number;
 }
 
 export type SeedImage = {
@@ -69,77 +69,107 @@ interface SeedData {
 
 const products = [
   {
-    name: "Laptop",
-    description: "A high-performance laptop.",
-    price: 1200.0,
-    stock: 10,
-    type: "shirts",
-  },
-  {
-    name: "Smartphone",
-    description: "A powerful smartphone with advanced features.",
-    price: 800.0,
+    name: "Zapatos Casuales",
+    description: "Zapatos casuales cómodos y elegantes.",
+    price: 60.0,
     stock: 20,
-    type: "shirts",
+    id_category: 1,
   },
   {
-    name: "T-shirt",
-    description: "A comfortable cotton t-shirt.",
-    price: 20.0,
-    stock: 50,
-    type: "shirts",
-  },
-  {
-    name: "Bookshelf",
-    description: "A sturdy wooden bookshelf for organizing your books.",
-    price: 150.0,
-    stock: 5,
-    type: "shirts",
-  },
-  {
-    name: "Running Shoes",
-    description: "High-quality running shoes for athletes.",
-    price: 100.0,
+    name: "Zapatos Deportivos",
+    description: "Zapatos deportivos duraderos y de alto rendimiento.",
+    price: 80.0,
     stock: 30,
-    type: "shirts",
+    id_category: 2,
   },
   {
-    name: "Coffee Maker",
-    description: "An automatic coffee maker for brewing delicious coffee.",
-    price: 50.0,
-    stock: 15,
-    type: "shirts",
+    name: "Zapatos Deportivos Rojos",
+    description: "Zapatos deportivos rojos, perfectos para correr.",
+    price: 80.0,
+    stock: 30,
+    id_category: 2,
   },
   {
-    name: "Garden Hose",
-    description: "A durable garden hose for watering your plants.",
-    price: 30.0,
+    name: "Zapatos Deportivos Azules",
+    description: "Zapatos deportivos azules, ideales para el gimnasio.",
+    price: 85.0,
+    stock: 20,
+    id_category: 2,
+  },
+  {
+    name: "Zapatos Deportivos Verdes",
+    description: "Zapatos deportivos verdes, excelentes para actividades al aire libre.",
+    price: 90.0,
     stock: 25,
-    type: "shirts",
+    id_category: 2,
   },
   {
-    name: "Dumbbells Set",
-    description: "A set of adjustable dumbbells for strength training.",
-    price: 200.0,
-    stock: 8,
-    type: "shirts",
+    name: "Zapatos Deportivos Negros",
+    description: "Zapatos deportivos negros, versátiles para cualquier actividad deportiva.",
+    price: 95.0,
+    stock: 15,
+    id_category: 2,
   },
   {
-    name: "Backpack",
-    description: "A spacious backpack for carrying your essentials.",
+    name: "Botas",
+    description: "Botas robustas y resistentes para el aire libre.",
+    price: 100.0,
+    stock: 15,
+    id_category: 3,
+  },
+  {
+    name: "Sandalias",
+    description: "Sandalias ligeras y transpirables para el verano.",
     price: 40.0,
-    stock: 40,
-    type: "shirts",
+    stock: 25,
+    id_category: 4,
   },
   {
-    name: "Digital Camera",
-    description: "A high-resolution digital camera for capturing memories.",
-    price: 500.0,
-    stock: 12,
-    type: "shirts",
+    name: "Zapatillas",
+    description: "Zapatillas suaves y cómodas para estar en casa.",
+    price: 30.0,
+    stock: 35,
+    id_category: 5,
+  },
+  {
+    name: "Mocasines",
+    description: "Mocasines clásicos para un look sofisticado.",
+    price: 70.0,
+    stock: 20,
+    id_category: 6,
+  },
+  {
+    name: "Zapatos de Trabajo",
+    description: "Zapatos de trabajo seguros y cómodos.",
+    price: 90.0,
+    stock: 10,
+    id_category: 7,
   },
 ];
 
+const categories = [
+  {
+    name: "Casuales",
+  },
+  {
+    name: "Deportivos",
+  },
+  {
+    name: "Botas",
+  },
+  {
+    name: "Sandalias",
+  },
+  {
+    name: "Zapatillas",
+  },
+  {
+    name: "Mocasines",
+  },
+  {
+    name: "Trabajo"
+  }
+]
 const productimages = [
     {
       url: "https://res.cloudinary.com/denq9j9dq/image/upload/v1713685197/cld-sample-5.jpg",
@@ -170,29 +200,7 @@ const productimages = [
     },
 ];
 
-const categories = [
-  {
-    name: "Casuales",
-  },
-  {
-    name: "Deportivos",
-  },
-  {
-    name: "Botas",
-  },
-  {
-    name: "Sandalias",
-  },
-  {
-    name: "Zapatillas",
-  },
-  {
-    name: "Mocasines",
-  },
-  {
-    name: "Trabajo"
-  }
-]
+
 
 const users = [
   {

@@ -1,17 +1,45 @@
 import ProductsTable from "@/components/products/ProductsTable";
 import Search from "@/components/utils/Search";
 import MyPagination from "@/components/utils/myPagination";
-
-import { fetchAllCategories, fetchFilteredProducts, fetchProductsPages } from '@/lib/data';
-import { auth } from "@/auth";
-import {CarouselProducts} from "@/components/products/CarouselProducts";
+import {
+    countProducts,
+  countProductsCatalog,
+  fetchAllCategories,
+  fetchFilteredProducts,
+  fetchProductsPages,
+  getUserID,
+} from "@/lib/data";
+import { CarouselProducts } from "@/components/products/CarouselProducts";
 import Link from "next/link";
+import { Suspense } from "react";
+import Categories from "@/components/products/Categories";
 // import { addUserGoogle } from "@/lib/actionscommands";
+import type { Metadata } from "next";
+
+export const dynamicParams = false;
+
+//! En tiempo de compilación
+export async function generateStaticParams() {
+  const categories = await fetchAllCategories();
+
+  return categories.map((category) => ({
+    category: category,
+  }));
+}
 
 export const metadata = {
-  title: 'La mejor Tienda',
-  description: 'Es una tienda que es la mejor.',
- };
+  title: "La mejor Tienda",
+  description: "Es una tienda que es la mejor.",
+};
+// export async function generateMetadata({
+//   params,
+// }: {
+//   params: { currentCategory: string };
+// }): Promise<Metadata> {
+//   return { 
+//     title: params.currentCategory,
+//   };
+// }
 
 export default async function Home({
   searchParams,
@@ -21,54 +49,51 @@ export default async function Home({
     page?: string;
   };
 }) {
-  const query = searchParams?.query || '';
+  const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
+  
+  // const totalPages = await fetchProductsPages(query, productsOnPage);
   const productsOnPage = 3;
   const totalPages = await fetchProductsPages(query,productsOnPage);
 
-  const products = await fetchFilteredProducts(query, currentPage, productsOnPage);
 
-  //Recuperar el USERID
-  const authentication = await auth()
-  const id_user = Number(authentication?.user?.id)
+  const id_user = await getUserID();
 
-  
-// Todo55555 utilizar esta funcion para guardrar el usario de google en la base de datos
-// ? El problema es que no funciona el adaptador de prisma
+
+  // Todo55555 utilizar esta funcion para guardrar el usario de google en la base de datos
+  // ? El problema es que no funciona el adaptador de prisma
   // if(user==='cristianlogo6@gmail.com' && authentication !=null){
   //   addUserGoogle(authentication)
   // }
 
-  
-  const Categories = await fetchAllCategories();
-  
   return (
     <>
       <h1 className="flex justify-center text-4xl mt-5">TIENDA</h1>
       <div className="my-5  md:mt-8">
-         <Search placeholder="Buscar productos..." />
+        <Search placeholder="Buscar productos..." />
       </div>
       <div className="flex flex-col gap-5 md:flex-row border p-5">
-        <div className="flex flex-col flex-grow border rounded-lg p-6">
-          <h1 className="text-lg font-semibold mb-4 hidden md:block">
-            CATEGORIAS
-          </h1>
-          {Categories.map((category) => (
-            <Link
-              href={`/catalogo/${category}`}
-              key={category}
-              className={`py-2 px-4 border-b hidden md:block hover:bg-secondary`}
-            >
-              {category}
-            </Link>
-          ))}
-        </div>
-        <ProductsTable products={products} id_user={id_user} />
+        <Categories></Categories>
+        <Suspense
+          key={query+currentPage}
+          fallback={
+            <div className="grid grid-cols-3 gap-2 md:w-3/4">Cargando...</div>
+          }
+        >
+          <ProductsTable
+            query={query}
+            currentPage={currentPage}
+            productsOnPage={productsOnPage}
+            id_user={id_user}
+          />
+        </Suspense>
       </div>
       <div className="mt-5 flex w-full justify-center">
-          <MyPagination totalPages={totalPages} currentPage={currentPage}></MyPagination>
+        <MyPagination
+          totalPages={totalPages}
+        ></MyPagination>
       </div>
-      <CarouselProducts></CarouselProducts>
+      {/* <CarouselProducts></CarouselProducts> */}
     </>
   );
 }

@@ -44,26 +44,21 @@ async function main() {
   await prisma.category.createMany({
     data: categories,
   });
-
-  // Recuperar los ID de las categorias
-  const categoriesDB = await prisma.category.findMany();
-  const categoriesMap = categoriesDB.reduce((map, category) => {
-    map[category.name.toLowerCase()] = category.id;
-    return map;
-  }, {} as Record<string, number>); //<string=label, string=categoryID>
-
+  
   // Productos
   let imageIndex = 0;
 
   products.forEach(async (product) => {
-    const { type, ...rest } = product;
+    const {...rest } = product;
 
     const dbProduct = await prisma.product.create({
       data: {
         ...rest,
-        id_category: categoriesMap[type],
       },
     });
+
+  console.log(dbProduct);
+
 
     // Asegúrate de que no se exceda el índice de las imágenes
     if (imageIndex < productImages.length) {
@@ -129,7 +124,6 @@ async function main() {
       // Puedes agregar otros métodos de pago si es necesario
     ],
   });
-  
   
   // Recuperar los ID de los tipos de pago
   const paymentMethodsDB = await prisma.paymentMethod.findMany();

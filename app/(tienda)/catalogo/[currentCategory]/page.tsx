@@ -5,15 +5,18 @@ import MyPagination from "@/components/utils/myPagination";
 import {
   fetchProductsPages,
   fetchFilteredProducts,
-  fetchProductsPagesperCategory,
+  countProductsCatalog,
   fetchfilteredProductsperCategories,
   getUser,
   countProducts,
   fetchAllCategories,
+  fetchAllProducts,
+  getUserID,
 } from "@/lib/data";
 import Link from "next/link";
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import Categories from "@/components/products/Categories";
 
 export const dynamicParams = false;
 
@@ -51,25 +54,16 @@ export default async function Home({
   const { currentCategory } = params;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
-  const productOnPage = 3;
-  const totalPages = await fetchProductsPagesperCategory(
+  const productsOnPage = 3;
+  const totalPages = await countProductsCatalog(
     currentCategory,
     query,
-    productOnPage
-  );
+    productsOnPage
+  );  
 
-  const authentication = await auth();
-  const id_user = Number(authentication?.user?.id);
+  const id_user = await getUserID();
 
-  const products = await fetchfilteredProductsperCategories(
-    currentCategory,
-    currentPage,
-    productOnPage,
-    query
-  );
-  
-  const Categories = await fetchAllCategories();
-  console.log(currentCategory);
+
 
   return (
     <>
@@ -78,28 +72,25 @@ export default async function Home({
         <Search placeholder="Buscar productos..." />
       </div>
       <div className="flex flex-col gap-5 md:flex-row border p-5">
-        <div className="flex flex-col flex-grow border rounded-lg p-6">
-          <h1 className="text-lg font-semibold mb-4 hidden md:block">
-            CATEGORIAS
-          </h1>
-          {Categories.map((category) => (
-            <Link
-              href={`/catalogo/${category}`}
-              key={category}
-              className={`py-2 px-4 border-b hidden md:block ${
-                currentCategory === category ? "bg-secondary" : ""
-              }`}
-            >
-              {category}
-            </Link>
-          ))}
-        </div>
-        <ProductsTable products={products} id_user={id_user} />
+        <Categories></Categories>
+        <Suspense
+          key={query+currentPage}
+          fallback={
+            <div className="grid grid-cols-3 gap-2 md:w-3/4">Cargando...</div>
+          }
+        >
+          <ProductsTable
+            query={query}
+            currentPage={currentPage}
+            productsOnPage={productsOnPage}
+            category={currentCategory}
+            id_user={id_user}
+          />
+        </Suspense>
       </div>
       <div className="mt-5 flex w-full justify-center">
         <MyPagination
           totalPages={totalPages}
-          currentPage={currentPage}
         ></MyPagination>
       </div>
     </>

@@ -49,7 +49,7 @@ export async function NavBar() {
           <div className="p-2 items-center sm:hidden">
             <MenubarTrigger>Menu</MenubarTrigger>
             <MenubarContent>
-              <Link href={"/"}>
+              <Link href={"/dashboard"}>
                 <MenubarItem>Inicio</MenubarItem>
               </Link>
               <Link href={"/catalogo"}>

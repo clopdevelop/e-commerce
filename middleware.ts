@@ -6,7 +6,8 @@ import { authConfig } from './app/auth.config';
 
 
 export const config = {
-  matcher: ['/about/:path*', '/dashboard/:path*'],
+  // matcher: ['/about/:path*', '/dashboard/:path*'],
+  matcher: ['/about/:path*'],
 
 };
 

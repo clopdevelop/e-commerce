@@ -3,13 +3,17 @@ import { Input } from "@/components/shadcn/input";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { Label } from "../shadcn";
 import { SearchIcon } from "lucide-react";
+import { useRef } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function Search({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  function handleSearch(term: string) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", "1");
     if (term) {
@@ -18,7 +22,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
       params.delete("query");
     }
     replace(`${pathname}?${params.toString()}`);
-  }
+  }, 1000);
 
   return (
     <div className="relative flex flex-1 flex-shrink-0 justify-center">
@@ -28,6 +32,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
             Search
           </Label>
           <Input
+            ref={inputRef}
             placeholder={placeholder}
             onChange={(e) => {
               handleSearch(e.target.value);
@@ -36,7 +41,14 @@ export default function Search({ placeholder }: { placeholder: string }) {
             className="p-5"
           />
         </>
-        <SearchIcon className="absolute right-0 top-0 mr-3 flex h-full items-center"></SearchIcon>
+        <SearchIcon
+          className="absolute right-0 top-0 mr-3 flex h-full items-center"
+          onClick={() => {
+            if (inputRef.current) {
+              inputRef.current.focus();
+            }
+          }}
+        ></SearchIcon>
       </div>
     </div>
   );

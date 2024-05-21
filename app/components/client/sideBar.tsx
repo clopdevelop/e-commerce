@@ -52,7 +52,10 @@ import { usePathname } from "next/navigation";
 export default function SideBar() {
   const pathname = usePathname();
   return (
-      <aside className=" left-0 z-10 hidden w-24 flex-col border-r bg-background sm:flex">
+    // <aside className=" left-0 z-10 hidden w-24 flex-col border-r bg-background sm:flex">
+    //     <nav className="flex flex-col items-center gap-4 px-2 sm:py-5"></nav>
+      <aside className=" left-0 z-10  w-24 flex-col border-r bg-background sm:flex">
+      
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           {/* <Link
             href=""

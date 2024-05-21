@@ -1,29 +1,29 @@
-'use client'
-import React, { useState } from 'react';
-import ResponsivePagination from 'react-responsive-pagination';
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+"use client";
+import React, { useState } from "react";
+import ResponsivePagination from "react-responsive-pagination";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 
-import 'react-responsive-pagination/themes/minimal.css';
+import "react-responsive-pagination/themes/minimal.css";
 
-
-function MyPagination({ totalPages, currentPage }: { totalPages: number, currentPage: number }) {
+function MyPagination({ totalPages }: { totalPages: number }) {
   const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
+
+  
   const pathname = usePathname();
   const { replace } = useRouter();
 
-
-    function handlePageChange(page: React.SetStateAction<number>) {
-      const pagina = page.toString();
-      const params = new URLSearchParams(searchParams);
-    params.set('page', pagina);
-      replace(`${pathname}?${params.toString()}`);
+  function handlePageChange(page: React.SetStateAction<number>) {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", page.toString());
+    replace(`${pathname}?${params.toString()}`);
   }
 
   return (
     <>
       <ResponsivePagination
-        total={totalPages} 
         current={currentPage}
+        total={totalPages}
         onPageChange={handlePageChange}
       />
     </>

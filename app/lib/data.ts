@@ -3,8 +3,32 @@ import prisma from "@/lib/prisma";
 import { Category } from './definitions';
 import { sleep } from "./utils";
 import { User } from "@prisma/client";
+import { auth } from "@/auth";
 
+// USER
+export async function getUser(): Promise<User | null> {
+  const authentication = await auth()
 
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: authentication?.user?.email ?? '',
+      },
+    });
+    return user;
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+    throw new Error('Failed to fetch user.');
+  }
+}
+
+export async function getUserID(): Promise<number> {
+    const authentication = await auth()
+    const id_user = Number(authentication?.user?.id)
+    return id_user
+}
+
+// PRODUCTS
 /**
  * Devuelve todos los Productos
  * @param query 
@@ -33,6 +57,34 @@ export async function fetchProducts(currentPage: number = 1) {
 
   return Products;
 }
+
+export async function fetchfilteredProductsperCategories( query:string, currentPage: number, productsOnPage: number, category? : string) {
+  const productsToSkip = (currentPage - 1) * productsOnPage;
+
+  console.log(category)
+  console.log(query)
+
+
+  const products = await prisma.product.findMany({
+    where: {
+      name: {
+        contains: query, 
+      },
+      category: {
+        name: {
+          contains: category?.toLowerCase() ?? '',
+        }
+      },
+    },
+    include: { ProductImage: true, },
+  take: productsOnPage,
+  skip: productsToSkip, 
+  });
+
+  console.log(products)
+
+  return products;
+}
   
 /**
  * Filtrar Productos por nombre
@@ -41,7 +93,7 @@ export async function fetchProducts(currentPage: number = 1) {
  * @returns 
  */
 export async function fetchFilteredProducts(query: string, currentPage: number, productsOnPage: number) {
-    await sleep(3)
+  sleep(3)
 
     const productsToSkip = (currentPage - 1) * productsOnPage;
   
@@ -55,22 +107,10 @@ export async function fetchFilteredProducts(query: string, currentPage: number, 
       take: productsOnPage,
       skip: productsToSkip, 
     });
+
   
     return filteredProducts;
 }
-
-// export async function fetchFilteredProducts(query: string) {
-
-//   const filteredProducts = await prisma.product.findMany({
-//     where: {
-//       name: {
-//         contains: query, 
-//       },
-//     },
-//   });
-
-//   return filteredProducts;
-// }
 
 export async function countProducts(): Promise<number> {
   const productCount = await prisma.product.count();
@@ -150,47 +190,24 @@ export async function fetchProductsPages(query : string, productsOnPage: number 
   return totalPages;
 }
 
-export async function fetchProductsPagesperCategory(category:string, query : string, productsOnPage: number ) {
-  
-  const totalProducts = await prisma.product.count({
-    where: {
-      name: {
-        contains: query,
-      },
-      category: {
-        name: {
-          contains: category,
-        },
-      },
+export async function countProductsCatalog(category:string, query : string, productsOnPage: number ) {
+  const whereClause = {
+    name: {
+      contains: query,
     },
-  });
+    ...(category && { category: { name: category } }),
+  };
+  const totalProducts = await prisma.product.count({
+    where: whereClause
+    });
 
   if (totalProducts === 0) {
     return 1;
   }
 
-
-  // para asegurarse de incluir todas las páginas, incluso si la última página no está completa.
   const totalPages = Math.ceil(totalProducts / productsOnPage);
 
-
-  totalPages
-
   return totalPages;
-}
-
-export async function getUser(email: string): Promise<User | null> {
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
-    return user;
-  } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw new Error('Failed to fetch user.');
-  }
 }
 
 // ORDERS
@@ -275,11 +292,8 @@ export async function fetchProductsByOrder(orderId: number) {
   }
 }
 
-export async function consolelog() {
-  console.log("Hola");
-}
-
 export async function fetchAllCategories() {
+  sleep(3)
     const categories = await prisma.category.findMany({
       select:{
         name:true
@@ -287,27 +301,6 @@ export async function fetchAllCategories() {
     });
     return categories.map(category => category.name);
 }
-
-export async function fetchfilteredProductsperCategories(category : string, currentPage: number, productsOnPage: number, query:string) {
-    const productsToSkip = (currentPage - 1) * productsOnPage;
-  
-    const products = await prisma.product.findMany({
-      where: {
-        name: {
-          contains: query, 
-        },
-        category: {
-          name: category,
-        },
-      },
-      include: { ProductImage: true, },
-    take: productsOnPage,
-    skip: productsToSkip, 
-    });
-
-    return products;
-}
-
 
 // todo
 export async function fetchProvinces() {

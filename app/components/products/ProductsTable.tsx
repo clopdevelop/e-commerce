@@ -1,32 +1,56 @@
 import { Toaster } from "sonner";
 import ProductCard from "../product/ProductCard";
 import { Product } from "@/lib/definitions";
-import { Suspense } from 'react';
-
+import { Suspense } from "react";
+import {
+  countProductsCatalog,
+  fetchAllProducts,
+  fetchFilteredProducts,
+  fetchfilteredProductsperCategories,
+} from "@/lib/data";
+import MyPagination from "../utils/myPagination";
 
 export default async function ProductsTable({
-  products,
+   query,
+  currentPage,
+  productsOnPage,
+  category,
   id_user,
 }: {
-  products: Product[];
+  query: string;
+  currentPage: number;
+  productsOnPage: number;
+  category?: string;
   id_user: number;
 }) {
 
+  // const products = await fetchfilteredProductsperCategories(
+  //   category,
+  //   currentPage,
+  //   productsOnPage,
+  //   query
+  // );
+  const products = await fetchfilteredProductsperCategories(
+    query,
+    currentPage,
+    productsOnPage,
+    category,
+  );
+
   return (
-      <Suspense fallback={<div>Cargando...</div>}>
-        <div className="grid grid-cols-3 gap-2 md:w-3/4">
-        {products.length!==0 ? (
-           products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              id_user={id_user}
-            ></ProductCard>
-          ))
-        ):  (<div className="flex flex-col p-2 text-xl">No hay resultados </div>)
-        }
+    <div className="grid grid-cols-3 gap-2 md:w-3/4">
+      {products.length !== 0 ? (
+        products.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            id_user={id_user}
+          ></ProductCard>
+        ))
+      ) : (
+        <div className="flex flex-col p-2 text-xl">No hay resultados </div>
+      )}
       <Toaster></Toaster>
-        </div>
-        </Suspense>
+    </div>
   );
 }

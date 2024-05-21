@@ -18,15 +18,12 @@ export default async function SettingsProfilePage() {
   // console.log(nextAuthUser)
 
   
-  const authentication = await auth()
-  const user = String(authentication?.user?.email);
-  const completeUser = await getUser(user);
+  const completeUser = await getUser();
   
 
   if(!completeUser)
     return 0;
 
-  console.log(user)
 
   return (
     <div className="space-y-6">
