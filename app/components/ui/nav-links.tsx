@@ -65,7 +65,7 @@ export function NavigationMenuDemo() {
             </SheetHeader>
             <Separator className="my-5"></Separator>
             <Cart></Cart>
-            <SheetFooter className="w-full mt-5">
+            <SheetFooter className="flex gap-5">
               <SheetClose asChild>
                 <Link
                   href={"/pago"}

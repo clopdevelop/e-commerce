@@ -30,6 +30,7 @@ export default function StripeProvider({ user, address, payment }: Props) {
 
         items: [{ id: "xl-tshirt", price: 1000 }],
         customer: {
+          id: 1,
           name: "John Doe",
           email: "johndoe@example.com",
           address: {

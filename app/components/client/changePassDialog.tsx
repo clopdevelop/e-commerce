@@ -15,12 +15,12 @@ import Link from "next/link";
 
 export function ChangePassDialog() {
   return (
-    <form action={changePass}>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="my-3">Cambiar</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button className="my-3">Cambiar contraseña</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <form action={changePass}>
           <DialogHeader>
             <DialogTitle>Cambiar Contraseña</DialogTitle>
             <DialogDescription>
@@ -33,24 +33,38 @@ export function ChangePassDialog() {
               <Label htmlFor="actual" className="text-right">
                 Contraseña actual
               </Label>
-              <Input id="actual" name="actual-pass" type="password" className="col-span-3" />
+              <Input
+                id="actual"
+                name="actual-pass"
+                type="password"
+                className="col-span-3"
+              />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="new_pass" className="text-right">
                 Nueva Contraseña
               </Label>
-              <Input id="new_pass" name="new-pass" type="password" className="col-span-3" />
+              <Input
+                id="new_pass"
+                name="new-pass"
+                type="password"
+                className="col-span-3"
+              />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="new_pass" className="text-right">
                 Confirmar Contraseña
               </Label>
-              <Input id="new_pass-repeat" name="new-pass-repeat" type="password" className="col-span-3" />
+              <Input
+                id="new_pass-repeat"
+                name="new-pass-repeat"
+                type="password"
+                className="col-span-3"
+              />
             </div>
-            <div className="text-center text-sm">
-              ¿Has olvidado la contraseña? {"     "}
+            <div className="text-right text-sm">
               <Link href="/entrada" className="underline">
-                Recuperar contraseña
+                ¿Has olvidado la contraseña?
               </Link>
             </div>
           </div>
@@ -59,11 +73,8 @@ export function ChangePassDialog() {
               Aceptar
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </form>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
-// const user = await prisma.user.findUnique({
-//   where: { email: formData.get("email") },
-// });

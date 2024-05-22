@@ -34,16 +34,15 @@ export async function AccountForm() {
         </p>
       </div>
       <Separator />
-      <form action={updateUserEmail}>
+      {/* <form action={updateUserEmail}>
         <Label>Email</Label>
         <Input name="email" placeholder={user?.email} />
         <p className="text-sm text-muted-foreground py-2">
-          Puedes modificar tu email
+          Aquí puedes cambiar tu email
         </p>
-        <Button type="submit">Cambiar</Button>
-      </form>
-      <div>
-        <Label>Cambiar la contraseña</Label>
+        <Button type="submit">Cambiar email</Button>
+      </form> */}
+      <div className="flex gap-4 items-center">
         <ChangePassDialog />
       </div>
     </>

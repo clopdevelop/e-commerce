@@ -36,13 +36,14 @@ export async function POST(req: Request) {
 
   console.log(items)
   // { items: [ { id: 'xl-tshirt' } ] }
-  const metadata = items.reduce((acc: { [x: string]: any; }, item: { id: any; price: any; }, index: number) => {
+  const itemdata = items.reduce((acc: { [x: string]: any; }, item: { id: any; price: any; }, index: number) => {
     acc[`item${index + 1}_id`] = item.id;
     acc[`item${index + 1}_price`] = item.price;
     return acc;
   }, {});
-
-
+  
+  const metadata = { ...itemdata, id: customer.id };
+  
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
     amount: amount,

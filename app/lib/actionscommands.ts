@@ -73,7 +73,6 @@ export async function getAddresByUserLog() {
   }
 }
 
-
 export async function getPaymentMethodsByUser() {
   const userId = await getUserID();
   try {
@@ -92,7 +91,6 @@ export async function getPaymentMethodsByUser() {
     throw error;
   }
 }
-
 
 /**
  * Añade un usuario
@@ -156,6 +154,7 @@ export async function updateUserEmail(formData: FormData) {
 import bcrypt from "bcrypt";
 
 export default async function changePass(formData: FormData) {
+  console.log("hola");
   const actualPass = formData.get("actual-pass")?.toString();
   const newPass = formData.get("new-pass")?.toString();
   const newPassRepeat = formData.get("new-pass-repeat")?.toString();
@@ -254,8 +253,7 @@ export async function saveAddress(formData: FormData) {
     // const number = parseInt(formData.get("number") || "0", 10);
 
     const numberString = formData.get("number")?.toString();
-    if (numberString === undefined) 
-      return 0
+    if (numberString === undefined) return 0;
     const number = parseInt(numberString);
     const letter = formData.get("letter")?.toString();
     const block = formData.get("block")?.toString();
@@ -350,7 +348,7 @@ export async function savePayMethod(formData: FormData) {
     console.log(
       `Método de pago guardado: paymentMethod -> ${paymentMethod} | cardHolderName -> ${cardHolderName}`
     );
-    
+
     // Puedes realizar alguna acción adicional después de guardar el método de pago si es necesario
 
     return result; // Devolvemos el resultado por si es útil para el frontend
@@ -359,7 +357,6 @@ export async function savePayMethod(formData: FormData) {
     throw error;
   }
 }
-
 
 export async function eliminarDireccion(formData: {
   name: string;
@@ -408,7 +405,7 @@ export async function addProduct(formData: FormData) {
       image: formData.get("image"),
     };
 
-    console.log(rawFormData)
+    console.log(rawFormData);
     // {
     //   name: 'Cristian López Gómez',
     //   description: 'asadf',
@@ -568,333 +565,137 @@ export async function deleteProductonClick(product: { id_product: number }) {
   }
 }
 
-
-
-
 // ORDERS
 // ! Esto se debe ejecutar en el webHook una vez que el pago está completado
-  
-export async function addOrder(products: any[] | Stripe.PaymentIntent) {
 
-  // const productData = products.map((product)=>({
-  //   id: product.id,
-  //   id_product: product.id_product,
-  //   name: product.name,
-  //   quantity: product.quantity,
-  //   unit_price : product.unit_price
-  // }))
+export async function addOrder(payment: Stripe.PaymentIntent) {
+  console.log(payment);
 
-  console.log(products)
-  // {
-  //   id: 'pi_3PIEuSRxuIsR3WCz0GoPjuGj',
-  //   object: 'payment_intent',
-  //   amount: 1500,
-  //   amount_capturable: 0,
-  //   amount_details: { tip: {} },
-  //   amount_received: 1500,
-  //   application: null,
-  //   application_fee_amount: null,
-  //   automatic_payment_methods: { allow_redirects: 'always', enabled: true },
-  //   canceled_at: null,
-  //   cancellation_reason: null,
-  //   capture_method: 'automatic_async',
-  //   client_secret: 'pi_3PIEuSRxuIsR3WCz0GoPjuGj_secret_0BofRKTLgErFPSoA2Kp8hCXgW',
-  //   confirmation_method: 'automatic',
-  //   created: 1716145000,
-  //   currency: 'eur',
-  //   customer: null,
-  //   description: null,
-  //   invoice: null,
-  //   last_payment_error: null,
-  //   latest_charge: 'ch_3PIEuSRxuIsR3WCz0CQnd4MI',
-  //   livemode: false,
-  //   metadata: { item1_price: '1000', item1_id: 'xl-tshirt' },
-  //   next_action: null,
-  //   on_behalf_of: null,
-  //   payment_method: 'pm_1PIEukRxuIsR3WCzicW2i5Dh',
-  //   payment_method_configuration_details: { id: 'pmc_1PI6fARxuIsR3WCz6oQtY9yE', parent: null },
-  //   payment_method_options: {
-  //     card: {
-  //       installments: null,
-  //       mandate_options: null,
-  //       network: null,
-  //       request_three_d_secure: 'automatic'
-  //     },
-  //     link: { persistent_token: null }
-  //   },
-  //   payment_method_types: [ 'card', 'link' ],
-  //   processing: null,
-  //   receipt_email: null,
-  //   review: null,
-  //   setup_future_usage: null,
-  //   shipping: null,
-  //   source: null,
-  //   statement_descriptor: null,
-  //   statement_descriptor_suffix: null,
-  //   status: 'succeeded',
-  //   transfer_data: null,
-  //   transfer_group: null
-  // }
-  const amount = 100;
+  const amount = payment.amount;
 
-  //   //todo En produccion se creará una secuencia cuando se migre a Postgree para crear un codigo de factura
-  // const lastInvoice = await prisma.invoice.findFirst({
-  //   orderBy: {
-  //     id: 'desc',
-  //   },
-  //   select: {
-  //     invoice_n: true,
-  //   },
-  // });
+  const metadata = payment.metadata;
 
-  // const nextInvoiceNumber = lastInvoice
-  //   ? parseInt(lastInvoice.invoice_n.replace('INV', '')) + 1
-  //   : 1;
+  const paid = payment.status;
 
-  // const formattedInvoiceNumber = `INV-${nextInvoiceNumber.toString().padStart(3, '0')}`;
+  //todo En produccion se creará una secuencia cuando se migre a Postgree para crear un codigo de factura
+  const lastInvoice = await prisma.invoice.findFirst({
+    orderBy: {
+      id: "desc",
+    },
+    select: {
+      invoice_n: true,
+    },
+  });
 
-  // const lastOrder = await prisma.order.findFirst({
-  //   orderBy: {
-  //     id: 'desc',
-  //   },
-  //   select: {
-  //     code: true,
-  //   },
-  // });
+  const nextInvoiceNumber = lastInvoice
+    ? parseInt(lastInvoice.invoice_n.replace("INV-", ""), 10) + 1
+    : 1;
 
-  // const nextOrderNumber = lastOrder
-  //   ? parseInt(lastOrder.code.replace('INV', '')) + 1
-  //   : 1;
+  const formattedInvoiceNumber = `INV-${nextInvoiceNumber.toString().padStart(3, "0")}`;
 
-  // const formattedOrder = `INV-${nextOrderNumber.toString().padStart(3, '0')}`;
+  const lastOrder = await prisma.order.findFirst({
+    orderBy: {
+      id: "desc",
+    },
+    select: {
+      code: true,
+    },
+  });
 
-  // console.log(formattedInvoiceNumber)
-  // console.log(formattedOrder)
+  // Verificamos si existe una última orden
+  const nextOrderNumber = lastOrder
+    ? parseInt(lastOrder.code.replace("INV-", ""), 10) + 1
+    : 1;
 
-  // // Crear la orden con detalles y factura en la base de datos.
-  // try {
-  //   //TEST
-  //   const newOrder = await prisma.order.create({
-  //     data: {
-  //       id:2,
-  //       code: 'INV-002',
-  //       type:'BUY', // SUBCRIPTION, BUY, REGRET
-  //       total: amount, 
-  //       status: "Processing", // Estado inicial del pedido
-  //       paid: false, // Asume que el pedido inicialmente no está pagado
-  //       discount: 0, // Sin descuento inicialmente
-  //       id_user: 1,
-  //       id_delivery_type: 1,//"Standard",
-  //       OrderItem: {
-  //         createMany: {
-  //           data:   [
-  //             {
-  //               id: 1,
-  //               id_product: 1,
-  //               name: 'Backpack',
-  //               quantity: 1,
-  //               unit_price: 40
-  //             },
-  //             {
-  //               id: 2,
-  //               id_product: 2,
-  //               name: 'Pintura famosa',
-  //               quantity: 1,
-  //               unit_price: 1000
-  //             },
-  //             {
-  //               id: 3,
-  //               id_product: 3,
-  //               name: 'Laptopos',
-  //               quantity: 26,
-  //               unit_price: 3333
-  //             }
-  //           ],
-  //         }
-  //       },
-  //       invoice: {
-  //         create: {
-  //       id:2,
-  //           invoice_n: "INV-002",
-  //           id_payment_method: 1,
-  //           type: "A",
-  //           amount: amount,
-  //           state: 'ok'
-  //         },
-  //       },
-  //     },
-  //     include: {
-  //       OrderItem: true,
-  //       invoice: true,
-  //     },
-  //   });
+  // Formateamos el número con ceros a la izquierda
+  const formattedOrder = `INV-${nextOrderNumber.toString().padStart(3, "0")}`;
 
-  //   // const newOrder = await prisma.order.create({
-  //   //   data: {
-  //   //     code: formattedOrder,
-  //   //     type: 'BUY', // Puedes proporcionar un valor para el tipo de orden aquí si no es un valor por defecto.
-  //   //     total: amount, 
-  //   //     status: "Processing", // Estado inicial del pedido
-  //   //     // Los campos que no proporcionas se establecerán automáticamente según sus valores por defecto en el modelo.
-  //   //     id_user: 1, // Conecta la orden con el usuario existente que tiene id igual a 1.
-  //   //     id_delivery_type: 1, // Conecta la orden con el tipo de entrega existente que tiene id igual a 1.
-  //   //     OrderItem: {
-  //   //       createMany: {
-  //   //         data: productData,
-  //   //       }
-  //   //     },
-  //   //     invoice: {
-  //   //       create: {
-  //   //         invoice_n: formattedInvoiceNumber,
-  //   //         id_payment_method: 1,
-  //   //         type: "A",
-  //   //         amount: amount,
-  //   //         state: 'ok'
-  //   //       },
-  //   //     },
-  //   //   },
-  //   //   include: {
-  //   //     OrderItem: true,
-  //   //     invoice: true,
-  //   //   },
-  //   // });
-    
-    
+  console.log(formattedOrder); // Para verificar el resultado
 
-  //   console.log("Orden guardada:", newOrder);
+  console.log(formattedInvoiceNumber);
+  console.log(formattedOrder);
 
-  //   return newOrder;
-  // } catch (error) {
-  //   console.error("Error guardando la orden en la base de datos:", error);
-  // }
-}
+  // DATOS DEL PRODUCTO
+  const productData = [
+    {
+      id_product: 1,
+      name: "Backpack",
+      quantity: 1,
+      unit_price: 40,
+    },
+    {
+      id_product: 2,
+      name: "Pintura famosa",
+      quantity: 1,
+      unit_price: 1000,
+    },
+    {
+      id_product: 3,
+      name: "Laptopos",
+      quantity: 26,
+      unit_price: 3333,
+    },
+  ];
 
-// ! Esto se debe ejecutar en el webHook una vez que el pago está completado
-// export async function addOrder(session: Stripe.Checkout.Session, lineItems: Stripe.LineItem[]) {
-//   const { amount_total, status, metadata } = session;
-
-//   if (!status || !amount_total || !metadata) {
-//     console.error("Sesión incompleta: falta status o line_items");
-//     return;
-//   }
-
-//   // Asume que siempre procesarás el primer line_item como el producto comprado
-//   const item = lineItems[0];
-//   console.log(metadata);
-
-//   const id_product = Number(metadata?.product);
-//   const quantity = item.quantity ?? 1;
-//   const unit_price = item.price?.unit_amount ?? 0;
-
-//   //todo En produccion se creará una secuencia cuando se migre a Postgree para crear un codigo de factura
-//   const lastInvoice = await prisma.invoice.findFirst({
-//     orderBy: {
-//       id_invoice: 'desc',
-//     },
-//     select: {
-//       invoice_n: true,
-//     },
-//   });
-
-//   const nextInvoiceNumber = lastInvoice
-//     ? parseInt(lastInvoice.invoice_n.replace('INV', '')) + 1
-//     : 1;
-
-//   const formattedInvoiceNumber = `INV${nextInvoiceNumber.toString().padStart(4, '0')}`;
-
-//   // Crear la orden con detalles y factura en la base de datos.
-//   try {
-//     // const newOrder = await prisma.order.create({
-//     //   data: {
-//     //     id_user: Number(metadata.id_user),
-//     //     delivery_type: "Standar",
-//     //     status: status,
-//     //     total: amount_total,
-//     //     OrderItem: {
-//     //       create: [{
-//     //         id_product: 1,
-//     //         quantity: quantity,
-//     //         unit_price: unit_price,
-//     //         // discount: 0,
-//     //       }],
-//     //     },
-//     //     invoice: {
-//     //       create: [
-//     //         {
-//     //           invoice_n: formattedInvoiceNumber,
-//     //           type: "A",
-//     //           amount: amount_total,
-//     //           id_p_method: 1,
-//     //           state: 'ok'
-//     //         },
-//     //       ],
-//     //     },
-//     //   },
-//     //   include: {
-//     //     OrderItem: true,
-//     //     invoice: true,
-//     //   },
-//     // });
-//     //TEST
-//     const newOrder = await prisma.order.create({
-//       data: {
-//         total: 100.0, // Asume un total arbitrario
-//         status: "Processing", // Estado inicial del pedido
-//         paid: false, // Asume que el pedido inicialmente no está pagado
-//         discount: 0, // Sin descuento inicialmente
-//         // Asume que ya tienes un usuario con id 1
-//         id_user: 1,
-//         // Asume que ya tienes un tipo de entrega con id 1
-//         delivery_type: "Standard",
-//         OrderItem: {
-//           create: [{
-//             // Asume que ya tienes un producto con id 1
-//             id_product: 1,
-//             quantity: 2,
-//             unit_price: 50.0,
-//           }],
-//         },
-//         invoice: {
-//           create: {
-//             // Genera un número de factura único. Este es un ejemplo simple.
-//             invoice_n: "INV-001",
-//             type: "A",
-//             amount: 100.0,
-//             // Asume que ya tienes un método de pago con id 1
-//             id_p_method: 1,
-//             state: 'ok'
-//           },
-//         },
-//       },
-//       include: {
-//         OrderItem: true,
-//         invoice: true,
-//       },
-//     });
-
-//     console.log("Orden guardada:", newOrder);
-
-//     return newOrder;
-//   } catch (error) {
-//     console.error("Error guardando la orden en la base de datos:", error);
-//   }
-// }
-
-// STRIPE
-const stripe = new Stripe("sk_test_51OxXxKRxuIsR3WCz8Ztm83HlPvRBwH4SqObd6cumXxEStd6ATzFwoxJ6bJPLoFkMQrHvuE9jFNE424RQ1TAfi8u100OvxLfAUr", {});
-export async function stripePay(formdata: FormData){
-
-    const paymentIntent = await stripe.paymentIntents.create({
-        amount: 1099,
-        currency: "eur",
-        description: '',
-
-        // Verify your integration in this guide by including this parameter
-        metadata: { integration_check: "accept_a_payment" },
+  // Crear la orden con detalles y factura en la base de datos.
+  try {
+    const newOrder = await prisma.order.create({
+      data: {
+        code: formattedOrder,
+        type: "BUY", // SUBCRIPTION, BUY, REGRET
+        total: amount,
+        status: paid, // Sería comprobar si se setá procesando, enviando o llegando o completado
+        paid: false, // Asume que el pedido inicialmente no está pagado
+        id_user: Number(metadata.id),
+        id_delivery_type: 1, // habría que ver como se determina cual es el 1
+        discount: 0, // Sin descuento inicialmente
+        OrderItem: {
+          createMany: {
+            data: productData,
+          },
+        },
+        invoice: {
+          create: [
+            {
+              invoice_n: formattedInvoiceNumber, //"INV-001"
+              type: "A",
+              amount: amount,
+              id_payment_method: 1,
+              state: "ok",
+            },
+          ],
+        },
+      },
+      include: {
+        OrderItem: true,
+        invoice: true,
+      },
     });
 
-    return paymentIntent;
+    console.log("Orden guardada:", newOrder);
 
+    return newOrder;
+  } catch (error) {
+    console.error("Error guardando la orden en la base de datos:", error);
+  }
+}
+
+// STRIPE
+const stripe = new Stripe(
+  "sk_test_51OxXxKRxuIsR3WCz8Ztm83HlPvRBwH4SqObd6cumXxEStd6ATzFwoxJ6bJPLoFkMQrHvuE9jFNE424RQ1TAfi8u100OvxLfAUr",
+  {}
+);
+export async function stripePay(formdata: FormData) {
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: 1099,
+    currency: "eur",
+    description: "",
+
+    // Verify your integration in this guide by including this parameter
+    metadata: { integration_check: "accept_a_payment" },
+  });
+
+  return paymentIntent;
 }
 
 // export async function stripePay(formdata: FormData){
@@ -915,7 +716,7 @@ export async function stripePay(formdata: FormData){
 //         currency: "eur",
 //         description: '',
 //         // Aquí se pueden agregar los datos del formulario al objeto metadata
-//         metadata: { 
+//         metadata: {
 //             integration_check: "accept_a_payment",
 //             cardHolderName,
 //             cardNumber,
@@ -948,7 +749,7 @@ export async function stripePay(formdata: FormData){
 //       currency: "eur",
 //       description: `Pedido de ${user.name}`,
 //       // Aquí se pueden agregar los datos del formulario al objeto metadata
-//       metadata: { 
+//       metadata: {
 //           integration_check: "accept_a_payment",
 //           email: user.email,
 //           phone: user.phone,
@@ -961,9 +762,6 @@ export async function stripePay(formdata: FormData){
 
 //   return paymentIntent;
 // }
-
-
-
 
 // EMAIL
 
@@ -1001,4 +799,3 @@ import { getUser } from "./data";
 //     return { mensaje: "Error al enviar: ", error };
 //   }
 // }
-

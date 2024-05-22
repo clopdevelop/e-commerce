@@ -84,7 +84,6 @@ export default function ProductCard({ product, id_user }: { product: Product, id
                 )}
                 <div className="flex flex-col gap-2">
                 <Badge className="w-20">Stock: {product?.stock}</Badge>
-                <Input  type="number" defaultValue={1} min={1} max={product?.stock} onChange={(e) => setQuantity(Number(e.target.value))}></Input>
                 </div>
             </CardContent>
             <CardFooter className="p-0 flex justify-between items-center h-auto md:h-24">
