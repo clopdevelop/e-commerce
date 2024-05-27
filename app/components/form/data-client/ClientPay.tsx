@@ -420,6 +420,7 @@ export default function ClientPay({ user, address, payment }: Props) {
           </CardFooter>
         </Card>
       )}
+      
     </div>
   );
 }

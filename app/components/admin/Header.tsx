@@ -1,3 +1,4 @@
+"use client"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,39 +28,52 @@ import {
   Users,
   Users2,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
+  const pathname = usePathname()
+  console.log(pathname)
+
   return (
     <header className="sticky top-0 h-16 items-center gap-4 border-b bg-background flex px-4 md:px-6 z-50">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
         <Link
           href="#"
-          className="flex items-center gap-2 text-lg font-semibold md:text-base"
+          className={`flex items-center gap-2 text-lg font-semibold md:text-base
+          `}
         >
           <Package2 className="h-6 w-6" />
           <span className="sr-only">Mi Tienda</span>
         </Link>
         <Link
           href="/admin"
-          className="text-muted-foreground transition-colors hover:text-foreground"
+          className={`transition-colors hover:text-foreground 
+          ${pathname==='/admin' ? 'text-foreground': 'text-muted-foreground'}
+          `}
         >
           Dashboard
         </Link>
         <Link
           href="/admin/orders"
-          className="text-muted-foreground transition-colors hover:text-foreground"
-        >
+          className={`transition-colors hover:text-foreground 
+          ${pathname.startsWith('/admin/orders') ? 'text-foreground': 'text-muted-foreground'}
+          `}        
+          >
           Pedidos
         </Link>
         <Link
           href="/admin/products"
-          className="text-muted-foreground transition-colors hover:text-foreground"
+          className={`transition-colors hover:text-foreground 
+          ${pathname.startsWith('/admin/products') ? 'text-foreground': 'text-muted-foreground'}
+          `}
         >
           Productos
         </Link>
         {/* <Link
           href="#"
-          className="text-muted-foreground transition-colors hover:text-foreground"
+          className={`transition-colors hover:text-foreground 
+          ${pathname==='/admin' ? 'text-foreground': 'text-muted-foreground'}
+          `}
         >
           Clientela
         </Link> */}
@@ -118,7 +132,7 @@ export default function Header() {
           </nav>
         </SheetContent>
       </Sheet>
-      <div className="flex text-right w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
+      {/* <div className="flex text-right w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <div className="pl-8 ml-auto flex-1 sm:flex-initial">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -137,7 +151,7 @@ export default function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </div>
+      </div> */}
     </header>
   );
 }

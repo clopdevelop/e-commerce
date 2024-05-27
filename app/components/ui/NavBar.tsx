@@ -42,9 +42,9 @@ import { Button, buttonVariants } from "../shadcn/button";
 import Cart from "@/components/cart/Cart";
 
 export async function NavBar() {
-  const account = await auth();
+  const session = await auth();
   //todo si lo hago  con el id no funciona google auth
-  const email = account ? account.user?.email ?? "" : "";
+  const email = session ? session.user?.email ?? "" : "";
 
   return (
     <>
@@ -91,7 +91,7 @@ export async function NavBar() {
           <div className="flex justify-center items-center">
             <ModeToggle></ModeToggle>
           </div>
-          {account && <Profile></Profile>}
+        <Profile></Profile>
         </div>
       </Menubar>
     </>

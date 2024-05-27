@@ -17,7 +17,6 @@ import Link from "next/link";
 import { Button } from "../shadcn/button";
 
 
-
 async function Profile() {
   //todo no funciona con google auth a
 

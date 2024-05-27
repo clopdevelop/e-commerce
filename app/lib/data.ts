@@ -1,39 +1,58 @@
-"use server"
+"use server";
 import prisma from "@/lib/prisma";
-import { Category } from './definitions';
+import { Category } from "./definitions";
 import { sleep } from "./utils";
 import { User } from "@prisma/client";
 import { auth } from "@/auth";
 
 // USER
+// Define la función para recuperar un usuario por su email
+export async function getUserByEmail(email: string) {
+  try {
+    // Utiliza el cliente de Prisma para encontrar el usuario por email
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    // Retorna el usuario encontrado, o null si no existe
+    return user;
+  } catch (error) {
+    // Manejo de errores
+    console.error("Error al recuperar el usuario por email:", error);
+    throw error;
+  }
+}
+
 export async function getUser(): Promise<User | null> {
-  const authentication = await auth()
+  const authentication = await auth();
 
   try {
     const user = await prisma.user.findUnique({
       where: {
-        email: authentication?.user?.email ?? '',
+        email: authentication?.user?.email ?? "",
       },
     });
     return user;
   } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw new Error('Failed to fetch user.');
+    console.error("Failed to fetch user:", error);
+    throw new Error("Failed to fetch user.");
   }
 }
 
 export async function getUserID(): Promise<number> {
-    const authentication = await auth()
-    const id_user = Number(authentication?.user?.id)
-    return id_user
+  const authentication = await auth();
+  const id_user = Number(authentication?.user?.id);
+  return id_user;
 }
 
 // PRODUCTS
 /**
  * Devuelve todos los Productos
- * @param query 
- * @param currentPage 
- * @returns 
+ * @param query
+ * @param currentPage
+ * @returns
  */
 export async function fetchAllProducts() {
   // await new Promise((resolve) => setTimeout(resolve,3000));
@@ -46,70 +65,76 @@ export async function fetchAllProducts() {
 }
 
 export async function fetchProducts(currentPage: number = 1) {
-
-  const productsOnPage = 1; 
+  const productsOnPage = 1;
   const productsToSkip = (currentPage - 1) * productsOnPage;
 
   const Products = await prisma.product.findMany({
     take: productsOnPage,
-    skip: productsToSkip, 
+    skip: productsToSkip,
   });
 
   return Products;
 }
 
-export async function fetchfilteredProductsperCategories( query:string, currentPage: number, productsOnPage: number, category? : string) {
+export async function fetchfilteredProductsperCategories(
+  query: string,
+  currentPage: number,
+  productsOnPage: number,
+  category?: string
+) {
   const productsToSkip = (currentPage - 1) * productsOnPage;
 
-  console.log(category)
-  console.log(query)
-
+  console.log(category);
+  console.log(query);
 
   const products = await prisma.product.findMany({
     where: {
       name: {
-        contains: query, 
+        contains: query,
       },
       category: {
         name: {
-          contains: category?.toLowerCase() ?? '',
-        }
+          contains: category ?? "",
+        },
       },
     },
-    include: { ProductImage: true, },
-  take: productsOnPage,
-  skip: productsToSkip, 
+    include: { ProductImage: true, variants:true },
+    take: productsOnPage,
+    skip: productsToSkip,
   });
 
-  console.log(products)
+  console.log(products);
 
   return products;
 }
-  
+
 /**
  * Filtrar Productos por nombre
- * @param query 
- * @param currentPage 
- * @returns 
+ * @param query
+ * @param currentPage
+ * @returns
  */
-export async function fetchFilteredProducts(query: string, currentPage: number, productsOnPage: number) {
+export async function fetchFilteredProducts(
+  query: string,
+  currentPage: number,
+  productsOnPage: number
+) {
   // sleep(3)
 
-    const productsToSkip = (currentPage - 1) * productsOnPage;
-  
-    const filteredProducts = await prisma.product.findMany({
-      where: {
-        name: {
-          contains: query, 
-        },
-      },
-      include: { ProductImage: true },
-      take: productsOnPage,
-      skip: productsToSkip, 
-    });
+  const productsToSkip = (currentPage - 1) * productsOnPage;
 
-  
-    return filteredProducts;
+  const filteredProducts = await prisma.product.findMany({
+    where: {
+      name: {
+        contains: query,
+      },
+    },
+    include: { ProductImage: true },
+    take: productsOnPage,
+    skip: productsToSkip,
+  });
+
+  return filteredProducts;
 }
 
 export async function countProducts(): Promise<number> {
@@ -120,14 +145,15 @@ export async function countProducts(): Promise<number> {
 export async function fetchProduct(id: number) {
   const Product = await prisma.product.findFirst({
     where: {
-      id : id
+      id: id,
     },
-    include: { ProductImage: true },
-  }
-  );
+    include: { 
+      ProductImage: true,
+      variants: true,
+     },
+  });
 
-  if (Product==null)
-    throw new Error;
+  if (Product == null) throw new Error();
 
   return Product;
 }
@@ -135,39 +161,38 @@ export async function fetchProduct(id: number) {
 export async function fetchProductbyName(name: string) {
   const Product = await prisma.product.findFirst({
     where: {
-      name : name
+      name: name,
     },
     include: { ProductImage: true },
-  }
-  );
+  });
 
-  if (Product==null)
-    throw new Error;
+  if (Product == null) throw new Error();
 
   return Product;
 }
-  
+
 // Recuperar los productos con los IDs proporcionados
 export async function fetchProductsbyIDs(products_ids: Array<number> = [1]) {
-    const products = await prisma.product.findMany({
-      where: {
-        id: {
-          in: products_ids,
-        },
+  const products = await prisma.product.findMany({
+    where: {
+      id: {
+        in: products_ids,
       },
-    });
-    return products;
+    },
+  });
+  return products;
 }
-
 
 /**
  * Calcula el total de páginas para una búsqueda
- * @param query 
- * @param productsOnPage 
- * @returns 
+ * @param query
+ * @param productsOnPage
+ * @returns
  */
-export async function fetchProductsPages(query : string, productsOnPage: number ) {
-  
+export async function fetchProductsPages(
+  query: string,
+  productsOnPage: number
+) {
   const totalProducts = await prisma.product.count({
     where: {
       name: {
@@ -180,17 +205,19 @@ export async function fetchProductsPages(query : string, productsOnPage: number 
     return 1;
   }
 
-
   // para asegurarse de incluir todas las páginas, incluso si la última página no está completa.
   const totalPages = Math.ceil(totalProducts / productsOnPage);
 
-
-  totalPages
+  totalPages;
 
   return totalPages;
 }
 
-export async function countProductsCatalog(category:string, query : string, productsOnPage: number ) {
+export async function countProductsCatalog(
+  category: string,
+  query: string,
+  productsOnPage: number
+) {
   const whereClause = {
     name: {
       contains: query,
@@ -198,8 +225,8 @@ export async function countProductsCatalog(category:string, query : string, prod
     ...(category && { category: { name: category } }),
   };
   const totalProducts = await prisma.product.count({
-    where: whereClause
-    });
+    where: whereClause,
+  });
 
   if (totalProducts === 0) {
     return 1;
@@ -216,7 +243,7 @@ export async function fetchAllOrders() {
     const orders = await prisma.order.findMany();
     return orders;
   } catch (error) {
-    console.error('Error fetching orders:', error);
+    console.error("Error fetching orders:", error);
     throw error;
   }
 }
@@ -228,22 +255,23 @@ export async function fetchOrder(id: number) {
         id: id,
       },
       include: {
-        OrderItem : true
-      }
+        OrderItem: true,
+      },
     });
     return order;
   } catch (error) {
-    console.error('Error fetching orders by user ID:', error);
+    console.error("Error fetching orders by user ID:", error);
     throw error;
-  }}
+  }
+}
 
 export async function fetchOrdersByUserId(userId: number) {
   try {
     const orders = await prisma.order.findMany({
       where: {
         user: {
-           id : Number(userId),
-        }
+          id: Number(userId),
+        },
       },
       // include: {
       //   OrderItem : true
@@ -251,7 +279,7 @@ export async function fetchOrdersByUserId(userId: number) {
     });
     return orders;
   } catch (error) {
-    console.error('Error fetching orders by user ID:', error);
+    console.error("Error fetching orders by user ID:", error);
     throw error;
   }
 }
@@ -266,7 +294,7 @@ export async function fetchInvoicesByUserId(userId: number) {
       },
     },
     include: {
-      Order: true, 
+      Order: true,
     },
   });
 }
@@ -279,36 +307,32 @@ export async function fetchProductsByOrder(orderId: number) {
       },
       include: {
         OrderItem: {
-          include:{
-            product:true,
-          }
-        }
-      }
+          include: {
+            product: true,
+          },
+        },
+      },
     });
     return orders;
   } catch (error) {
-    console.error('Error fetching orders by user ID:', error);
+    console.error("Error fetching orders by user ID:", error);
     throw error;
   }
 }
 
 export async function fetchAllCategories() {
-    const categories = await prisma.category.findMany({
-      select:{
-        name:true
-      }
-    });
-    return categories.map(category => category.name);
+  const categories = await prisma.category.findMany({
+    select: {
+      name: true,
+    },
+  });
+  return categories.map((category) => category.name);
 }
 
 // todo
-export async function fetchProvinces() {
+export async function fetchProvinces() {}
 
-}
-
-export async function fetchCitiesFromProvinces() {
-  
-}
+export async function fetchCitiesFromProvinces() {}
 
 export async function fetchTotalRevenues() {
   return await prisma.order.aggregate({
@@ -325,7 +349,7 @@ export async function fetchTotalSales() {
 export async function fetchTotalClients() {
   return await prisma.user.count({
     where: {
-      role: 'user',
+      role: "user",
     },
   });
 }

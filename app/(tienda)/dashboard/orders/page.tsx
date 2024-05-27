@@ -10,7 +10,7 @@ async function getData() {
 
   const authentication = await auth()
   const user_id = Number(authentication?.user?.id);
-
+  console.log(user_id)
   const orders = await fetchOrdersByUserId(user_id);
   
   return orders;

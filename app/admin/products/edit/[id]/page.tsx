@@ -1,16 +1,16 @@
 
-import { Product } from "@/lib/definitions"
-import EditProductForm from "@/components/form/EditProductForm"
+import  EditProductForm  from '@/components/admin/ProductForm'
 import { fetchAllCategories, fetchProduct } from "@/lib/data"
+import { Product } from '@prisma/client';
 
 interface Props {
   params: { id: string };
 }
 
   export default async function EditPage({ params }: Props) {
-  const product: Product | null = await fetchProduct(Number(params.id))
+  const product: Product = await fetchProduct(Number(params.id))
   const categories = await fetchAllCategories();
-  
+  console.log(product)
   return (
     <EditProductForm product={product} categories={categories}></EditProductForm>
   )

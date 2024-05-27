@@ -18,33 +18,60 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/shadcn/popover";
+import { useEffect, useState } from "react";
 
 const colores = [
   {
-    value: "b&n",
+    value: 1,
     label: "Blanco y Negro",
   },
   {
-    value: "b",
+    value: 2,
     label: "Blanco",
   },
   {
-    value: "n",
+    value: 3,
     label: "Negro",
   },
   {
-    value: "r",
+    value: 4,
     label: "Roja",
   },
   {
-    value: "a",
+    value: 5,
     label: "Azul",
   },
 ];
 
-export function InputColor() {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+interface InputColorProps {
+  value?: number;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export const InputColor: React.FC<InputColorProps> = (
+  { value: propValue, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(propValue);
+
+  useEffect(() => {
+    setValue(propValue);
+  }, [propValue]);
+
+  const handleSelect = (currentValue: number) => {
+    const newValue = currentValue === value ? 0 : currentValue;
+    if (newValue == 0)
+      return 0;
+    setValue(newValue);
+    setOpen(false);
+    if (onChange) {
+      onChange({
+        target: {
+          value: currentValue,
+          name: colores[newValue],
+        },
+      } as unknown as React.ChangeEvent<HTMLInputElement>)
+    }
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -53,7 +80,7 @@ export function InputColor() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[130px] justify-between"
+          className="w-full justify-between"
         >
           {value
             ? colores.find((color) => color.value === value)?.label
@@ -70,12 +97,9 @@ export function InputColor() {
               {colores.map((color) => (
                 <CommandItem
                   key={color.value}
-                  value={color.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
-                    setOpen(false);
-                  }}
-                >
+                  value={color.label}
+                  onSelect={() => handleSelect(color.value)}
+                  >
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",

@@ -1,13 +1,7 @@
-import NextAuth from 'next-auth';
-import { authConfig } from './app/auth.config';
-
-// Metodo directo
- export default NextAuth(authConfig).auth;
-
+export { auth as middleware } from "./app/auth"
 
 export const config = {
-  // matcher: ['/about/:path*', '/dashboard/:path*'],
-  matcher: ['/about/:path*'],
+  matcher: ['/dashboard/:path*','/about/:path*',"/((?!api|_next/static|_next/image|favicon.ico).*)"],
 
 };
 

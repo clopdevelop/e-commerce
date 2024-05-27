@@ -23,13 +23,8 @@ export default async function ProductsTable({
   category?: string;
   id_user: number;
 }) {
+  if(!category) category=''
 
-  // const products = await fetchfilteredProductsperCategories(
-  //   category,
-  //   currentPage,
-  //   productsOnPage,
-  //   query
-  // );
   const products = await fetchfilteredProductsperCategories(
     query,
     currentPage,

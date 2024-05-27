@@ -64,7 +64,7 @@ export function ChangePassDialog() {
             </div>
             <div className="text-right text-sm">
               <Link href="/entrada" className="underline">
-                ¿Has olvidado la contraseña?
+                {/* ¿Has olvidado la contraseña? */}
               </Link>
             </div>
           </div>

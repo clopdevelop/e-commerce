@@ -1,58 +1,29 @@
-datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
-
-
-// model City {
-//   id_city     Int       @id @default(autoincrement())
-//   city        String
-//   province    Province  @relation(fields: [id_province], references: [id_province])
-//   id_province Int
-//   Address     Address[]
-// }
-
-// model Province {
-//   id_province Int     @id @default(autoincrement())
-//   iso_code    String  @unique
-//   province    String
-//   country     Country @relation(fields: [id_country], references: [id_country])
-//   id_country  Int
-//   City        City[]
-// }
-
-// model Country {
-//   id_country Int        @id @default(autoincrement())
-//   iso_code   String     @unique
-//   country    String
-//   Province   Province[]
-// }
-
-model Province {
-  id        String   @id
-  nombre    String
-  // Ciudades  Ciudad[]
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
+model City {
+  id     Int       @id @default(autoincrement())
+  city        String
+  province    Province  @relation(fields: [id_province], references: [id_province])
+  id_province Int
+  Address     Address[]
+}
 
+model Province {
+  id_province Int     @id @default(autoincrement())
+  iso_code    String  @unique
+  province    String
+  City        City[]
+}
 
-
-// model Ciudad {
-//   id          Int       @id @default(autoincrement())
-//   nombre      String
-//   ProvinciaId Int
-//   Provincia   Provincia @relation(fields: [ProvinciaId], references: [id])
-// }
-
-
-
-
-
+//PRODUCTO
 model Product {
   id          Int       @id @default(autoincrement())
   name        String
@@ -64,9 +35,6 @@ model Product {
   created_at  DateTime  @default(now())
   last_update DateTime? @updatedAt
 
-  
-  // provider    Provider? @relation(fields: [id_provider], references: [id_provider])
-  // id_provider Int?
   category    Category? @relation(fields: [id_category], references: [id])
   id_category Int?
 
@@ -74,6 +42,14 @@ model Product {
   ProductImage ProductImage[]
   OrderItem    OrderItem[]
 }
+
+
+model Category {
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  Product Product[]
+}
+
 
 model Color {
   id    Int    @id @default(autoincrement())
@@ -107,36 +83,7 @@ model ProductImage {
   id_product Int
 }
 
-// model Image {
-// id  Int    @id @default(autoincrement())
-//   url String
-  // altText?: string;
-  // width?: number;
-  // height?: number;
-// }
-
-
-
-
-model Category {
-  id      Int       @id @default(autoincrement())
-  name    String    @unique
-  Product Product[]
-}
-
-// model Provider {
-//   id_provider Int       @id @default(autoincrement())
-//   cuit        String
-//   name        String
-//   address     Address?  @relation(fields: [id_address], references: [id])
-//   id_address  Int?
-//   postcode    String
-//   phone       String?
-//   email       String
-//   created_at  DateTime  @default(now())
-//   products    Product[]
-// }
-
+//PEDIDOS
 model Order {
   id         Int      @id @default(autoincrement())
   code       String   @unique
@@ -148,7 +95,7 @@ model Order {
   created_at DateTime @default(now())
 
   user             User         @relation(fields: [id_user], references: [id])
-  id_user          Int
+  id_user          String
   deliveryType     DeliveryType @relation(fields: [id_delivery_type], references: [id])
   id_delivery_type Int
 
@@ -188,48 +135,23 @@ model Invoice {
   id_payment_method Int
 }
 
-
-
-
-//  SQLITE
-// model User {
-//   // id            String          @id @default(cuid())
-//   id            Int       @id @default(autoincrement())
-//   name          String
-//   username      String?
-//   bio           String?
-//   email         String    @unique
-//   emailVerified DateTime?
-//   image         String?
-//   role          String      @default("user")
-//   phone         String?
-//   password      String
-//   address       Address?  @relation(fields: [id_address], references: [id])
-//   id_address    Int?
-//   postcode      String?
-//   created_at    DateTime  @default(now())
-
-//   accounts      Account[]
-//   sessions      Session[]
-//   // Optional for WebAuthn support
-//   Authenticator Authenticator[]
-//   Order         Order[]
-// }
-// model Address {
-//   id          Int        @id @default(autoincrement())
-//   name        String
-//   number      Int
-//   letter      String?
-//   block       String?
-//   staircase   String?
-//   // city        City       @relation(fields: [id_city], references: [id_city])
-//   // id_city     Int
-//   last_update DateTime   @default(now()) @updatedAt
-//   User        User[]
-//   // Provider    Provider[]
-// }
+model PaymentMethod {
+  id               Int      @id @default(autoincrement())
+  name             String
+  // PaymentMethodName             String
+  cardHolderName   String
+  cardNumber       String
+  expirationMonth  Int
+  expirationYear   Int
+  cvc              String
+  saveBillingInfo  Boolean
+  user             User?     @relation(fields: [id_user], references: [id])
+  id_user          String?
+  Invoice          Invoice[]
+}
+//USUARIO
 model User {
-  id               Int          @id @default(autoincrement())
+  id               String  @id @default(cuid())
   name             String
   username         String?
   bio              String?
@@ -243,34 +165,30 @@ model User {
   id_address       Int?
   postcode         String?
   created_at       DateTime     @default(now())
+  updatedAt DateTime @updatedAt
 
   paymentMethods   PaymentMethod[]
-  accounts         Account[]
-  sessions         Session[]
+  // accounts         Account[]
+  // sessions         Session[]
+    // Optional for WebAuthn support
   Authenticator    Authenticator[]
   Order            Order[]
 }
-model PaymentMethod {
-  id               Int      @id @default(autoincrement())
-  name             String
-  // PaymentMethodName             String
-  cardHolderName   String
-  cardNumber       String
-  expirationMonth  Int
-  expirationYear   Int
-  cvc              String
-  saveBillingInfo  Boolean
-  user             User?     @relation(fields: [id_user], references: [id])
-  id_user          Int?
-  Invoice          Invoice[]
+
+// Optional for WebAuthn support
+model Authenticator {
+  id                   String  @id @default(cuid())
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
-
-// const enum PaymentMethodName {
-//   CARD,
-//   PAYPAL,
-//   APPLE
-// }
-
 
 model Address {
   id          Int        @id @default(autoincrement())
@@ -281,70 +199,64 @@ model Address {
   staircase   String?
   last_update DateTime   @default(now()) @updatedAt
   users       User[]     // Change to plural form to represent many-to-one relation
+  city    City  @relation(fields: [id_city], references: [id])
+  id_city Int
 }
 
+// const enum PaymentMethodName {
+//   CARD,
+//   PAYPAL,
+//   APPLE
+// }
 
-// NEXT-AUTH
-model Account {
-  id                String  @id @default(cuid())
-  // userId            String
-  userId            Int
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// // NEXT-AUTH
+// model Account {
+//     id               Int          @id @default(autoincrement())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   // userId            String
+//   userId            Int
+//   type              String
+//   provider          String
+//   providerAccountId String
+//   refresh_token     String?
+//   access_token      String?
+//   expires_at        Int?
+//   token_type        String?
+//   scope             String?
+//   id_token          String?
+//   session_state     String?
 
-  @@unique([provider, providerAccountId])
-}
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
 
-model Session {
-  // id           String   @id @default(cuid())
-  id           Int      @id @default(autoincrement())
-  sessionToken String   @unique
-  userId       Int
-  // userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
+//   @@unique([provider, providerAccountId])
+// }
 
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
+// model Session {
+//   // id           String   @id @default(cuid())
+//   id           Int      @id @default(autoincrement())
+//   sessionToken String   @unique
+//   userId       Int
+//   // userId       String
+//   expires      DateTime
+//   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([identifier, token])
-}
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
 
-// Optional for WebAuthn support
-model Authenticator {
-  // id                   String  @id @default(cuid())
-  id                   Int     @id @default(autoincrement())
-  credentialID         String  @unique
-  // userId               String
-  userId               Int
-  providerAccountId    String
-  credentialPublicKey  String
-  counter              Int
-  credentialDeviceType String
-  credentialBackedUp   Boolean
-  transports           String?
+// model VerificationToken {
+//   identifier String
+//   token      String
+//   expires    DateTime
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
+//   @@unique([identifier, token])
+// }
+
+
 
 // TODO POSTGREE
 // model User {
@@ -363,6 +275,7 @@ model Authenticator {
 // }
 
 // model Account {
+//   id                String  @id @default(cuid())
 //   userId            String
 //   type              String
 //   provider          String
@@ -399,20 +312,5 @@ model Authenticator {
 //   expires    DateTime
 
 //   @@id([identifier, token])
-// }
-
-// // Optional for WebAuthn support
-// model Authenticator {
-//   id                   String  @id @default(cuid())
-//   credentialID         String  @unique
-//   userId               String
-//   providerAccountId    String
-//   credentialPublicKey  String
-//   counter              Int
-//   credentialDeviceType String
-//   credentialBackedUp   Boolean
-//   transports           String?
-
-//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 // }
 

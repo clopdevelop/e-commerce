@@ -55,31 +55,38 @@ import { z } from "zod";
 });
 
 export const addProductSchema = z.object({
-  code: z.string().nullable().optional(),
   name: z.string(),
-  description: z.string().nullable().optional(),
-  marca: z.number().nullable().optional(),
-  provider: z.number().nullable().optional(),
-  category: z.number().nullable().optional(),
-  thumbnail: z.string().nullable().optional(),
-  image: z.any(),
+  description: z.string(),
   price: z.number(),
-  discount: z.number().nullable().optional(),
-  stock: z.number(),
+  material: z.string().optional(),
+  stock: z.number().optional(),
+  color: z.string().optional(),
+  size: z.number().optional(),
+  category: z.string(),
+  state: z.string(),
+  image: z.instanceof(File).optional(),
 });
+
 export const editProductSchema = z.object({
-  id_product: z.number().optional(),
-  code: z.string().nullable().optional(),
+  id: z.number().optional(),
   name: z.string(),
-  description: z.string().nullable().optional(),
-  marca: z.number().nullable().optional(),
-  provider: z.number().nullable().optional(),
-  category: z.number().nullable().optional(),
-  thumbnail: z.string().nullable().optional(),
-  image: z.any(),
+  description: z.string(),
   price: z.number(),
-  discount: z.number().nullable().optional(),
+  material: z.string().optional(),
+  stock: z.number().optional(),
+  color: z.string().optional(),
+  size: z.number().optional(),
+  category: z.string(),
+  state: z.string(),
+  image: z.instanceof(File).optional(),
+});
+
+export const addVariantProductSchema = z.object({
+  id_product: z.number(),
+  code: z.string(),
   stock: z.number(),
+  id_color: z.number(),
+  size: z.number(),
 });
   
   export const cartDetailSchema = z.object({

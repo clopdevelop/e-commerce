@@ -2,7 +2,6 @@
 import { Button } from "@/components/shadcn/button";
 import { useEffect } from "react";
 import { Input } from "@/components/shadcn/input";
-import { Google } from "./SignInGoogle";
 import { Separator } from "../shadcn/separator";
 import { AtSign, CircleAlert } from 'lucide-react'
 import { useFormState, useFormStatus } from "react-dom";
@@ -51,12 +50,12 @@ export function LoginForm() {
           </div>
           <div className="grid gap-3">
             <div className="flex justify-between">
-              <Label htmlFor="email">Contraseña</Label>
+              <Label htmlFor="password">Contraseña</Label>
               <Link
                 href="#"
                 className="ml-auto inline-block text-sm underline"
               >
-                ¿Has olvidado tu contraseña?
+                {/* ¿Has olvidado tu contraseña? */}
               </Link>
             </div>
             <div>

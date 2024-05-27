@@ -18,33 +18,58 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/shadcn/popover";
+import { useEffect, useState } from "react";
 
-const colores = [
+const materiales = [
   {
-    value: "b&n",
+    value: "tela",
     label: "Tela",
   },
   {
-    value: "b",
+    value: "piel",
     label: "Piel",
   },
   {
-    value: "n",
+    value: "plastico",
     label: "Plástico",
   },
   {
-    value: "r",
+    value: "piel_piel",
     label: "Piel Piel",
   },
   {
-    value: "a",
+    value: "joyeria",
     label: "Joyería",
   },
 ];
 
-export function InputMaterial() {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+interface InputMaterialProps {
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export const InputMaterial: React.FC<InputMaterialProps> = ({ value: propValue, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(propValue || '');
+
+  useEffect(() => {
+    setValue(propValue || '');
+  }, [propValue]);
+
+  const handleSelect = (currentValue: string) => {
+    const newValue = currentValue === value ? '' : currentValue;
+    setValue(newValue);
+    console.log(newValue);
+    setOpen(false);
+    if (onChange) {
+      onChange({
+        target: {
+          value: newValue,
+          name: 'material',
+        },
+      } as React.ChangeEvent<HTMLInputElement>); // Aquí creamos un nuevo evento de cambio
+    }
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -56,33 +81,30 @@ export function InputMaterial() {
           className="w-[130px] justify-between"
         >
           {value
-            ? colores.find((color) => color.value === value)?.label
+            ? materiales.find((material) => material.value === value)?.label
             : "Material"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Buscar color..." />
-          <CommandEmpty>Color no encontrado.</CommandEmpty>
+          <CommandInput placeholder="Buscar material..." />
+          <CommandEmpty>Material no encontrado.</CommandEmpty>
           <CommandList>
             <CommandGroup>
-              {colores.map((color) => (
+              {materiales.map((material) => (
                 <CommandItem
-                  key={color.value}
-                  value={color.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
-                    setOpen(false);
-                  }}
+                  key={material.value}
+                  value={material.value}
+                  onSelect={handleSelect}
                 >
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === color.value ? "opacity-100" : "opacity-0"
+                      value === material.value ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {color.label}
+                  {material.label}
                 </CommandItem>
               ))}
             </CommandGroup>
@@ -91,4 +113,4 @@ export function InputMaterial() {
       </PopoverContent>
     </Popover>
   );
-}
+};

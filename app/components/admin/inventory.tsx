@@ -40,9 +40,9 @@ export default async function Inventory({ products }: { products: Product[] }) {
       <CardHeader >
         <div className="flex justify-between" >
           <div>
-            <CardTitle>Products</CardTitle>
+            <CardTitle>Inventario</CardTitle>
             <CardDescription>
-              Manage your products and view their sales performance.
+            Administre sus productos.
             </CardDescription>
           </div>
           <div>
@@ -105,7 +105,7 @@ export default async function Inventory({ products }: { products: Product[] }) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                      <Link href={`/admin/products/edit/{product.id}`}><DropdownMenuItem>Editar</DropdownMenuItem></Link>
+                      <Link href={`/admin/products/edit/${product.id}`}><DropdownMenuItem>Editar</DropdownMenuItem></Link>
                       <DeleteProduct id_product={product.id}></DeleteProduct>
                     </DropdownMenuContent>
                   </DropdownMenu>

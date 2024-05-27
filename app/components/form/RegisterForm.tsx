@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
-import { addUser } from "@/lib/actionscommands";
+import { addUser, signInGoogle } from "@/lib/actionscommands";
 import Link from "next/link";
 import { Separator } from "../shadcn/separator";
 import { AtSign } from "lucide-react";
@@ -150,6 +150,14 @@ export function RegisterForm() {
           </form>
         </Form>
       </div>
+      <form
+          action={signInGoogle}
+          className="text-center"
+        >
+          <Button type="submit" className="mt-3 mb-3">
+            <AtSign className="mr-2"></AtSign>
+            Continuar con Google</Button>
+        </form>
     </div>
   );
 }

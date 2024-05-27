@@ -11,8 +11,7 @@ export const viewport: Viewport = {
 
 const inter = Inter({ subsets: ["latin"] });
 
-const { SITE_NAME } = process.env
-// todo Completar los metadatos https://nextjs.org/docs/app/api-reference/functions/generate-metadata
+const { SITE_NAME, AUTHOR, GITHUB, APPLICATION_NAME } = process.env
 export const metadata: Metadata = {
   metadataBase: new URL('https://Tienda.com'),
   alternates: {
@@ -22,7 +21,32 @@ export const metadata: Metadata = {
       'de-DE': '/de-DE',
     },
   },
-  // openGraph: {
+  title: {
+    default: SITE_NAME!,
+    template: `%s | ${SITE_NAME}`,
+    absolute: SITE_NAME,
+  },
+  generator: 'Next.js',
+  applicationName: APPLICATION_NAME,
+  referrer: 'origin-when-cross-origin',
+  keywords: ['Next.js', 'React', 'JavaScript'],
+  authors: [{ name: AUTHOR, url: GITHUB }],
+  creator: AUTHOR,
+  publisher: AUTHOR,
+  robots: {
+    index: false,
+    follow: true,
+    // nocache: true,
+    // googleBot: {
+    //   index: true,
+    //   follow: false,
+    //   noimageindex: true,
+    //   'max-video-preview': -1,
+    //   'max-image-preview': 'large',
+    //   'max-snippet': -1,
+    // },
+  },
+   // openGraph: {
   //   title: 'Next.js',
   //   description: 'The React Framework for the Web',
   //   url: 'https://nextjs.org',
@@ -42,36 +66,6 @@ export const metadata: Metadata = {
   //   ],
   //   locale: 'en_US',
   //   type: 'website',
-  // },
-  title: {
-    default: SITE_NAME!,
-    template: `%s | ${SITE_NAME}`
-    // absolute: '',
-  },
-  robots: {
-    index: false,
-    follow: true,
-    // nocache: true,
-    // googleBot: {
-    //   index: true,
-    //   follow: false,
-    //   noimageindex: true,
-    //   'max-video-preview': -1,
-    //   'max-image-preview': 'large',
-    //   'max-snippet': -1,
-    // },
-  },
-  generator: 'Next.js',
-  applicationName: 'Mi Tienda',
-  referrer: 'origin-when-cross-origin',
-  keywords: ['Next.js', 'React', 'JavaScript'],
-  authors: [{ name: "@clopdevlop", url: "https://github.com/clopdevelop" }],
-  creator: 'Nombre del creador de la web',
-  publisher: 'Nombre de quién lo publica',
-  // formatDetection: {
-  //   email: false,
-  //   address: false,
-  //   telephone: false,
   // },
 };
 

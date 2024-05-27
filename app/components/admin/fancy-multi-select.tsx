@@ -10,9 +10,9 @@ import {
 } from "@/components/shadcn/command";
 import {Command as CommandPrimitive } from "cmdk";
 
-type Framework = Record<"value" | "label", string>;
+type Label = Record<"value" | "label", string>;
 
-const FRAMEWORKS = [
+const LABELS = [
   {
     value: "next.js",
     label: "Nuevo",
@@ -25,40 +25,21 @@ const FRAMEWORKS = [
     value: "nuxt.js",
     label: "Coleccionista",
   },
-  // {
-  //   value: "remix",
-  //   label: "Remix",
-  // },
-  // {
-  //   value: "astro",
-  //   label: "Astro",
-  // },
-  // {
-  //   value: "wordpress",
-  //   label: "WordPress",
-  // },
-  // {
-  //   value: "express.js",
-  //   label: "Express.js",
-  // },
-  // {
-  //   value: "nest.js",
-  //   label: "Nest.js",
-  // },
-] satisfies Framework[];
+] satisfies Label[];
 
-interface Props {
-  onChange?: (values: { value: string; label: string }[]) => void;
+interface InputLabelProps {
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const FancyMultiSelect = ({ onChange }: Props) => {
+export const FancyMultiSelect: React.FC<InputLabelProps> = ({ value: propValue, onChange }) => {
+  const [inputValue, setInputValue] = React.useState(propValue || '');
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState<Framework[]>([]);
-  const [inputValue, setInputValue] = React.useState("");
+  const [selected, setSelected] = React.useState<Label[]>([]);
 
-  const handleUnselect = React.useCallback((framework: Framework) => {
-    setSelected((prev) => prev.filter((s) => s.value !== framework.value));
+  const handleUnselect = React.useCallback((label: Label) => {
+    setSelected((prev) => prev.filter((s) => s.value !== label.value));
   }, []);
 
   const handleKeyDown = React.useCallback(
@@ -83,16 +64,18 @@ export const FancyMultiSelect = ({ onChange }: Props) => {
     []
   );
 
-  const selectables = FRAMEWORKS.filter((framework) => {
-    return !selected.some((selectedFramework) => {
-      return JSON.stringify(framework) === JSON.stringify(selectedFramework);
+  const selectables = LABELS.filter((label) => {
+    return !selected.some((selecteLabel) => {
+      return JSON.stringify(label) === JSON.stringify(selecteLabel);
     });
   });
 
+  // React.useEffect(() => {
+  //   onChange?.(selected);
+  // }, [selected, onChange]);
   React.useEffect(() => {
-    onChange?.(selected);
-  }, [selected, onChange]);
-
+    setInputValue(propValue || '');
+  }, [propValue]);
   return (
     <Command
       onKeyDown={handleKeyDown}
@@ -100,22 +83,22 @@ export const FancyMultiSelect = ({ onChange }: Props) => {
     >
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
         <div className="flex flex-wrap gap-1">
-          {selected.map((framework) => {
+          {selected.map((label) => {
             return (
-              <Badge key={framework.value} variant="secondary">
-                {framework.label}
+              <Badge key={label.value} variant="secondary">
+                {label.label}
                 <button
                   className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      handleUnselect(framework);
+                      handleUnselect(label);
                     }
                   }}
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                   }}
-                  onClick={() => handleUnselect(framework)}
+                  onClick={() => handleUnselect(label)}
                 >
                   <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
                 </button>
@@ -139,21 +122,21 @@ export const FancyMultiSelect = ({ onChange }: Props) => {
           <div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
             <CommandList>
               <CommandGroup className="h-full overflow-auto">
-                {selectables.map((framework) => {
+                {selectables.map((label) => {
                   return (
                     <CommandItem
-                      key={framework.value}
+                      key={label.value}
                       onMouseDown={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                       }}
                       onSelect={(value) => {
                         setInputValue("");
-                        setSelected((prev) => [...prev, framework]);
+                        setSelected((prev) => [...prev, label]);
                       }}
                       className={"cursor-pointer"}
                     >
-                      {framework.label}
+                      {label.label}
                     </CommandItem>
                   );
                 })}

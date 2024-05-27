@@ -3,10 +3,10 @@
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
-import { auth, signIn } from "@/auth";
+import { auth, signIn } from "../auth";
 import { AuthError } from "next-auth";
 import Stripe from "stripe";
-import { addProductSchema, editProductSchema } from "./schemas";
+import { addProductSchema, addVariantProductSchema, editProductSchema } from "./schemas";
 import { sleep } from "./utils";
 
 // AUTHENTICATION
@@ -20,18 +20,26 @@ export async function authenticate(
   prevState: string | undefined,
   formData: FormData
 ) {
-  try {
-    // await sleep(2);
+  console.log(formData)
+  const email =  formData.get("email")
+  const pass =  formData.get("password")
+  const obj = {
+    email: email,
+    password: pass,
+// Add other properties as needed
+}
+console.log(obj) //  { email: 'usuario@gmail.com', password: 'usuario' }
 
+  try {
     await signIn("credentials", {
-      ...Object.fromEntries(formData),
+      ...obj,
       redirect: false,
     });
-
+    
     return "Success";
   } catch (error) {
     console.log(error);
-
+    
     return "CredentialsSignin";
   }
 }
@@ -391,84 +399,75 @@ export async function addProduct(formData: FormData) {
   // await sleep(3);
   try {
     // const rawFormData = Object.fromEntries(formData.entries());
+    console.log(formData);
 
     const rawFormData = {
       name: formData.get("name"),
       description: formData.get("description"),
       price: Number(formData.get("price")),
-      material: Number(formData.get("material")),
+      material: formData.get("material"),
       stock: Number(formData.get("stock")),
-      color: Number(formData.get("color")),
+      color: formData.get("color"),
       size: Number(formData.get("size")),
-      category: Number(formData.get("category")),
+      category: formData.get("category"),
       state: formData.get("state"),
       image: formData.get("image"),
     };
+    
+    // const { name, price, description, material, color, size, category,state, stock, image } =
+    const { name, price, description, material,category, state } = addProductSchema.parse(rawFormData);
+    
+    console.log(formData);
 
-    console.log(rawFormData);
-    // {
-    //   name: 'Cristian López Gómez',
-    //   description: 'asadf',
-    //   price: 0.11,
-    //   material: 0,
-    //   stock: 3,
-    //   color: 0,
-    //   size: 0,
-    //   category: 0,
-    //   state: '',
-    //   image: File {
-    //     name: 'undefined',
-    //     lastModified: 1716320463063,
-    //     type: 'application/octet-stream',
-    //     size: 0,
-    //     Symbol(kHandle): Blob {},
-    //     Symbol(kLength): 0,
-    //     Symbol(kType): 'application/octet-stream'
-    //   }
-    // }
-    const { name, price, description, stock, image } =
-      addProductSchema.parse(rawFormData);
+    // console.log(image);
 
-    console.log(image);
+    // // const bytes = await image.arrayBuffer();
+    // // const buffer = Buffer.from(bytes);
 
-    const bytes = await image.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    // // const filePath = path.join(process.cwd(), "public", image.name);
+    // // await writeFile(filePath, buffer, async (err) => {
+    // //   if (err) {
+    // //     console.error("Hubo un error al escribir el archivo:", err);
+    // //   } else {
+    // //     console.log("Archivo escrito con éxito");
+    // //     const cloud = await cloudinary.uploader.upload(filePath);
 
-    const filePath = path.join(process.cwd(), "public", image.name);
-    await writeFile(filePath, buffer, async (err) => {
-      if (err) {
-        console.error("Hubo un error al escribir el archivo:", err);
-      } else {
-        console.log("Archivo escrito con éxito");
-        const cloud = await cloudinary.uploader.upload(filePath);
+    // //     await unlink(filePath, (err) => {
+    // //       err ? console.log("Hubo un error al eliminar el archivo") : "";
+    // //     });
 
-        await unlink(filePath, (err) => {
-          err ? console.log("Hubo un error al eliminar el archivo") : "";
-        });
+    // //     if (cloud) {
+    // //       await unlink(filePath, () => {
+    // //         return 0;
+    // //       });
+    // //     }
 
-        if (cloud) {
-          await unlink(filePath, () => {
-            return 0;
-          });
-        }
+    // //     const newProduct = await prisma.product.create({
+    // //       data: {
+    // //         name: name,
+    // //         price: Number(price),
+    // //         description: description,
+    // //         ProductImage: {
+    // //           create: {
+    // //             url: cloud.url,
+    // //           },
+    // //         },
+    // //       },
+    // //     });
+    // //   }
+    // // });
 
-        const newProduct = await prisma.product.create({
-          data: {
-            name: name,
-            price: Number(price),
-            description: description,
-            stock: Number(stock),
-            ProductImage: {
-              create: {
-                url: cloud.url,
-              },
-            },
-          },
-        });
-      }
-    });
-    revalidatePath("/admin/products");
-    redirect("/admin/products");
+    //  const newProduct = await prisma.product.create({
+    //    data: {
+    //      name: name,
+    //      price: price,
+    //      description: description,
+    //      material: material,
+    //    },
+    //  });
+
+    //  revalidatePath("/admin/products");
+    //  redirect("/admin/products");
   } catch (err) {
     console.log(err);
   }
@@ -502,31 +501,135 @@ export async function addProduct(formData: FormData) {
 // }
 
 export async function editProduct(formData: FormData) {
-  // await sleep(3);
   try {
-    const rawFormData = {
-      id_product: Number(formData.get("id_product")),
-      name: formData.get("name"),
-      price: Number(formData.get("price")),
-      description: formData.get("description"),
-      stock: Number(formData.get("stock")),
-    };
+    // const rawFormData = Object.fromEntries(formData.entries());
+    console.log(formData);
 
-    const { id_product, name, price, description, stock } =
-      editProductSchema.parse(rawFormData);
+    const rawFormData = {
+      id: Number(formData.get("id")),
+      name: formData.get("name"),
+      description: formData.get("description"),
+      price: Number(formData.get("price")),
+      material: formData.get("material"),
+      stock: Number(formData.get("stock")),
+      color: formData.get("color"),
+      size: Number(formData.get("size")),
+      category: formData.get("category"),
+      state: formData.get("state"),
+      image: formData.get("image"),
+    };
+    
+    // const { name, price, description, material, color, size, category,state, stock, image } =
+    const { id, name, price, description, material,category, state } = editProductSchema.parse(rawFormData);
+    
+    console.log(formData);
+
+    // console.log(image);
+
+
     const updatedProduct = await prisma.product.update({
-      where: { id: id_product },
+      where: { id: id },
       data: {
         name: name,
-        price: Number(price),
+        price: price,
         description: description,
-        stock: Number(stock),
       },
     });
-    revalidatePath(`/admin/products/edit/${id_product}`);
+
+    revalidatePath(`/admin/products/`);
   } catch (err) {
     console.log(err);
   }
+}
+
+export async function addVariantProduct(formData: FormData){
+ 
+  try {
+    console.log(formData);
+
+    const rawFormData = {
+      id_product: Number(formData.get("id_product")),
+      code: formData.get("code"),
+      stock: Number(formData.get("stock")),
+      id_color: Number(formData.get("color")),
+      size: Number(formData.get("size")),
+    };
+    
+    const variant = addVariantProductSchema.parse(rawFormData);
+    
+    console.log(rawFormData);
+
+    await prisma.productVariant.create({
+      data: {
+        code: variant.code,
+        stock: variant.stock,
+        product: {
+          connect: {
+            id: variant.id_product,
+          },
+        },
+        color: {
+          connect: {
+            id: variant.id_color,
+          },
+        },
+        size: {
+          connect: {
+            id: variant.stock,
+          },
+        },
+      },
+    });
+     revalidatePath("/admin/products");
+  } catch (err) {
+    console.log(err);
+  }
+
+}
+
+export async function editVariantProduct(formData: FormData){
+ 
+  try {
+    console.log(formData);
+
+    const rawFormData = {
+      id_product: Number(formData.get("id_product")),
+      code: formData.get("code"),
+      stock: Number(formData.get("stock")),
+      id_color: Number(formData.get("color")),
+      size: Number(formData.get("size")),
+    };
+    
+    const variant = addVariantProductSchema.parse(rawFormData);
+    
+    console.log(rawFormData);
+
+    await prisma.productVariant.create({
+      data: {
+        code: variant.code,
+        stock: variant.stock,
+        product: {
+          connect: {
+            id: variant.id_product,
+          },
+        },
+        color: {
+          connect: {
+            id: variant.id_color,
+          },
+        },
+        size: {
+          connect: {
+            id: variant.stock,
+          },
+        },
+      },
+    });
+     revalidatePath("/admin/products");
+  } catch (err) {
+    console.log(err);
+  }
+
 }
 
 export async function deleteProduct(formData: FormData) {

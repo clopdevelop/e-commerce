@@ -2,35 +2,23 @@ import ProductsTable from "@/components/products/ProductsTable";
 import Search from "@/components/utils/Search";
 import MyPagination from "@/components/utils/myPagination";
 import {
-    countProducts,
-  countProductsCatalog,
-  fetchAllCategories,
-  fetchFilteredProducts,
   fetchProductsPages,
   getUserID,
 } from "@/lib/data";
 import { CarouselProducts } from "@/components/products/CarouselProducts";
-import Link from "next/link";
 import { Suspense } from "react";
-import Categories from "@/components/products/Categories";
 // import { addUserGoogle } from "@/lib/actionscommands";
 import type { Metadata } from "next";
+import { Filters } from "@/components/products/Filters";
+import { Card, CardContent } from "@/components/shadcn";
 
 export const dynamicParams = false;
 
 export const metadata = {
-  title: "La mejor Tienda",
+  title: "Tienda",
   description: "Es una tienda que es la mejor.",
 };
-// export async function generateMetadata({
-//   params,
-// }: {
-//   params: { currentCategory: string };
-// }): Promise<Metadata> {
-//   return { 
-//     title: params.currentCategory,
-//   };
-// }
+
 
 export default async function Home({
   searchParams,
@@ -59,12 +47,15 @@ export default async function Home({
 
   return (
     <>
-      <h1 className="flex justify-center text-4xl mt-5">TIENDA</h1>
-      <div className="my-5  md:mt-8">
+      {/* <h1 className="flex justify-center  mt-5"> */}
+      <h1 className="font-semibold text-4xl leading-none tracking-tight p-5 text-center">
+      TIENDA</h1>
+      <div className="my-4">
         <Search placeholder="Buscar productos..." />
       </div>
-      <div className="flex flex-col gap-5 md:flex-row border">
-        <Categories></Categories>
+      <Card className="m-2 border-0 shadow-none">
+        <CardContent className="flex flex-col gap-5 md:flex-row p-2">
+        <Filters></Filters>
         <Suspense
           key={query+currentPage}
           fallback={
@@ -78,7 +69,8 @@ export default async function Home({
             id_user={id_user}
           />
         </Suspense>
-      </div>
+        </CardContent>
+      </Card>
       <div className="mt-5 mx-auto pb-8 overflow-auto w-3/4">
         <MyPagination
           totalPages={totalPages}

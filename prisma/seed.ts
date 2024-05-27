@@ -5,9 +5,6 @@ import { initialData } from "./seedData";
 async function main() {
   // 1. Borrar registros previos
   // await Promise.all( [
-
-  // await prisma.orderAddress.deleteMany();
-  // await prisma.userAddress.deleteMany();
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
 
@@ -19,7 +16,6 @@ async function main() {
   await prisma.deliveryType.deleteMany();
   await prisma.paymentMethod.deleteMany();
 
-  await prisma.province.deleteMany();
   // ]);
 
   const {
@@ -211,10 +207,12 @@ async function main() {
 (() => {
   if (process.env.NODE_ENV === "production") return;
   main()
-    .catch((e) => {
-      throw e;
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
+  .then(async () => {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })
 })();
