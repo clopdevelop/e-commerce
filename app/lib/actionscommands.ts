@@ -66,7 +66,7 @@ export async function getAddresByUserLog() {
   const userId = await getUserID();
   try {
     const user = await prisma.user.findUnique({
-      where: { id: 1 },
+      where: { id: userId },
       include: { address: true },
     });
 
@@ -161,19 +161,19 @@ export async function updateUserEmail(formData: FormData) {
 
 import bcrypt from "bcrypt";
 
-export default async function changePass(formData: FormData) {
+export default async function changePass(prevState: any, formData: FormData) {
   console.log("hola");
   const actualPass = formData.get("actual-pass")?.toString();
   const newPass = formData.get("new-pass")?.toString();
   const newPassRepeat = formData.get("new-pass-repeat")?.toString();
 
   if (newPass !== newPassRepeat) {
-    throw new Error("Las contraseñas no coinciden");
+    return {error:true, message: "Las contraseñas no coinciden"};
   }
 
   const user = await login();
 
-  if (!user) return 0;
+  if (!user) return {error:true, message: "No estás logueado"};
 
   // const valid = await bcrypt.compare(actualPass, user.password);
 
@@ -186,7 +186,7 @@ export default async function changePass(formData: FormData) {
   const valid = actualPass == user.password ? true : false;
 
   if (!valid) {
-    throw new Error("Contraseña actual incorrecta");
+    return {error:true, message: "Contraseña incorrecta"};
   }
 
   await prisma.user.update({
@@ -194,7 +194,7 @@ export default async function changePass(formData: FormData) {
     data: { password: newPass },
   });
 
-  return "Contraseña actualizada con éxito";
+  return {error:false, message: "Contraseña actualizada con éxito"};
 }
 
 // PROFILE
@@ -223,7 +223,7 @@ export async function updateProfile(formData: FormData) {
       `USUARIO ACTUALIZADO : username -> ${username} | bio -> ${bio}`
     );
   } catch (error) {
-    console.error("Error al añadir usuario:", error);
+    console.error("Error al actualizar datos del usuario:", error);
     throw error;
   }
 }
@@ -270,53 +270,56 @@ export async function saveAddress(formData: FormData) {
 
     // Validar los datos obligatorios
     if (!address || isNaN(number)) {
-      throw new Error("Faltan datos obligatorios o son inválidos.");
+     console.log("Faltan datos obligatorios o son inválidos.");
     }
 
     // Actualizar la dirección del usuario en la base de datos utilizando Prisma
-    const updatedUser = await prisma.user.update({
-      where: {
-        id: id,
-      },
-      include: {
-        address: true,
-      },
-      data: {
-        address: {
-          upsert: {
-            create: {
-              name: address,
-              number: number,
-              letter: letter,
-              block: block,
-              staircase: staircase,
-              // postalCode: postalCode,
-            },
-            update: {
-              name: address,
-              number: number,
-              letter: letter,
-              block: block,
-              staircase: staircase,
-              // postalCode: postalCode,
-            },
-            where: {
-              id: id,
-            },
-          },
-        },
-      },
-    });
+    // const updatedUser = await prisma.user.update({
+    //   where: {
+    //     id: id,
+    //   },
+    //   include: {
+    //     address: true,
+    //   },
+    //   data: {
+    //     address: {
+    //       upsert: {
+    //         create: {
+    //           name: address,
+    //           number: number,
+    //           letter: letter,
+    //           block: block,
+    //           staircase: staircase,
+    //           // postalCode: postalCode,
+    //         },
+    //         update: {
+    //           name: address,
+    //           number: number,
+    //           letter: letter,
+    //           block: block,
+    //           staircase: staircase,
+    //           // postalCode: postalCode,
+    //         },
+    //         where: {
+    //           id: id,
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
 
-    // Realizar cualquier otra acción necesaria, como revalidar la ruta
-    revalidatePath("/dashboard/profile");
+    // // Realizar cualquier otra acción necesaria, como revalidar la ruta
+    // revalidatePath("/dashboard/profile");
 
     console.log(
-      `Dirección actualizada: ${address}, ${number}, ${letter}, ${block}, ${staircase}`
+      `Dirección actualizada: ${address}, ${number}, ${letter},${staircase}, ${block},
+      `
+      // ${postalCode} 
+      
     );
   } catch (error) {
     console.error("Error al guardar la dirección:", error);
-    throw error;
+    console.log("Faltan datos obligatorios o son inválidos.");
   }
 }
 

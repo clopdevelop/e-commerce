@@ -19,7 +19,7 @@ const user = await getUserByEmail(session?.user?.email)
 
 console.log(user)
 
-
+//{"id":"clwly2gxm0000hteqnutne391","name":"Usuario","username":null,"bio":null,"email":"usuario@gmail.com","emailVerified":null,"image":null,"role":"admin","phone":"1234567890","password":"usuario","id_address":null,"postcode":"12345","created_at":"2024-05-25T10:04:52.666Z","updatedAt":"2024-05-25T10:04:52.666Z"}
   return (
     <div className="container mx-auto">
     <h1 className="text-2xl font-bold">Tu Perfil</h1>

@@ -48,7 +48,7 @@ export async function NavBar() {
 
   return (
     <>
-      <Menubar className="py-10 flex w-full justify-center">
+      <Menubar className="py-10 flex w-full items-center justify-between px-4 sm:px-6 lg:px-8">
         <svg
           className="block text-white w-36"
           xmlns="http://www.w3.org/2000/svg"

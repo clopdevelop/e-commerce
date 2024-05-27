@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/shadcn/button";
 import {
   Dialog,
@@ -11,16 +12,20 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Label } from "@/components/shadcn/label";
 import changePass from "@/lib/actionscommands";
+import { CircleAlert } from "lucide-react";
 import Link from "next/link";
+import { useFormState, useFormStatus } from "react-dom";
 
 export function ChangePassDialog() {
+  const [state, formAction] = useFormState(changePass, undefined);
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button className="my-3">Cambiar contraseña</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <form action={changePass}>
+        <form action={formAction}>
           <DialogHeader>
             <DialogTitle>Cambiar Contraseña</DialogTitle>
             <DialogDescription>
@@ -68,13 +73,34 @@ export function ChangePassDialog() {
               </Link>
             </div>
           </div>
+          {state?.error && (
+            <div
+              className="flex items-end"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <>
+                <CircleAlert size={20} className="text-red-500 mr-2" />
+                <p className="text-sm text-red-500">{state?.message}</p>
+              </>
+            </div>
+
+          )}
           <DialogFooter>
-            <Button className="!bg-destructive" type="submit">
-              Aceptar
-            </Button>
+            <SubmitButton></SubmitButton>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button className="!bg-destructive" disabled={pending} type="submit">
+      Aceptar
+    </Button>
   );
 }
