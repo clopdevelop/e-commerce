@@ -48,7 +48,7 @@ export function NavigationMenuDemo() {
           <NavigationMenuLink
             href="/catalogo"
             className={`${navigationMenuTriggerStyle()} ${
-              pathname === "/catalogo" ? "!bg-pink-400" : ""
+              pathname.startsWith("/catalogo") ? "!bg-pink-400" : ""
             }`}
           >
             Tienda

@@ -48,13 +48,14 @@ const colores = [
   },
   {
     value: 4,
-    label: "Roja",
+    label: "Rojo",
   },
   {
     value: 5,
     label: "Azul",
   },
 ];
+
 const size = [
   {
     value: 1,
@@ -105,8 +106,8 @@ const size = [
     label: "46",
   },
 ];
+
 export function VariantRow({ variant, onEdit, onDelete }: VariantRowProps) {
-  console.log(variant);
   const [isEditing, setIsEditing] = useState(false);
   const [editedVariant, setEditedVariant] = useState(variant);
 
@@ -129,93 +130,106 @@ export function VariantRow({ variant, onEdit, onDelete }: VariantRowProps) {
   //       [event.target.name]: event.target.value,
   //     });
   //   };
+
   const handleChange = (event: string) => {
     setEditedVariant({
       ...editedVariant,
     });
   };
+
   return (
-    <>
-      <TableRow className="border-b-0">
-        <TableCell className="font-semibold w-1/5">
-          <Input
-            id="code"
-            name="code"
-            type="text"
-            className="w-20 border-0 shadow-none"
-            min={0}
-            defaultValue={isEditing ? editedVariant.code : variant.code}
-            readOnly={true}
-          />
-        </TableCell>
-        <TableCell className="w-1/5">
-          <Input
-            id="stock"
-            name="stock"
-            type="number"
-            className="w-20"
-            min={0}
-            defaultValue={isEditing ? editedVariant.stock : variant.stock}
-            onChange={() => {
-              handleChange;
-            }}
-          />
-        </TableCell>
+    <TableRow className="border-b-0">
+      <TableCell className="font-semibold w-1/12">
         <Input
-          id="color"
-          name="color"
-          type="hidden"
-          value={
-            isEditing
-              ? colores[editedVariant.colorId].label
-              : colores[variant.colorId].label
-          }
-        ></Input>
-        <TableCell className="w-1/5">
-          <InputColor
-            value={isEditing ? editedVariant.colorId : variant.colorId}
-            onChange={() => {
-              handleChange;
-            }}
-          ></InputColor>
-        </TableCell>
+          id="code"
+          name="code"
+          type="text"
+          className="w-20 border-0 shadow-none"
+          min={0}
+          defaultValue={isEditing ? editedVariant.code : variant.code}
+          readOnly={true}
+        />
+      </TableCell>
+      <Input
+        id="color"
+        name="color"
+        type="hidden"
+        defaultValue={
+          isEditing
+            ? colores[editedVariant.colorId - 1].label
+            : colores[variant.colorId - 1].label
+        }
+      ></Input>
+      <TableCell className="w-1/5">
+        <InputColor
+          value={isEditing ? editedVariant.colorId : variant.colorId}
+          onChange={() => {
+            handleChange;
+          }}
+        ></InputColor>
+      </TableCell>
+      <Input
+        id="size"
+        name="size"
+        type="hidden"
+        defaultValue={
+          isEditing
+            ? size[editedVariant.sizeId - 1].label
+            : size[variant.sizeId - 1].label
+        }
+      ></Input>
+      <TableCell className="w-1/6">
+        <Select onValueChange={handleChange}>
+          <SelectTrigger>
+            <SelectValue
+              placeholder={
+                isEditing
+                  ? size[editedVariant.sizeId - 1].label
+                  : size[variant.sizeId - 1].label
+              }
+            />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="1">35</SelectItem>
+            <SelectItem value="2">36</SelectItem>
+            <SelectItem value="3">37</SelectItem>
+            <SelectItem value="4">38</SelectItem>
+            <SelectItem value="5">39</SelectItem>
+            <SelectItem value="6">40</SelectItem>
+            <SelectItem value="7">41</SelectItem>
+            <SelectItem value="8">42</SelectItem>
+            <SelectItem value="9">43</SelectItem>
+            <SelectItem value="10">44</SelectItem>
+            <SelectItem value="11">45</SelectItem>
+            <SelectItem value="12">46</SelectItem>
+          </SelectContent>
+        </Select>
+      </TableCell>
+      <TableCell className="w-1/6">
         <Input
-          id="size"
-          name="size"
-          type="hidden"
-          value={
-            isEditing
-              ? size[editedVariant.sizeId].label
-              : size[variant.sizeId].label
-          }
-        ></Input>
-        <TableCell className="w-1/5">
-          <Select onValueChange={handleChange}>
-            <SelectTrigger>
-              <SelectValue
-                placeholder={
-                  isEditing
-                    ? size[editedVariant.sizeId].label
-                    : size[variant.sizeId].label
-                }
-              />
-            </SelectTrigger>
-            <SelectContent>
-              {/* Aquí van tus opciones de tamaño */}
-            </SelectContent>
-          </Select>
-        </TableCell>
-        <TableCell className="w-1/5">
-          {isEditing ? (
-            <>
-              <Button  onClick={handleSave}>Guardar</Button>
-              <Button variant={"destructive"} onClick={handleDelete}>Borrar</Button>
-            </>
-          ) : (
-            <Button onClick={handleEdit}>Editar</Button>
-          )}
-        </TableCell>
-      </TableRow>
-    </>
+          id="stock"
+          name="stock"
+          type="number"
+          className="w-20"
+          min={0}
+          defaultValue={isEditing ? editedVariant.stock : variant.stock}
+          onChange={() => {
+            handleChange;
+          }}
+        />
+      </TableCell>
+      <TableCell className="w-1/4">
+        {isEditing ? (
+          <div className="flex gap-2">
+            <Button onClick={handleSave}>Guardar</Button>
+            <Button variant={"destructive"} onClick={handleDelete}>
+              Borrar
+            </Button>
+          </div>
+        ) : (
+          <Button onClick={handleEdit}>Editar</Button>
+        )}
+      </TableCell>
+    </TableRow>
   );
 }

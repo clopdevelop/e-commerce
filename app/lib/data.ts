@@ -25,7 +25,7 @@ export async function getUserByEmail(email: string) {
   }
 }
 
-export async function getUser(): Promise<User | null> {
+export async function login(): Promise<User | null> {
   const authentication = await auth();
 
   try {
@@ -74,6 +74,52 @@ export async function fetchProducts(currentPage: number = 1) {
   });
 
   return Products;
+}
+
+export async function countProducts(): Promise<number> {
+  const productCount = await prisma.product.count();
+  return productCount;
+}
+
+export async function fetchProduct(id: number) {
+  const Product = await prisma.product.findFirst({
+    where: {
+      id: id,
+    },
+    include: { 
+      ProductImage: true,
+      variants: true,
+     },
+  });
+
+  if (Product == null) throw new Error();
+
+  return Product;
+}
+
+export async function fetchProductbyName(name: string) {
+  const Product = await prisma.product.findFirst({
+    where: {
+      name: name,
+    },
+    include: { ProductImage: true },
+  });
+
+  if (Product == null) throw new Error();
+
+  return Product;
+}
+
+// Recuperar los productos con los IDs proporcionados
+export async function fetchProductsbyIDs(products_ids: Array<number> = [1]) {
+  const products = await prisma.product.findMany({
+    where: {
+      id: {
+        in: products_ids,
+      },
+    },
+  });
+  return products;
 }
 
 export async function fetchfilteredProductsperCategories(
@@ -137,51 +183,47 @@ export async function fetchFilteredProducts(
   return filteredProducts;
 }
 
-export async function countProducts(): Promise<number> {
-  const productCount = await prisma.product.count();
-  return productCount;
-}
+async function getFilteredProducts({ category, minPrice, maxPrice, brands }) {
+  // (
+  //   query: string,
+  //   currentPage: number,
+  //   productsOnPage: number,
+  //   category?: string
+  // ) 
+  // Construye el objeto de condiciones de búsqueda
+  let searchConditions = {};
 
-export async function fetchProduct(id: number) {
-  const Product = await prisma.product.findFirst({
-    where: {
-      id: id,
-    },
-    include: { 
-      ProductImage: true,
-      variants: true,
-     },
-  });
+  // Filtro por categoría
+  if (category) {
+    searchConditions.category = category;
+  }
 
-  if (Product == null) throw new Error();
+  // Filtro por rango de precios
+  if (minPrice || maxPrice) {
+    searchConditions.price = {};
+    if (minPrice) {
+      searchConditions.price.gte = minPrice; // Mayor o igual que
+    }
+    if (maxPrice) {
+      searchConditions.price.lte = maxPrice; // Menor o igual que
+    }
+  }
 
-  return Product;
-}
+  // Filtro por marcas
+  if (brands && brands.length > 0) {
+    searchConditions.brand = {
+      in: brands, // La marca debe estar en el array de marcas seleccionadas
+    };
+  }
 
-export async function fetchProductbyName(name: string) {
-  const Product = await prisma.product.findFirst({
-    where: {
-      name: name,
-    },
-    include: { ProductImage: true },
-  });
-
-  if (Product == null) throw new Error();
-
-  return Product;
-}
-
-// Recuperar los productos con los IDs proporcionados
-export async function fetchProductsbyIDs(products_ids: Array<number> = [1]) {
+  // Realiza la consulta con los filtros aplicados
   const products = await prisma.product.findMany({
-    where: {
-      id: {
-        in: products_ids,
-      },
-    },
+    where: searchConditions,
   });
+
   return products;
 }
+
 
 /**
  * Calcula el total de páginas para una búsqueda

@@ -48,14 +48,8 @@ export async function signInGoogle() {
   await signIn("google");
 }
 
-export async function login() {
-  const completeUser = await getUser();
-
-  return completeUser;
-}
-
 export async function getUserID() {
-  const completeUser = await getUser();
+  const completeUser = await login();
   const id = completeUser?.id;
 
   return id;
@@ -578,12 +572,15 @@ export async function addVariantProduct(formData: FormData){
         },
         size: {
           connect: {
-            id: variant.stock,
+            id: variant.size,
           },
         },
       },
     });
+
      revalidatePath("/admin/products");
+     redirect(`/admin/products/edit/${rawFormData.id_product}`);
+
   } catch (err) {
     console.log(err);
   }
@@ -875,7 +872,7 @@ import { EmailTemplate } from "@/components/contact/email-template";
 import { Resend } from "resend";
 import { revalidatePath } from "next/cache";
 import { Address, CartItem } from "./definitions";
-import { getUser } from "./data";
+import { getUser, login } from "./data";
 
 // export async function enviarEmail(formData: FormData) {
 // const resend = new Resend(process.env.RESEND_API_KEY);

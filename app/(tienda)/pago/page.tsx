@@ -1,12 +1,12 @@
 import {
   getAddresByUserLog,
   getPaymentMethodsByUser,
-  login,
 } from "@/lib/actionscommands";
 import { Address, PaymentMethod,User } from "@prisma/client";
 
 import { redirect } from "next/navigation";
 import StripeProvider from "./StripeProvider";
+import { login } from "@/lib/data";
 
 export default async function Home() {
   const address: Address | null = await getAddresByUserLog();

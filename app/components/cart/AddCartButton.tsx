@@ -1,10 +1,11 @@
 "use client";
 import { toast } from "sonner";
 import { Button } from "../shadcn/button";
-import { CartItem, Product } from "@/lib/definitions";
+import { CartItem } from "@/lib/definitions";
 import React from "react";
 import { useCart } from "@/context/CartProvider";
 import { ShoppingCartIcon } from 'lucide-react'
+import { Product } from "@prisma/client";
 
 export default function AddCartButton({
   product,

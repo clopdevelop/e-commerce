@@ -6,12 +6,13 @@
 // import Link from "next/link"
 import { Card, CardHeader, CardContent } from "@/components/shadcn/card"
 import { fetchProductsbyIDs } from "@/lib/data";
-import { Product } from "@/lib/definitions";
+
 import { HeartIcon, StarIcon } from "lucide-react"
 import Link from "next/link";
 import Image from "next/image";
 import ProductCard from "../product/ProductCard";
 import { Button, Separator } from "../shadcn";
+import { Product } from "@prisma/client";
 
 interface Props {
   favorites?: number[]
@@ -59,8 +60,8 @@ export default async function FavsTable({ favorites }: Props) {
             //     </div>
             //   </div>
             // </Card>
-            <div className="shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:-translate-y-2 overflow-hidden">
-            <ProductCard key={product.id}  product={product} id_user={1}></ProductCard>
+            <div key={product.id} className="shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:-translate-y-2 overflow-hidden">
+            <ProductCard product={product} id_user={1}></ProductCard>
             </div>
           ))
           : <h2>No has añadido productos a tus Favoritos</h2>

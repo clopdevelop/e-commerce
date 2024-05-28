@@ -59,10 +59,10 @@ export default async function Inventory({ products }: { products: Product[] }) {
               </TableHead>
               <TableHead>Nombre</TableHead>
               <TableHead>Estado</TableHead>
-              <TableHead>Precio</TableHead>
+              {/* <TableHead>Precio</TableHead>
               <TableHead className="hidden md:table-cell">
                 Stock
-              </TableHead>
+              </TableHead> */}
               <TableHead className="hidden md:table-cell">ID</TableHead>
               <TableHead>
                 <span className="sr-only">Acciones</span>
@@ -91,7 +91,7 @@ export default async function Inventory({ products }: { products: Product[] }) {
                 </TableCell>
                 <TableCell>{product.price} €</TableCell>
                 {/* <TableCell className="hidden md:table-cell">X</TableCell> */}
-                <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
+                {/* <TableCell className="hidden md:table-cell">{product.stock}</TableCell> */}
                 <TableCell className="hidden md:table-cell">
                   {product.id}
                 </TableCell>

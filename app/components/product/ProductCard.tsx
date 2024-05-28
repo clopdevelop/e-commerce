@@ -13,12 +13,12 @@ import PayButton from "../utils/PayButton";
 import Link from "next/link";
 import { Input } from "../shadcn/input";
 import { Provider, Category, OrderItem } from "@/lib/definitions";
-import { Product } from "@/lib/definitions";
 import { useEffect, useState } from "react";
 import { Heart, HeartIcon } from "lucide-react";
 import { setCookie, getCookie } from "cookies-next";
 import Image from "next/image";
 import { Badge, Button } from "../shadcn";
+import { Product } from "@prisma/client";
 
 export default function ProductCard({
   product,

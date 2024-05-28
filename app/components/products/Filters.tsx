@@ -28,7 +28,7 @@ export function Filters() {
               <Categories></Categories>
             </AccordionContent>
           </AccordionItem>
-          {/* <AccordionItem value="price">
+          <AccordionItem value="price">
             <AccordionTrigger className="text-base">Price</AccordionTrigger>
             <AccordionContent>
               <div className="grid gap-2">
@@ -65,7 +65,7 @@ export function Filters() {
                 </Label>
               </div>
             </AccordionContent>
-          </AccordionItem> */}
+          </AccordionItem>
         </Accordion>
       </div>
     </div>

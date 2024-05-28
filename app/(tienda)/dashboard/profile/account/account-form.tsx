@@ -14,13 +14,13 @@ import { ChangePassDialog } from "@/components/client/changePassDialog";
 import { User } from "@/lib/definitions";
 import {
   getAddresByUserLog,
-  login,
   saveAddress,
   savePayMethod,
   updateUserEmail,
 } from "@/lib/actionscommands";
 import * as React from "react";
 import { Separator } from "@/components/shadcn/separator";
+import { login } from "@/lib/data";
 
 export async function AccountForm() {
   const user = await login();

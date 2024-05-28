@@ -78,6 +78,7 @@ interface Props {
 export default function ProductForm({ product, categories }: Props) {
   const isEdditing = product ? true : false;
   const [file, setFile] = useState<File | null>(null);
+  console.log(JSON.stringify(product))
   console.log(product?.variants)
 
   // todo PROBLEMA AL ENVIAR LOS TAGS
@@ -98,13 +99,6 @@ export default function ProductForm({ product, categories }: Props) {
   const [category, setCategory] = useState("");
   const [valorInput, setValorInput] = useState("Disponible");
   const [material, setMaterial] = useState(product?.material ?? "");
-
-  useEffect(() => {
-    console.log(valorInput);
-    console.log(category);
-    console.log(material);
-    console.log(label);
-  }, [material, category, label]);
 
   const handleCategoryChange= (value: string) => {
     setCategory(categories[Number(value) - 1]);

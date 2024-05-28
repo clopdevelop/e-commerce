@@ -8,6 +8,7 @@ import { CardTitle, CardHeader, CardContent, Card } from "@/components/shadcn/ca
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/shadcn/table"
 import { Separator } from "@/components/shadcn/separator"
 import { JSX, SVGProps } from "react"
+import Image from "next/image"
 
 export function OrderDetails() {
   return (
@@ -48,7 +49,7 @@ export function OrderDetails() {
                       <TableBody>
                         <TableRow>
                           <TableCell className="hidden md:table-cell">
-                            <img
+                            <Image
                               alt="Product image"
                               className="aspect-square rounded-md object-cover"
                               height="64"
@@ -63,7 +64,7 @@ export function OrderDetails() {
                         </TableRow>
                         <TableRow>
                           <TableCell className="hidden md:table-cell">
-                            <img
+                            <Image
                               alt="Product image"
                               className="aspect-square rounded-md object-cover"
                               height="64"

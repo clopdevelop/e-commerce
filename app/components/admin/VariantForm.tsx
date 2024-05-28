@@ -57,7 +57,6 @@ export default function VariantForm({
   product_id: Number;
   variants: ProductVariant[] | [];
 }) {
-  console.log(variants);
   const [product_variants, setProduct_Variants] = useState(variants);
 
   const handleEdit = (editedVariant: any) => {
@@ -69,8 +68,10 @@ export default function VariantForm({
     // Aquí puedes manejar la lógica para eliminar una variante
     // Por ejemplo, podrías filtrar las variantes de tu estado para quitar la que tiene el id dado
   };
+  
   const [color, setColor] = useState(0);
   const [size, setSize] = useState(0);
+
   useEffect(() => {
     console.log(color);
     console.log(size);
@@ -86,7 +87,6 @@ export default function VariantForm({
     setSize(Number(value));
   };
 
-  // --------------------------------------------
   const [rows, setRows] = useState([
     { code: "001", stock: "", price: "", size: "s" },
     // ... tus otras filas aquí
@@ -109,11 +109,11 @@ export default function VariantForm({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-1/5">Código</TableHead>
-                <TableHead className="w-1/5">Cantidad</TableHead>
+                <TableHead className="w-1/12">Código</TableHead>
                 <TableHead className="w-1/5">Color</TableHead>
-                <TableHead className="w-1/5">Talla</TableHead>
-                <TableHead className="w-1/5">Accion</TableHead>
+                <TableHead className="w-1/6">Talla</TableHead>
+                <TableHead className="w-1/6">Cantidad</TableHead>
+                <TableHead className="w-1/4">Accion</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -133,7 +133,7 @@ export default function VariantForm({
           <Table>
             <TableBody>
             <TableRow>
-                <TableCell className="font-semibold w-1/5">
+                <TableCell className="font-semibold w-1/12">
                   <Input
                     id="code"
                     name="code"
@@ -144,16 +144,6 @@ export default function VariantForm({
                       .toString()
                       .padStart(2, "0")}
                     readOnly
-                  />
-                </TableCell>
-                <TableCell className="w-1/5">
-                  <Input
-                    id="stock"
-                    name="stock"
-                    type="number"
-                    className="w-20"
-                    min={0}
-                    defaultValue={"0"}
                   />
                 </TableCell>
                 <Input
@@ -169,7 +159,7 @@ export default function VariantForm({
                   ></InputColor>
                 </TableCell>
                 <Input id="size" name="size" type="hidden" value={size}></Input>
-                <TableCell className="w-1/5">
+                <TableCell className="w-1/6">
                   <Select onValueChange={handleSizeChange}>
                     <SelectTrigger>
                       <SelectValue placeholder={size} />
@@ -190,7 +180,17 @@ export default function VariantForm({
                     </SelectContent>
                   </Select>
                 </TableCell>
-                <TableCell className="w-1/5">
+                <TableCell className="w-1/5 md:w-1/6 ">
+                  <Input
+                    id="stock"
+                    name="stock"
+                    type="number"
+                    className="w-20"
+                    min={0}
+                    defaultValue={"0"}
+                  />
+                </TableCell>
+                <TableCell className="w-1/4">
                 <LoginButton></LoginButton>                
                 </TableCell>
               </TableRow>
@@ -208,8 +208,8 @@ export default function VariantForm({
       <Button
         type="submit"
         size="sm"
-        variant="ghost"
-        className="gap-1"
+        variant="outline"
+        className="gap-1 flex justify-center items-center"
         disabled={pending}
       >
         <PlusCircle className="h-3.5 w-3.5" />

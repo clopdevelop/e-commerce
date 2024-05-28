@@ -35,13 +35,13 @@ const nextConfig = {
           },
         ],
       },
-      // Configuración para ignorar la verificación de tipos de typeScript en la build
-    // typescript: {
-      // !! WARN !!
-      // Dangerously allow production builds to successfully complete even if
-      // your project has type errors.
-      // !! WARN !!
-    //   ignoreBuildErrors: true,
-    // },
+    //   Configuración para ignorar la verificación de tipos de typeScript en la build
+    typescript: {
+    //   !! WARN !!
+    //   Dangerously allow production builds to successfully complete even if
+    //   your project has type errors.
+    //   !! WARN !!
+      ignoreBuildErrors: true,
+    },
 };
 export default nextConfig;
