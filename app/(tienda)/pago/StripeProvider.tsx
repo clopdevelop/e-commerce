@@ -98,6 +98,7 @@ export default function StripeProvider({ user, address, payment }: Props) {
   const productInCart = loadFromLocalStorage();
   const [products, setProducts] = useState<CartItem[]>(productInCart);
   const { items } = useCart();
+
   useEffect(() => {
     setProducts(products);
   }, [products]);
@@ -112,9 +113,9 @@ export default function StripeProvider({ user, address, payment }: Props) {
 
         items: [{ id: "xl-tshirt", price: 1000 }],
         customer: {
-          id: 1,
-          name: "John Doe",
-          email: "johndoe@example.com",
+          id: 'clwly2gxm0000hteqnutne391',
+          name: "Usuario",
+          email: "usuario@gmail.com",
           address: {
             line1: "123 Main St",
             line2: "",
@@ -412,7 +413,7 @@ export default function StripeProvider({ user, address, payment }: Props) {
                   </dl>
                 </div>
                 <div className="flex justify-end mt-8">
-                  <Button
+             {/*      <Button
                     type="submit"
                     onClick={async () => {
                       console.log(products);
@@ -424,7 +425,7 @@ export default function StripeProvider({ user, address, payment }: Props) {
                     size="sm"
                   >
                     Hacer Pedido
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </CardContent>

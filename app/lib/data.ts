@@ -86,10 +86,10 @@ export async function fetchProduct(id: number) {
     where: {
       id: id,
     },
-    include: { 
+    include: {
       ProductImage: true,
       variants: true,
-     },
+    },
   });
 
   if (Product == null) throw new Error();
@@ -122,37 +122,58 @@ export async function fetchProductsbyIDs(products_ids: Array<number> = [1]) {
   return products;
 }
 
+type Condition = {
+  name?: {
+    contains: string;
+  };
+  price?: {
+    gte: number;
+    lte: number;
+  };
+  category?: {
+    name: {
+      contains: string;
+    };
+  };
+}
+
 export async function fetchfilteredProductsperCategories(
   query: string,
   currentPage: number,
   productsOnPage: number,
-  category?: string
+  category?: string,
+  priceRange?: { min: number, max: number }
 ) {
   const productsToSkip = (currentPage - 1) * productsOnPage;
 
-  console.log(category);
-  console.log(query);
+  // Define the base conditions for the query
+  let conditions: Condition = {
+    name: {
+      contains: query,
+    },
+    price: priceRange ? { gte: priceRange.min, lte: priceRange.max} : undefined
+  };
+
+  // If a category is specified, add it to the conditions
+  if (category) {
+    conditions.category = {
+      name: {
+        contains: category,
+      },
+    };
+  }
 
   const products = await prisma.product.findMany({
-    where: {
-      name: {
-        contains: query,
-      },
-      category: {
-        name: {
-          contains: category ?? "",
-        },
-      },
-    },
-    include: { ProductImage: true, variants:true },
+    where: conditions,
+    include: { ProductImage: true, variants: true },
     take: productsOnPage,
     skip: productsToSkip,
   });
-
-  console.log(products);
-
+  
   return products;
 }
+
+
 
 /**
  * Filtrar Productos por nombre
@@ -189,7 +210,7 @@ async function getFilteredProducts({ category, minPrice, maxPrice, brands }) {
   //   currentPage: number,
   //   productsOnPage: number,
   //   category?: string
-  // ) 
+  // )
   // Construye el objeto de condiciones de búsqueda
   let searchConditions = {};
 
@@ -223,7 +244,6 @@ async function getFilteredProducts({ category, minPrice, maxPrice, brands }) {
 
   return products;
 }
-
 
 /**
  * Calcula el total de páginas para una búsqueda
@@ -307,12 +327,13 @@ export async function fetchOrder(id: number) {
   }
 }
 
-export async function fetchOrdersByUserId(userId: number) {
+export async function fetchOrdersByUserId(userId: string | undefined) {
+  if (userId == undefined) return [];
   try {
     const orders = await prisma.order.findMany({
       where: {
         user: {
-          id: Number(userId),
+          id: userId,
         },
       },
       // include: {

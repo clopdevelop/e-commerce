@@ -1,5 +1,4 @@
 "use client";
-
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/shadcn/button";

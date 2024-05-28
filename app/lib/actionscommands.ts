@@ -6,7 +6,11 @@ import { redirect } from "next/navigation";
 import { auth, signIn } from "../auth";
 import { AuthError } from "next-auth";
 import Stripe from "stripe";
-import { addProductSchema, addVariantProductSchema, editProductSchema } from "./schemas";
+import {
+  addProductSchema,
+  addVariantProductSchema,
+  editProductSchema,
+} from "./schemas";
 import { sleep } from "./utils";
 
 // AUTHENTICATION
@@ -20,26 +24,25 @@ export async function authenticate(
   prevState: string | undefined,
   formData: FormData
 ) {
-  console.log(formData)
-  const email =  formData.get("email")
-  const pass =  formData.get("password")
+  const email = formData.get("email");
+  const pass = formData.get("password");
   const obj = {
     email: email,
     password: pass,
-// Add other properties as needed
-}
-console.log(obj) //  { email: 'usuario@gmail.com', password: 'usuario' }
+    // Add other properties as needed
+  };
+  console.log(obj); //  { email: 'usuario@gmail.com', password: 'usuario' }
 
   try {
     await signIn("credentials", {
       ...obj,
       redirect: false,
     });
-    
+
     return "Success";
   } catch (error) {
     console.log(error);
-    
+
     return "CredentialsSignin";
   }
 }
@@ -79,7 +82,7 @@ export async function getPaymentMethodsByUser() {
   const userId = await getUserID();
   try {
     const user = await prisma.user.findUnique({
-      where: { id: 1 },
+      where: { id: userId },
       include: { paymentMethods: true },
     });
 
@@ -99,7 +102,7 @@ export async function getPaymentMethodsByUser() {
  * @param formData
  * @returns
  */
-export async function addUser(formData: FormData) {
+export async function addUser1(formData: FormData) {
   try {
     const firstName = formData.get("first_name");
     const email = formData.get("email");
@@ -120,10 +123,44 @@ export async function addUser(formData: FormData) {
         password: password,
       },
     });
+    signIn();
     redirect("/");
   } catch (error) {
     console.error("Error al añadir usuario:", error);
     throw error;
+  }
+}
+
+export async function addUser2(values: z.infer<typeof UserRegisterFormSchema>) {
+  try {
+    console.log(values);
+
+    const newUser = await prisma.user.create({
+      data: {
+        name: values.first_name,
+        email: values.email,
+        password: values.password,
+      },
+    });
+  } catch (error) {
+    console.error("Error al añadir usuario:", error);
+    throw error;
+  }
+  const obj = {
+    email: values.email,
+    password: values.password,
+  };
+  console.log(obj); //  { email: 'usuario@gmail.com', password: 'usuario' }
+
+  try {
+    await signIn("credentials", {
+      ...obj,
+      redirect: false,
+    });
+    return "Success";
+  } catch (error) {
+    console.log(error);
+    return "CredentialsSignin";
   }
 }
 
@@ -162,12 +199,12 @@ export default async function changePass(prevState: any, formData: FormData) {
   const newPassRepeat = formData.get("new-pass-repeat")?.toString();
 
   if (newPass !== newPassRepeat) {
-    return {error:true, message: "Las contraseñas no coinciden"};
+    return { error: true, message: "Las contraseñas no coinciden" };
   }
 
   const user = await login();
 
-  if (!user) return {error:true, message: "No estás logueado"};
+  if (!user) return { error: true, message: "No estás logueado" };
 
   // const valid = await bcrypt.compare(actualPass, user.password);
 
@@ -180,7 +217,7 @@ export default async function changePass(prevState: any, formData: FormData) {
   const valid = actualPass == user.password ? true : false;
 
   if (!valid) {
-    return {error:true, message: "Contraseña incorrecta"};
+    return { error: true, message: "Contraseña incorrecta" };
   }
 
   await prisma.user.update({
@@ -188,7 +225,7 @@ export default async function changePass(prevState: any, formData: FormData) {
     data: { password: newPass },
   });
 
-  return {error:false, message: "Contraseña actualizada con éxito"};
+  return { error: false, message: "Contraseña actualizada con éxito" };
 }
 
 // PROFILE
@@ -264,7 +301,7 @@ export async function saveAddress(formData: FormData) {
 
     // Validar los datos obligatorios
     if (!address || isNaN(number)) {
-     console.log("Faltan datos obligatorios o son inválidos.");
+      console.log("Faltan datos obligatorios o son inválidos.");
     }
 
     // Actualizar la dirección del usuario en la base de datos utilizando Prisma
@@ -308,8 +345,7 @@ export async function saveAddress(formData: FormData) {
     console.log(
       `Dirección actualizada: ${address}, ${number}, ${letter},${staircase}, ${block},
       `
-      // ${postalCode} 
-      
+      // ${postalCode}
     );
   } catch (error) {
     console.error("Error al guardar la dirección:", error);
@@ -410,10 +446,11 @@ export async function addProduct(formData: FormData) {
       state: formData.get("state"),
       image: formData.get("image"),
     };
-    
+
     // const { name, price, description, material, color, size, category,state, stock, image } =
-    const { name, price, description, material,category, state } = addProductSchema.parse(rawFormData);
-    
+    const { name, price, description, material, category, state } =
+      addProductSchema.parse(rawFormData);
+
     console.log(formData);
 
     // console.log(image);
@@ -515,14 +552,14 @@ export async function editProduct(formData: FormData) {
       state: formData.get("state"),
       image: formData.get("image"),
     };
-    
+
     // const { name, price, description, material, color, size, category,state, stock, image } =
-    const { id, name, price, description, material,category, state } = editProductSchema.parse(rawFormData);
-    
+    const { id, name, price, description, material, category, state } =
+      editProductSchema.parse(rawFormData);
+
     console.log(formData);
 
     // console.log(image);
-
 
     const updatedProduct = await prisma.product.update({
       where: { id: id },
@@ -539,8 +576,7 @@ export async function editProduct(formData: FormData) {
   }
 }
 
-export async function addVariantProduct(formData: FormData){
- 
+export async function addVariantProduct(formData: FormData) {
   try {
     console.log(formData);
 
@@ -551,9 +587,9 @@ export async function addVariantProduct(formData: FormData){
       id_color: Number(formData.get("color")),
       size: Number(formData.get("size")),
     };
-    
+
     const variant = addVariantProductSchema.parse(rawFormData);
-    
+
     console.log(rawFormData);
 
     await prisma.productVariant.create({
@@ -578,17 +614,14 @@ export async function addVariantProduct(formData: FormData){
       },
     });
 
-     revalidatePath("/admin/products");
-     redirect(`/admin/products/edit/${rawFormData.id_product}`);
-
+    revalidatePath("/admin/products");
+    redirect(`/admin/products/edit/${rawFormData.id_product}`);
   } catch (err) {
     console.log(err);
   }
-
 }
 
-export async function editVariantProduct(formData: FormData){
- 
+export async function editVariantProduct(formData: FormData) {
   try {
     console.log(formData);
 
@@ -599,9 +632,9 @@ export async function editVariantProduct(formData: FormData){
       id_color: Number(formData.get("color")),
       size: Number(formData.get("size")),
     };
-    
+
     const variant = addVariantProductSchema.parse(rawFormData);
-    
+
     console.log(rawFormData);
 
     await prisma.productVariant.create({
@@ -625,11 +658,10 @@ export async function editVariantProduct(formData: FormData){
         },
       },
     });
-     revalidatePath("/admin/products");
+    revalidatePath("/admin/products");
   } catch (err) {
     console.log(err);
   }
-
 }
 
 export async function deleteProduct(formData: FormData) {
@@ -680,7 +712,6 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
 
   const paid = payment.status;
 
-  //todo En produccion se creará una secuencia cuando se migre a Postgree para crear un codigo de factura
   const lastInvoice = await prisma.invoice.findFirst({
     orderBy: {
       id: "desc",
@@ -694,7 +725,9 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
     ? parseInt(lastInvoice.invoice_n.replace("INV-", ""), 10) + 1
     : 1;
 
-  const formattedInvoiceNumber = `INV-${nextInvoiceNumber.toString().padStart(3, "0")}`;
+  const formattedInvoiceNumber = `INV-${nextInvoiceNumber
+    .toString()
+    .padStart(3, "0")}`;
 
   const lastOrder = await prisma.order.findFirst({
     orderBy: {
@@ -722,19 +755,19 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
   const productData = [
     {
       id_product: 1,
-      name: "Backpack",
+      name: "Sandalia de verano",
       quantity: 1,
       unit_price: 40,
     },
     {
       id_product: 2,
-      name: "Pintura famosa",
+      name: "Bota de montaña",
       quantity: 1,
       unit_price: 1000,
     },
     {
       id_product: 3,
-      name: "Laptopos",
+      name: "Zapatilla deportiva",
       quantity: 26,
       unit_price: 3333,
     },
@@ -749,7 +782,7 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
         total: amount,
         status: paid, // Sería comprobar si se setá procesando, enviando o llegando o completado
         paid: false, // Asume que el pedido inicialmente no está pagado
-        id_user: Number(metadata.id),
+        id_user: metadata.id,
         id_delivery_type: 1, // habría que ver como se determina cual es el 1
         discount: 0, // Sin descuento inicialmente
         OrderItem: {
@@ -873,6 +906,8 @@ import { Resend } from "resend";
 import { revalidatePath } from "next/cache";
 import { Address, CartItem } from "./definitions";
 import { getUser, login } from "./data";
+import { UserRegisterFormSchema } from "@/components/form/RegisterForm";
+import { z } from "zod";
 
 // export async function enviarEmail(formData: FormData) {
 // const resend = new Resend(process.env.RESEND_API_KEY);

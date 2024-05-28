@@ -15,7 +15,6 @@ import { getAddresByUserLog, saveAddress } from "@/lib/actionscommands";
 
 export default async function DirPage() {
   const session = await auth()
-  console.log(session)
   let address
   if(session?.user?.email!=="cristianlogo6@gmail.com")
    address = await getAddresByUserLog();

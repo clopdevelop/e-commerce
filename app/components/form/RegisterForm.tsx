@@ -16,11 +16,10 @@ import {
   FormMessage,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
-import { addUser, signInGoogle } from "@/lib/actionscommands";
+import { addUser2, signInGoogle } from "@/lib/actionscommands";
 import Link from "next/link";
 import { Separator } from "../shadcn/separator";
 import { AtSign } from "lucide-react";
-
 export const UserRegisterFormSchema = userSchema
   .pick({
     first_name: true,
@@ -49,16 +48,9 @@ export function RegisterForm() {
   function onSubmit(values: z.infer<typeof UserRegisterFormSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    const formData = new FormData();
-
-    Object.keys(values).forEach((key) => {
-      const value = values[key as keyof typeof values];
-      if (value) {
-        formData.append(key, value);
-      }
-    });
-
-    addUser(formData);
+   console.log(values)
+    
+    addUser2(values); // Uncomment to send formData
   }
 
   return (
@@ -149,15 +141,19 @@ export function RegisterForm() {
             </div>
           </form>
         </Form>
-      </div>
-      <form
+        <div className="flex justify-center text-center text-sm">
+        o también puedes
+        </div>
+        <form
           action={signInGoogle}
-          className="text-center"
+          className="text-center pb-2"
         >
           <Button type="submit" className="mt-3 mb-3">
             <AtSign className="mr-2"></AtSign>
             Continuar con Google</Button>
         </form>
+      </div>
+    
     </div>
   );
 }

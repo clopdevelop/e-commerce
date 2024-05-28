@@ -59,7 +59,6 @@ export const InputMaterial: React.FC<InputMaterialProps> = ({ value: propValue, 
   const handleSelect = (currentValue: string) => {
     const newValue = currentValue === value ? '' : currentValue;
     setValue(newValue);
-    console.log(newValue);
     setOpen(false);
     if (onChange) {
       onChange({

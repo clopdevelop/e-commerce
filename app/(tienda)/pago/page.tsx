@@ -16,11 +16,6 @@ export default async function Home() {
   const user: User | null = await login();
   if (!user) redirect("/");
   
-  
-  console.log(payment);
-  console.log(address);
-  console.log(user);
-
   return (
       <StripeProvider user={user} address={address} payment={payment}></StripeProvider>
   );

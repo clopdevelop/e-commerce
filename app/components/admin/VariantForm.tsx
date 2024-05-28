@@ -72,11 +72,6 @@ export default function VariantForm({
   const [color, setColor] = useState(0);
   const [size, setSize] = useState(0);
 
-  useEffect(() => {
-    console.log(color);
-    console.log(size);
-  }, [color, size]);
-
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);
     setColor(Number(e.target.value));

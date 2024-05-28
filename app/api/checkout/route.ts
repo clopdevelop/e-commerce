@@ -1,3 +1,4 @@
+import { addOrder } from '@/lib/actionscommands';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
@@ -67,6 +68,7 @@ export async function POST(req: Request) {
         },
       },
   });
+  addOrder(paymentIntent);
 
   const data ={
     clientSecret: paymentIntent.client_secret,

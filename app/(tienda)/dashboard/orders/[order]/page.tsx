@@ -24,7 +24,7 @@ export default async function OrderPage({
 }: {
   params: { order: string };
 }) {
-  const order: Order = await fetchOrder(Number(params.order));
+  // const order: Order = await fetchOrder(Number(params.order));
 
   return (
     // <div className="container mx-auto p-6">

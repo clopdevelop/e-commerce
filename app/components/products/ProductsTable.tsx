@@ -31,6 +31,7 @@ export default async function ProductsTable({
     productsOnPage,
     category,
   );
+  console.log(products)
 
   return (
     <div className="grid  lg:grid-cols-3 gap-2 md:w-3/4">

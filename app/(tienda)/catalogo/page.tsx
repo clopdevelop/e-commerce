@@ -10,7 +10,7 @@ import { Suspense } from "react";
 // import { addUserGoogle } from "@/lib/actionscommands";
 import type { Metadata } from "next";
 import { Filters } from "@/components/products/Filters";
-import { Card, CardContent } from "@/components/shadcn";
+import { Card, CardContent, CardFooter } from "@/components/shadcn";
 
 export const dynamicParams = false;
 
@@ -70,12 +70,15 @@ export default async function Home({
           />
         </Suspense>
         </CardContent>
-      </Card>
-      <div className="mt-5 mx-auto pb-8 overflow-auto w-3/4">
+        <CardFooter>
+          <div className="mt-5 mx-auto pb-8 overflow-auto w-3/4 flex-none">
         <MyPagination
           totalPages={totalPages}
         ></MyPagination>
       </div>
+        </CardFooter>
+      </Card>
+      
       {/* <CarouselProducts></CarouselProducts> */}
     </>
   );

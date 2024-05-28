@@ -19,6 +19,7 @@ import { setCookie, getCookie } from "cookies-next";
 import Image from "next/image";
 import { Badge, Button } from "../shadcn";
 import { Product } from "@prisma/client";
+import PopoverColorSize from "./PopoverColorSize";
 
 export default function ProductCard({
   product,
@@ -27,7 +28,6 @@ export default function ProductCard({
   product: Product;
   id_user: number;
 }) {
-console.log(product)
     const [quantity, setQuantity] = useState(1);
 
   const [fav, setFav] = useState(false);
@@ -54,9 +54,9 @@ console.log(product)
     }
     setFav(!fav);
   };
-
   return (
-    <Card className="relative border rounded-lg p-4 min-w-full  overflow-hidden hover:shadow-xl  duration-300 ease-in-out">
+    <Card className="relative border rounded-lg p-4 min-w-full  overflow-hidden hover:shadow-xl  duration-300 ease-in-out ">
+      {/* // todo max-w-56 max-h-[500px] */}
       <CardHeader className="min-h-[180px]" >
         <div className="flex justify-between">
           <div>
@@ -73,17 +73,13 @@ console.log(product)
             </CardDescription>
           </div>
           <div>
-            <Heart
-              className={`transition-colors duration-500 ease-in-out ${
-                fav ? "text-red-500" : "text-white"
+            <HeartIcon
+              className={`w-6 h-6 transition-colors duration-500 ease-in-out ${
+                fav ? "fill-red-500" : "fill-white"
               } cursor-pointer`}
-              strokeWidth={fav ? 3 : 1}
               onClick={() => toggleFav()}
-            ></Heart>
-            <Button className="w-9 h-9" size="icon" variant="ghost">
-              <HeartIcon className="w-6 h-6 fill-red-500" />
+            ></HeartIcon>
               <span className="sr-only">Add to favorites</span>
-            </Button>
           </div>
         </div>
       </CardHeader>
@@ -99,10 +95,9 @@ console.log(product)
             />
           </div>
         )}
-        <div className="flex gap-2 ">
-          <Badge className="w-20 flex flex-col"><div>Stock:</div> <div>{product?.variants[0]?.stock ?? ''}</div></Badge>
-          <Badge className="w-20 flex flex-col"><div>Color: </div><div>{product?.variants[0]?.colorId ?? ''}</div></Badge>
-          <Badge className="w-20 flex flex-col"><div>Size: </div><div>{product?.variants[0]?.sizeId ?? ''}</div></Badge>
+        <div className="flex gap-2 justify-center">
+          {/* <Badge className="w-20 flex flex-col"><div>Stock:</div> <div>{product?.variants[0]?.stock ?? ''}</div></Badge> */}
+          <PopoverColorSize></PopoverColorSize>
         </div>
       </CardContent>
       <CardFooter className="absolute bottom-0 w-full flex justify-between items-center ">

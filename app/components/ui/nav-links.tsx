@@ -58,7 +58,7 @@ export function NavigationMenuDemo() {
           <SheetTrigger className={navigationMenuTriggerStyle()}>
             Carrito
           </SheetTrigger>
-          <SheetContent>
+          <SheetContent className="overflow-y-auto">
             <SheetHeader>
               <SheetTitle>Carrito</SheetTitle>
               <SheetDescription>Este es tu carrito de compra</SheetDescription>

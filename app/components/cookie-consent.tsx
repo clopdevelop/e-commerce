@@ -9,7 +9,7 @@ import { DemoCookieSettings } from "./cookie-settings";
 
 
 export default function CookieConsent({ demo = false, onAcceptCallback = () => { }, onDeclineCallback = () => { } }) {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
     const [hide, setHide] = useState(false);
 
     const accept = () => {

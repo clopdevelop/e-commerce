@@ -9,7 +9,6 @@ const stripe = new Stripe(stripeSecretKey) ?? "";
 
 const endpointSecret = "whsec_YC3GYnYa07HQ42Z8if0Vf1TrovCKZIJz"
 
-// todo Soportar pedidos con varios productos
 export async function POST(request: Request) {
   const body = await request.text();
   const headersList = headers();

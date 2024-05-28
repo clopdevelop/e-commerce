@@ -10,7 +10,7 @@ interface Props {
   export default async function EditPage({ params }: Props) {
   const product: Product = await fetchProduct(Number(params.id))
   const categories = await fetchAllCategories();
-  console.log(product)
+
   return (
     <EditProductForm product={product} categories={categories}></EditProductForm>
   )

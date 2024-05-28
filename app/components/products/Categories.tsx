@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default async function NamePage() {
   const Categories = await fetchAllCategories();
-
+  console.log(Categories)
   return (
     <div className="flex flex-col flex-grow">
             {Categories.map((category) => (

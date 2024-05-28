@@ -24,7 +24,6 @@ function Cart() {
       updateItemQuantity(products[index].id, value);
     }
   };
-  console.log(products);
 
   return (
     <>

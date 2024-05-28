@@ -37,7 +37,7 @@ export default async function FavsTable({ favorites }: Props) {
         </Link>
       </div>
       <Separator className="my-4"></Separator>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-stretch py-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-stretch py-4 ">
         {favproducts
           ? Products.filter((product,index) => {
             while(index<3){
