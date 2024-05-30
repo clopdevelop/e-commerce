@@ -7,6 +7,8 @@ import { useCart } from "@/context/CartProvider";
 import Image from "next/image";
 import {SettingsIcon} from 'lucide-react'
 import PopoverColor from "../product/PopoverColor";
+import PopoverSize from "../product/PopoverSize";
+import { XCircleIcon } from 'lucide-react'
 
 function Cart() {
   const cart = useCart();
@@ -40,9 +42,15 @@ function Cart() {
               height={100}
             />
             <div className="grid gap-2">
+              <div className="flex justify-between">
               <h3 className="font-semibold text-sm leading-none">
                 {product.name}
               </h3>
+              {removeItem && (
+                   <XCircleIcon className="cursor-pointer" onClick={() => removeItem(product.id)} >
+                    </XCircleIcon>
+                )}
+              </div>
               <div className="flex items-center gap-2 text-sm">
                 <span className="font-semibold">{product.unit_price}€</span>
                 <span className="text-gray-500 dark:text-gray-400">
@@ -50,15 +58,8 @@ function Cart() {
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                {removeItem && (
-                  <Button
-                    variant="destructive"
-                    onClick={() => removeItem(product.id)}
-                  >
-                    Eliminar
-                  </Button>
-                )}
                 <PopoverColor product={product}/>
+               <PopoverSize></PopoverSize>
                 {/* <Input
                   className="w-16"
                   defaultValue={product.quantity}

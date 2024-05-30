@@ -2,7 +2,7 @@
 import prisma from "@/lib/prisma";
 import { Category } from "./definitions";
 import { sleep } from "./utils";
-import { User } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { auth } from "@/auth";
 
 // USER
@@ -144,6 +144,7 @@ export async function fetchProductsbyIDs(products_ids: Array<number> = [1]) {
 type Condition = {
   name?: {
     contains: string;
+    mode?: string;
   };
   price?: {
     gte: number;
@@ -155,6 +156,44 @@ type Condition = {
     };
   };
 }
+//! esto no funciona y sin embargo la siguiente funcion si lo hace
+// export async function fetchfilteredProductsperCategories(
+//   query: string,
+//   currentPage: number,
+//   productsOnPage: number,
+//   category?: string,
+//   priceRange?: { min: number, max: number }
+// ) {
+//   const productsToSkip = (currentPage - 1) * productsOnPage;
+
+//   // Define the base conditions for the query
+//   let conditions: Condition = {
+//     name: {
+//       contains: query,
+//       mode: 'insensitive'
+//     },
+//     price: priceRange ? { gte: priceRange.min, lte: priceRange.max} : undefined
+//   };
+
+//   // If a category is specified, add it to the conditions
+//   if (category) {
+//     conditions.category = {
+//       name: {
+//         contains: category,
+//       },
+//     };
+//   }
+
+//   const products = await prisma.product.findMany({
+//     where: conditions,
+//     include: { ProductImage: true, variants: true },
+//     take: productsOnPage,
+//     skip: productsToSkip,
+//   });
+  
+//   return products;
+// }
+
 
 export async function fetchfilteredProductsperCategories(
   query: string,
@@ -166,19 +205,15 @@ export async function fetchfilteredProductsperCategories(
   const productsToSkip = (currentPage - 1) * productsOnPage;
 
   // Define the base conditions for the query
-  let conditions: Condition = {
-    name: {
-      contains: query,
-    },
-    price: priceRange ? { gte: priceRange.min, lte: priceRange.max} : undefined
+  let conditions: Prisma.ProductWhereInput = {
+    name: query ? { contains: query, mode: 'insensitive' } : undefined,
+    price: priceRange ? { gte: priceRange.min, lte: priceRange.max } : undefined,
   };
 
   // If a category is specified, add it to the conditions
   if (category) {
     conditions.category = {
-      name: {
-        contains: category,
-      },
+      name: { contains: category, mode: 'insensitive' },
     };
   }
 

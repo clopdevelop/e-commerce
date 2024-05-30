@@ -38,15 +38,14 @@ export default function PopoverColor({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className="flex items-center gap-2" variant="outline">
-          <SettingsIcon className="w-4 h-4" />
+        <Button className="flex items-center gap-3" variant="outline">
+        <div className="w-4 h-4 rounded-full bg-blue-500" />
           Color
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-6 space-y-4">
        <PopoverClose>
        <div className="grid gap-2">
-          <Label htmlFor="color">Color</Label>
           <RadioGroup className="flex items-center gap-2" onValueChange={(value)=>{handleChangeColor(value)}}
             defaultValue={color} id="color">
             <Label

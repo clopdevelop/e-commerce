@@ -43,6 +43,8 @@ export default async function Home({
   searchParams?: {
     query?: string;
     page?: string;
+    min?: string;
+    max?: string;
   };
   params: {
     currentCategory: string;
@@ -51,6 +53,11 @@ export default async function Home({
   const currentCategory = params.currentCategory;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
+  
+  const min = Number(searchParams?.min) || 0;
+  const max = Number(searchParams?.max) || 100;
+
+  
   const productsOnPage = 3;
   const totalPages = await countProductsCatalog(
     currentCategory,
@@ -81,12 +88,14 @@ export default async function Home({
               </div>
             }
           >
-            <ProductsTable
+             <ProductsTable
               query={query}
               currentPage={currentPage}
               productsOnPage={productsOnPage}
               category={currentCategory}
               id_user={id_user}
+              min={min}
+              max={max}
             />
           </Suspense>
         </CardContent>
