@@ -9,6 +9,7 @@ import {
   fetchfilteredProductsperCategories,
 } from "@/lib/data";
 import MyPagination from "../utils/myPagination";
+import { ProductSkeletonCard } from "../product/ProductSkeletonCard";
 
 export default async function ProductsTable({
    query,
@@ -16,20 +17,28 @@ export default async function ProductsTable({
   productsOnPage,
   category,
   id_user,
+  min,
+  max
 }: {
   query: string;
   currentPage: number;
   productsOnPage: number;
   category?: string;
   id_user: number;
+  min: number;
+  max: number;
 }) {
   if(!category) category=''
+
+  const priceRange = { min:min, max:max }
+
 
   const products = await fetchfilteredProductsperCategories(
     query,
     currentPage,
     productsOnPage,
     category,
+    priceRange
   );
   console.log(products)
 

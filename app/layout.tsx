@@ -85,7 +85,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
-          <CookieConsent />
+          {/* <CookieConsent /> */}
           <footer className="relative bottom-0 w-full text-white text-center p-6">
             Proyecto final de Ciclo
           </footer>

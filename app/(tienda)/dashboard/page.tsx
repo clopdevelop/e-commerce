@@ -1,6 +1,6 @@
 import { auth } from "../../auth";
 import { redirect } from "next/navigation";
-import { getUser, getUserByEmail } from "@/lib/data";
+import { getUserByEmail } from "@/lib/data";
 import Image from "next/image";
 import { Separator } from "@/components/shadcn";
 

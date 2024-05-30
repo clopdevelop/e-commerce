@@ -19,247 +19,68 @@ import {
   PopoverTrigger,
 } from "@/components/shadcn/popover";
 
-const provincias = [
-  {
-    value: "alava",
-    label: "Álava",
-  },
-  {
-    value: "albacete",
-    label: "Albacete",
-  },
-  {
-    value: "alicante",
-    label: "Alicante",
-  },
-  {
-    value: "almeria",
-    label: "Almería",
-  },
-  {
-    value: "asturias",
-    label: "Asturias",
-  },
-  {
-    value: "avila",
-    label: "Ávila",
-  },
-  {
-    value: "badajoz",
-    label: "Badajoz",
-  },
-  {
-    value: "barcelona",
-    label: "Barcelona",
-  },
-  {
-    value: "burgos",
-    label: "Burgos",
-  },
-  {
-    value: "caceres",
-    label: "Cáceres",
-  },
-  {
-    value: "cadiz",
-    label: "Cádiz",
-  },
-  {
-    value: "cantabria",
-    label: "Cantabria",
-  },
-  {
-    value: "castellon",
-    label: "Castellón",
-  },
-  {
-    value: "ceuta",
-    label: "Ceuta",
-  },
-  {
-    value: "ciudad_real",
-    label: "Ciudad Real",
-  },
-  {
-    value: "cordoba",
-    label: "Córdoba",
-  },
-  {
-    value: "cuenca",
-    label: "Cuenca",
-  },
-  {
-    value: "girona",
-    label: "Girona",
-  },
-  {
-    value: "granada",
-    label: "Granada",
-  },
-  {
-    value: "guadalajara",
-    label: "Guadalajara",
-  },
-  {
-    value: "guipuzcoa",
-    label: "Guipúzcoa",
-  },
-  {
-    value: "huelva",
-    label: "Huelva",
-  },
-  {
-    value: "huesca",
-    label: "Huesca",
-  },
-  {
-    value: "illes_balears",
-    label: "Illes Balears",
-  },
-  {
-    value: "jaen",
-    label: "Jaén",
-  },
-  {
-    value: "la_coruna",
-    label: "La Coruña",
-  },
-  {
-    value: "la_rioja",
-    label: "La Rioja",
-  },
-  {
-    value: "las_palmas",
-    label: "Las Palmas",
-  },
-  {
-    value: "leon",
-    label: "León",
-  },
-  {
-    value: "lleida",
-    label: "Lleida",
-  },
-  {
-    value: "lugo",
-    label: "Lugo",
-  },
-  {
-    value: "madrid",
-    label: "Madrid",
-  },
-  {
-    value: "malaga",
-    label: "Málaga",
-  },
-  {
-    value: "melilla",
-    label: "Melilla",
-  },
-  {
-    value: "murcia",
-    label: "Murcia",
-  },
-  {
-    value: "navarra",
-    label: "Navarra",
-  },
-  {
-    value: "ourense",
-    label: "Ourense",
-  },
-  {
-    value: "palencia",
-    label: "Palencia",
-  },
-  {
-    value: "pontevedra",
-    label: "Pontevedra",
-  },
-  {
-    value: "salamanca",
-    label: "Salamanca",
-  },
-  {
-    value: "segovia",
-    label: "Segovia",
-  },
-  {
-    value: "sevilla",
-    label: "Sevilla",
-  },
-  {
-    value: "soria",
-    label: "Soria",
-  },
-  {
-    value: "tarragona",
-    label: "Tarragona",
-  },
-  {
-    value: "tenerife",
-    label: "Tenerife",
-  },
-  {
-    value: "teruel",
-    label: "Teruel",
-  },
-  {
-    value: "toledo",
-    label: "Toledo",
-  },
-  {
-    value: "valencia",
-    label: "Valencia",
-  },
-  {
-    value: "valladolid",
-    label: "Valladolid",
-  },
-  {
-    value: "vizcaya",
-    label: "Vizcaya",
-  },
-  {
-    value: "zamora",
-    label: "Zamora",
-  },
-  {
-    value: "zaragoza",
-    label: "Zaragoza",
-  },
-];
-
-const ciudades = [
-    {
-      value: "madrid",
-      label: "Madrid",
-    },
-    {
-      value: "barcelona",
-      label: "Barcelona",
-    },
-    {
-      value: "valencia",
-      label: "Valencia",
-    },
-    {
-      value: "sevilla",
-      label: "Sevilla",
-    },
-    {
-      value: "zaragoza",
-      label: "Zaragoza",
-    },
-    // ... y así sucesivamente para todas las ciudades
-  ];
+const ciudadesPorProvincia: any = {
+  Alava: ["Vitoria-Gasteiz", "Llodio", "Amurrio"],
+  Albacete: ["Albacete", "Hellín", "Villarrobledo"],
+  Alicante: ["Alicante", "Elche", "Torrevieja"],
+  Almeria: ["Almería", "Roquetas de Mar", "El Ejido"],
+  Asturias: ["Oviedo", "Gijón", "Avilés"],
+  Avila: ["Ávila", "Arévalo", "El Tiemblo"],
+  Barcelona: ["Barcelona", "Hospitalet de Llobregat", "Badalona"],
+  Burgos: ["Burgos", "Miranda de Ebro", "Aranda de Duero"],
+  Cadiz: ["Cádiz", "Jerez de la Frontera", "Algeciras"],
+  Cantabria: ["Santander", "Torrelavega", "Camargo"],
+  Castellon: ["Castellón de la Plana", "Villarreal", "Benicàssim"],
+  Ciudad_real: ["Ciudad Real", "Puertollano", "Tomelloso"],
+  Cordoba: ["Córdoba", "Lucena", "Puente Genil"],
+  Cuenca: ["Cuenca", "Tarancón", "San Clemente"],
+  Girona: ["Gerona", "Lloret de Mar", "Figueras"],
+  Granada: ["Granada", "Motril", "Almuñécar"],
+  Guadalajara: ["Guadalajara", "Azur", "Sigüenza"],
+  Guipuzcoa: ["San Sebastián", "Irun", "Rentería"],
+  Huelva: ["Huelva", "Isla Cristina", "Lepe"],
+  Huesca: ["Huesca", "Monzón", "Fraga"],
+  Islas_baleares: ["Palma de Mallorca", "Ibiza", "Manacor"],
+  Jaen: ["Jaén", "Linares", "Úbeda"],
+  La_coruna: ["La Coruña", "Santiago de Compostela", "Ferrol"],
+  La_rioja: ["Logroño", "Calahorra", "Arnedo"],
+  Las_palmas: ["Las Palmas de Gran Canaria", "Telde", "Santa Lucía de Tirajana"],
+  Leon: ["León", "Ponferrada", "San Andrés del Rabanedo"],
+  Lerida: ["Lérida", "Tárrega", "Balaguer"],
+  Lugo: ["Lugo", "Villalba", "Monforte de Lemos"],
+  Madrid: ["Madrid", "Móstoles", "Alcalá de Henares"],
+  Malaga: ["Málaga", "Marbella", "Torremolinos"],
+  Murcia: ["Murcia", "Cartagena", "Lorca"],
+  Navarra: ["Pamplona", "Tudela", "Barañáin"],
+  Ourense: ["Orense", "Pontevedra", "Vigo"],
+  Palencia: ["Palencia", "Aguilar de Campoo", "Dueñas"],
+  Pontevedra: ["Pontevedra", "Vigo", "Redondela"],
+  Salamanca: ["Salamanca", "Béjar", "Ciudad Rodrigo"],
+  Segovia: ["Segovia", "Cuéllar", "La Granja de San Ildefonso"],
+  Sevilla: ["Sevilla", "Dos Hermanas", "Alcalá de Guadaíra"],
+  Soria: ["Soria", "Almazán", "El Burgo de Osma"],
+  Tarragona: ["Tarragona", "Reus", "El Vendrell"],
+  Tenerife: ["Santa Cruz de Tenerife", "San Cristóbal de La Laguna", "Arona"],
+  Teruel: ["Teruel", "Alcañiz", "Calamocha"],
+  Toledo: ["Toledo", "Talavera de la Reina", "Illescas"],
+  Valencia: ["Valencia", "Torrent", "Gandía"],
+  Valladolid: ["Valladolid", "Medina del Campo", "Laguna de Duero"],
+  Vizcaya: ["Bilbao", "Barakaldo", "Getxo"],
+  Zamora: ["Zamora", "Benavente", "Toro"],
+  Zaragoza: ["Zaragoza", "Calatayud", "Ejea de los Caballeros"]
+};
 
 export function CityAndProvinceSelector() {
   const [open1, setOpen1] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [value1, setValue1] = React.useState("");
   const [value2, setValue2] = React.useState("");
-  let disabled = (value1!=='') ? false : true;
+  let disabled = value1 !== "" ? false : true;
+
+  // Función para obtener ciudades según la provincia seleccionada
+  const obtenerCiudadesPorProvincia = (provincia: string) => {
+    return ciudadesPorProvincia[provincia] || [];
+  };
 
   return (
     <div className="grid md:grid-cols-2 my-1 gap-4">
@@ -273,38 +94,28 @@ export function CityAndProvinceSelector() {
               className="w-[200px] justify-between"
             >
               {value1
-                ? provincias.find((provincia) => provincia.value === value1)
-                    ?.label
+                ? value1 // Mostrar el valor seleccionado directamente
                 : "Provincia"}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0">
-            <Command label="City Selector">
+            <Command label="Provincia Selector">
               <CommandInput placeholder="Busca tu provincia..." />
               <CommandEmpty>No provincia found.</CommandEmpty>
               <CommandList>
                 <CommandGroup>
-                  {provincias.map((provincia) => (
+                  {Object.keys(ciudadesPorProvincia).map((provincia) => (
                     <CommandItem
-                      key={provincia.value}
-                      value={provincia.value}
-                      onSelect={(
-                        currentValue: React.SetStateAction<string>
-                      ) => {
+                      key={provincia}
+                      value={provincia}
+                      onSelect={(currentValue) => {
                         setValue1(currentValue === value1 ? "" : currentValue);
+                        setValue2(""); // Limpiar la ciudad seleccionada cuando cambia la provincia
                         setOpen1(false);
                       }}
                     >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          value1 === provincia.value
-                            ? "opacity-100"
-                            : "opacity-0"
-                        )}
-                      />
-                      {provincia.label}
+                      {provincia}
                     </CommandItem>
                   ))}
                 </CommandGroup>
@@ -314,50 +125,44 @@ export function CityAndProvinceSelector() {
         </Popover>
       </div>
       <div>
-      <Popover open={open2} onOpenChange={setOpen2}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open2}
-          className="w-[200px] justify-between"
-          disabled={disabled}
-        >
-          {value2
-            ? ciudades.find((ciudad) => ciudad.value === value2)?.label
-            : "Ciudad"}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command label="City Selector">
-          <CommandInput placeholder="Busca tu ciudad..." />
-          <CommandEmpty>No ciudad found.</CommandEmpty>
-          <CommandList>
-            <CommandGroup>
-              {ciudades.map((ciudad) => (
-                <CommandItem
-                  key={ciudad.value}
-                  value={ciudad.value}
-                  onSelect={(currentValue: React.SetStateAction<string>) => {
-                    setValue2(currentValue === value2 ? "" : currentValue);
-                    setOpen2(false);
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value2 === ciudad.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {ciudad.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+        <Popover open={open2} onOpenChange={setOpen2}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open2}
+              className="w-[200px] justify-between"
+              disabled={disabled}
+            >
+              {value2
+                ? value2 // Mostrar el valor seleccionado directamente
+                : "Ciudad"}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[200px] p-0">
+            <Command label="Ciudad Selector">
+              <CommandInput placeholder="Busca tu ciudad..." />
+              <CommandEmpty>No ciudad found.</CommandEmpty>
+              <CommandList>
+                <CommandGroup>
+                  {obtenerCiudadesPorProvincia(value1).map((ciudad:string) => (
+                    <CommandItem
+                      key={ciudad}
+                      value={ciudad}
+                      onSelect={(currentValue) => {
+                        setValue2(currentValue === value2 ? "" : currentValue);
+                        setOpen2(false);
+                      }}
+                    >
+                      {ciudad}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
       </div>
     </div>
   );

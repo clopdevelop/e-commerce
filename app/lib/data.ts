@@ -41,10 +41,29 @@ export async function login(): Promise<User | null> {
   }
 }
 
-export async function getUserID(): Promise<number> {
+export async function getUserIDSession(): Promise<number> {
   const authentication = await auth();
   const id_user = Number(authentication?.user?.id);
   return id_user;
+}
+
+export async function getUserIDDB() {
+  const authentication = await auth();
+
+  try {
+    const id = await prisma.user.findUnique({
+      where: {
+        email: authentication?.user?.email ?? "",
+      },
+      select: {
+        id: true,
+      },
+    });
+    return id;
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+    throw new Error("Failed to fetch user.");
+  }
 }
 
 // PRODUCTS

@@ -48,19 +48,12 @@ export async function authenticate(
 }
 
 export async function signInGoogle() {
-  await signIn("google");
-}
-
-export async function getUserID() {
-  const completeUser = await login();
-  const id = completeUser?.id;
-
-  return id;
+  await signIn("google", { redirectTo: "/dashboard" });
 }
 
 // USER
 export async function getAddresByUserLog() {
-  const userId = await getUserID();
+  const userId = await getUserIDDB();
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -79,7 +72,7 @@ export async function getAddresByUserLog() {
 }
 
 export async function getPaymentMethodsByUser() {
-  const userId = await getUserID();
+  const userId = await getUserIDDB();
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -167,7 +160,7 @@ export async function addUser2(values: z.infer<typeof UserRegisterFormSchema>) {
 export async function updateUserEmail(formData: FormData) {
   try {
     const email = formData.get("email");
-    const id = await getUserID();
+    const id = await getUserIDDB();
 
     if (typeof email !== "string") {
       throw new Error("Faltan datos obligatorios o son inválidos.");
@@ -233,7 +226,7 @@ export async function updateProfile(formData: FormData) {
   try {
     const username = formData.get("username");
     const bio = formData.get("bio");
-    const id = await getUserID();
+    const id = await getUserIDDB();
 
     if (typeof username !== "string" || typeof bio !== "string") {
       throw new Error("Faltan datos obligatorios o son inválidos.");
@@ -286,7 +279,7 @@ export async function updateProfile(formData: FormData) {
 
 export async function saveAddress(formData: FormData) {
   try {
-    const id = await getUserID(); // Obtener el ID del usuario (supongo que tienes una función así)
+    const id = await getUserIDDB(); // Obtener el ID del usuario (supongo que tienes una función así)
 
     const address = formData.get("address")?.toString();
     // const number = parseInt(formData.get("number") || "0", 10);
@@ -297,7 +290,9 @@ export async function saveAddress(formData: FormData) {
     const letter = formData.get("letter")?.toString();
     const block = formData.get("block")?.toString();
     const staircase = formData.get("staircase")?.toString();
-    // const postalCode = formData.get("postalCode")?.toString();
+    const postalCode = formData.get("postalCode")?.toString();
+    const city = formData.get("city")?.toString();
+    const province = formData.get("province")?.toString();
 
     // Validar los datos obligatorios
     if (!address || isNaN(number)) {
@@ -344,14 +339,36 @@ export async function saveAddress(formData: FormData) {
 
     console.log(
       `Dirección actualizada: ${address}, ${number}, ${letter},${staircase}, ${block},
+      ${postalCode}, ${city}, ${province}
       `
-      // ${postalCode}
     );
   } catch (error) {
     console.error("Error al guardar la dirección:", error);
     console.log("Faltan datos obligatorios o son inválidos.");
   }
 }
+
+// const addressSchema = z.object({
+//   address: z.string().nonempty({ message: "La dirección es obligatoria" }),
+//   number: z
+//     .number({ invalid_type_error: "El número debe ser un valor numérico" })
+//     .int()
+//     .positive({ message: "El número debe ser mayor que cero" })
+//     .optional(), // No es obligatorio en el formulario
+//   letter: z.string().optional(),
+//   staircase: z.enum(['left', 'right']).optional(), // Opciones: 'left' o 'right'
+//   block: z.string().optional(),
+//   postalCode: z.string().regex(/^\d{5}$/, { message: "Código postal inválido" }), // Código postal de 5 dígitos
+//   city: z.string().nonempty({ message: "La ciudad es obligatoria" }),
+//   province: z.string().nonempty({ message: "La provincia es obligatoria" })
+// });
+
+// try {
+//   addressSchema.parse(formData);
+//   console.log("Formulario válido");
+// } catch (e) {
+//   console.error("Errores de validación:", e.errors);
+// }
 
 export async function savePayMethod(formData: FormData) {
   try {
@@ -905,35 +922,36 @@ import { EmailTemplate } from "@/components/contact/email-template";
 import { Resend } from "resend";
 import { revalidatePath } from "next/cache";
 import { Address, CartItem } from "./definitions";
-import { getUser, login } from "./data";
+import { getUserIDDB, login } from "./data";
 import { UserRegisterFormSchema } from "@/components/form/RegisterForm";
 import { z } from "zod";
 
-// export async function enviarEmail(formData: FormData) {
-// const resend = new Resend(process.env.RESEND_API_KEY);
+export async function enviarEmail(formData: FormData) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
-//   const firstName = formData.name ?? '';
-//   const email = formData.email ?? '';
-//   const text = formData.text ?? '';
+  const firstName = formData.get('name') ?? "";
+  const email = formData.get('email') ?? "";
+  const text = formData.get('text') ?? "";
 
-//   try {
-//     const emailContent = EmailTemplate({ firstName: firstName, email: text, text: text });
 
-//     const formDataToSend = new FormData();
-//     formDataToSend.append('name', firstName);
-//     formDataToSend.append('email', email);
-//     formDataToSend.append('text', text);
+  try {
+    const emailContent = EmailTemplate({
+      firstName: firstName,
+      email: text,
+      text: text,
+    });
 
-//     const data = await resend.emails.send({
-//       from: 'Acme <onboarding@resend.dev>',
-//       to: ["yakiiloop@gmail.com"],
-//       subject: text,
-//       react: emailContent,
-//       text: ''
-//     });
 
-//     return { message: "Email enviado" };
-//   } catch (error) {
-//     return { mensaje: "Error al enviar: ", error };
-//   }
-// }
+    const data = await resend.emails.send({
+      from: "Acme <onboarding@resend.dev>",
+      to: ["yakiiloop@gmail.com"],
+      subject: text,
+      react: emailContent,
+      text: "",
+    });
+
+    return { message: "Email enviado" };
+  } catch (error) {
+    return { mensaje: "Error al enviar: ", error };
+  }
+}

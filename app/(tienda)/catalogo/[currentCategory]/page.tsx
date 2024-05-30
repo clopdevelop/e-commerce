@@ -5,13 +5,14 @@ import MyPagination from "@/components/utils/myPagination";
 import {
   countProductsCatalog,
   fetchAllCategories,
-  getUserID,
+  getUserIDSession,
 } from "@/lib/data";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Categories from "@/components/products/Categories";
 import { Card, CardContent } from "@/components/shadcn";
 import { Filters } from "@/components/products/Filters";
+import { ProductSkeletonCard } from "@/components/product/ProductSkeletonCard";
 
 // Los segmentos dinámicos no incluidos en devolverán un error 404
 export const dynamicParams = false;
@@ -57,7 +58,7 @@ export default async function Home({
     productsOnPage
   );
 
-  const id_user = await getUserID();
+  const id_user = await getUserIDSession();
 
   return (
     <>
@@ -73,7 +74,11 @@ export default async function Home({
           <Suspense
             key={query + currentPage}
             fallback={
-              <div className="grid grid-cols-3 gap-2 md:w-3/4">Cargando...</div>
+              <div className="grid  lg:grid-cols-3 gap-2 md:w-3/4">
+                <ProductSkeletonCard></ProductSkeletonCard>
+                <ProductSkeletonCard></ProductSkeletonCard>
+                <ProductSkeletonCard></ProductSkeletonCard>
+              </div>
             }
           >
             <ProductsTable
