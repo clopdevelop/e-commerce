@@ -86,6 +86,8 @@ export type CartItem = {
   unit_price: number;
   quantity: number;
   thumbnail?: Image;
+  color?: string;
+  size?: number;
 };
 export type Image = {
   id: number;

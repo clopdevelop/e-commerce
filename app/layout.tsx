@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "./context/theme-provider";
 import CookieConsent  from "@/components/cookie-consent";
 import type { Viewport } from 'next'
+import Footer from "./components/ui/Footer";
  
 export const viewport: Viewport = {
   themeColor: 'black',
@@ -86,9 +87,7 @@ export default function RootLayout({
           >
             {children}
           {/* <CookieConsent /> */}
-          <footer className="relative bottom-0 w-full text-white text-center p-6">
-            Proyecto final de Ciclo
-          </footer>
+          <Footer></Footer>
           </ThemeProvider>
         </body>
       </html>

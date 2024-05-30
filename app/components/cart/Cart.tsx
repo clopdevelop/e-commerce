@@ -5,6 +5,8 @@ import { Input } from "../shadcn/input";
 import { Separator } from "../shadcn/separator";
 import { useCart } from "@/context/CartProvider";
 import Image from "next/image";
+import {SettingsIcon} from 'lucide-react'
+import PopoverColor from "../product/PopoverColor";
 
 function Cart() {
   const cart = useCart();
@@ -33,7 +35,7 @@ function Cart() {
             <Image
               alt="Product image"
               className="aspect-square rounded-md object-cover"
-              src={product.thumbnail?.url ?? ''}
+              src={product.thumbnail?.url ?? ""}
               width={100}
               height={100}
             />
@@ -47,7 +49,7 @@ function Cart() {
                   x {product.quantity}
                 </span>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
                 {removeItem && (
                   <Button
                     variant="destructive"
@@ -56,7 +58,8 @@ function Cart() {
                     Eliminar
                   </Button>
                 )}
-                <Input
+                <PopoverColor product={product}/>
+                {/* <Input
                   className="w-16"
                   defaultValue={product.quantity}
                   type="number"
@@ -65,7 +68,7 @@ function Cart() {
                   onChange={(e) =>
                     handleQuantityChange(index, parseInt(e.target.value))
                   }
-                />
+                /> */}
               </div>
             </div>
           </div>

@@ -9,17 +9,19 @@ import { Product } from "@prisma/client";
 
 export default function AddCartButton({
   product,
-  quantity
+  color,
+  size
 }: {
   product: Product;
-  quantity: number;
+  color: string;
+  size: number;
 }) {
   
   const cart = useCart();
   const {items, addItem } = cart || {};
 
 
-  function addProduct(product: Product, quantity: number) {
+  function addProduct(product: Product, color: string,size: number) {
     try {
       if (!addItem) {
         toast.error("addItem function is not available");
@@ -38,11 +40,13 @@ export default function AddCartButton({
         id_product: product.id,
         name: product.name,
         unit_price: product.price,
-        quantity: quantity,
-        thumbnail: product.ProductImage[0]
+        quantity: 1,
+        thumbnail: product.ProductImage[0],
+        color: color,
+        size: size
       };
       
-      addItem(newItem, quantity);
+      addItem(newItem, 1);
       toast("Producto agregado al carrito!");
     } catch (error) {
       toast.error("No se pudo agregar el producto al carrito.");
@@ -51,7 +55,7 @@ export default function AddCartButton({
   
   return (
   <>
-    <Button onClick={() => addProduct(product, quantity)} className="text-white">
+    <Button onClick={() => addProduct(product, color, size)} className="text-white">
       <ShoppingCartIcon/>
       </Button>
   </>

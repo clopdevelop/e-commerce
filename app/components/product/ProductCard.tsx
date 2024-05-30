@@ -13,13 +13,14 @@ import PayButton from "../utils/PayButton";
 import Link from "next/link";
 import { Input } from "../shadcn/input";
 import { Provider, Category, OrderItem } from "@/lib/definitions";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Heart, HeartIcon } from "lucide-react";
 import { setCookie, getCookie } from "cookies-next";
 import Image from "next/image";
 import { Badge, Button } from "../shadcn";
 import { Product } from "@prisma/client";
-import PopoverColorSize from "./PopoverColorSize";
+import PopoverSize from "./PopoverSize";
+import PopoverColor from "./PopoverColor";
 
 export default function ProductCard({
   product,
@@ -28,8 +29,6 @@ export default function ProductCard({
   product: Product;
   id_user: number;
 }) {
-    const [quantity, setQuantity] = useState(1);
-
   const [fav, setFav] = useState(false);
 
   useEffect(() => {
@@ -54,10 +53,17 @@ export default function ProductCard({
     }
     setFav(!fav);
   };
+
+  const [childData, setChildData] = useState('');
+
+  const handleSelection = (newData: SetStateAction<string>) => {
+    setChildData(newData);
+  };
+
   return (
     <Card className="relative border rounded-lg p-4 min-w-full  overflow-hidden hover:shadow-xl  duration-300 ease-in-out ">
       {/* // todo max-w-56 max-h-[500px] */}
-      <CardHeader className="min-h-[180px]" >
+      <CardHeader className="min-h-[180px]">
         <div className="flex justify-between">
           <div>
             <CardTitle className="h-15 leading-relaxed line-clamp-2 text-balance py-3">
@@ -79,7 +85,7 @@ export default function ProductCard({
               } cursor-pointer`}
               onClick={() => toggleFav()}
             ></HeartIcon>
-              <span className="sr-only">Add to favorites</span>
+            <span className="sr-only">Add to favorites</span>
           </div>
         </div>
       </CardHeader>
@@ -97,29 +103,15 @@ export default function ProductCard({
         )}
         <div className="flex gap-2 justify-center">
           {/* <Badge className="w-20 flex flex-col"><div>Stock:</div> <div>{product?.variants[0]?.stock ?? ''}</div></Badge> */}
-          <PopoverColorSize></PopoverColorSize>
+          <PopoverColor product={product} onSelection={handleSelection}></PopoverColor>
+          <PopoverSize product={product} onSelection={handleSelection}></PopoverSize>
         </div>
       </CardContent>
       <CardFooter className="absolute bottom-0 w-full flex justify-between items-center ">
         <p className="font-bold">{product.price}€</p>
         <div className="flex gap-2">
-          {id_user != null ? (
-            <>
-              <AddCartButton
-                product={product}
-                quantity={quantity}
-              ></AddCartButton>
-              <PayButton />
-            </>
-          ) : (
-            <>
-              <AddCartButton
-                product={product}
-                quantity={quantity}
-              ></AddCartButton>
-              <PayButton />
-            </>
-          )}
+          <AddCartButton product={product} color={""} size={0}></AddCartButton>
+          <PayButton />
         </div>
       </CardFooter>
     </Card>

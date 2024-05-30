@@ -32,7 +32,6 @@ export default async function ProductsTable({
 
   const priceRange = { min:min, max:max }
 
-
   const products = await fetchfilteredProductsperCategories(
     query,
     currentPage,
