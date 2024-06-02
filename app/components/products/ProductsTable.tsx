@@ -5,11 +5,10 @@ import { Suspense } from "react";
 import {
   countProductsCatalog,
   fetchAllProducts,
-  fetchFilteredProducts,
-  fetchfilteredProductsperCategories,
+  fetchfilteredProducts,
 } from "@/lib/data";
 import MyPagination from "../utils/myPagination";
-import { ProductSkeletonCard } from "../product/ProductSkeletonCard";
+import { ProductSkeletonCard } from "../skeletons/ProductSkeletonCard";
 
 export default async function ProductsTable({
    query,
@@ -32,7 +31,7 @@ export default async function ProductsTable({
 
   const priceRange = { min:min, max:max }
 
-  const products = await fetchfilteredProductsperCategories(
+  const products = await fetchfilteredProducts(
     query,
     currentPage,
     productsOnPage,

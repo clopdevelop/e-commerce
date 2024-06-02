@@ -64,11 +64,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { addOrder } from "@/lib/actionscommands";
 
-
 //----------------------------------
-
-
-
 
 import React, { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
@@ -108,12 +104,10 @@ export default function StripeProvider({ user, address, payment }: Props) {
     fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(
-        {
-
+      body: JSON.stringify({
         items: [{ id: "xl-tshirt", price: 1000 }],
         customer: {
-          id: 'clwly2gxm0000hteqnutne391',
+          id: "clwly2gxm0000hteqnutne391",
           name: "Usuario",
           email: "usuario@gmail.com",
           address: {
@@ -259,14 +253,10 @@ export default function StripeProvider({ user, address, payment }: Props) {
               </form>
             </Form>
             <div className="flex justify-end mt-5">
-                      <Button
-                        onClick={() => setOpen(false)}
-                        type="button"
-                        size="sm"
-                      >
-                        Siguiente
-                      </Button>
-                    </div>
+              <Button onClick={() => setOpen(false)} type="button" size="sm">
+                Siguiente
+              </Button>
+            </div>
           </CardContent>
           <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
             <div className="text-xs text-muted-foreground">1/2</div>
@@ -306,6 +296,13 @@ export default function StripeProvider({ user, address, payment }: Props) {
                           {item.name} x <span>{item.quantity}</span>
                         </span>
                         <span>{item.unit_price * item.quantity} €</span>
+                        <Input
+                          className="w-16"
+                          defaultValue={item.quantity}
+                          type="number"
+                          min={1}
+                          max={99}
+                        />
                       </li>
                     ))}
                   </ul>
@@ -409,11 +406,11 @@ export default function StripeProvider({ user, address, payment }: Props) {
                 <div className="grid gap-3">
                   <div className="font-semibold">Información de pago</div>
                   <dl className="grid gap-3">
-                  <CheckoutForm></CheckoutForm>
+                    <CheckoutForm></CheckoutForm>
                   </dl>
                 </div>
                 <div className="flex justify-end mt-8">
-             {/*      <Button
+                  {/*      <Button
                     type="submit"
                     onClick={async () => {
                       console.log(products);

@@ -54,11 +54,25 @@ export default function ProductCard({
     setFav(!fav);
   };
 
-  const [childData, setChildData] = useState('');
+  const [color, setColor] = useState('default');
+  const [size, setSize] = useState('0');
 
-  const handleSelection = (newData: SetStateAction<string>) => {
-    setChildData(newData);
+  const handleColor = (newData: SetStateAction<string>) => {
+    setColor(newData);
   };
+  const handleSize = (newData: SetStateAction<string>) => {
+    setSize(newData);
+  };
+
+  useEffect(()=>{
+    console.log(size)
+  },[size])
+
+  useEffect(()=>{
+    console.log(color)
+  },[color])
+
+  
 
   return (
     <Card className="relative border rounded-lg p-4 min-w-full  overflow-hidden hover:shadow-xl  duration-300 ease-in-out ">
@@ -102,15 +116,14 @@ export default function ProductCard({
           </div>
         )}
         <div className="flex gap-2 justify-center">
-          {/* <Badge className="w-20 flex flex-col"><div>Stock:</div> <div>{product?.variants[0]?.stock ?? ''}</div></Badge> */}
-          <PopoverColor product={product} onSelection={handleSelection}></PopoverColor>
-          <PopoverSize product={product} onSelection={handleSelection}></PopoverSize>
+          <PopoverColor product={product} onSelection={handleColor}></PopoverColor>
+          <PopoverSize product={product} onSelection={handleSize}></PopoverSize>
         </div>
       </CardContent>
-      <CardFooter className="absolute bottom-0 w-full flex justify-between items-center ">
+      <CardFooter className="absolute bottom-0 w-full flex justify-between items-center">
         <p className="font-bold">{product.price}€</p>
-        <div className="flex gap-2">
-          <AddCartButton product={product} color={""} size={0}></AddCartButton>
+        <div className="flex gap-2 mr-4">
+          <AddCartButton product={product} color={color} size={size}></AddCartButton>
           <PayButton />
         </div>
       </CardFooter>

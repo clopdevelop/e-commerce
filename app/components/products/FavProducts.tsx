@@ -4,17 +4,17 @@
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
 // import Link from "next/link"
-import { Card, CardHeader, CardContent } from "@/components/shadcn/card"
+import { Card, CardHeader, CardContent } from "@/components/shadcn/card";
 import { fetchProductsbyIDs } from "@/lib/data";
 import { Product } from "@/lib/definitions";
-import { StarIcon } from "lucide-react"
+import { ChevronLeft, StarIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import ProductCard from "../product/ProductCard";
-import { Separator } from "../shadcn";
+import { Button, Separator } from "../shadcn";
 
 interface Props {
-  favorites?: number[]
+  favorites?: number[];
 }
 
 export default async function FavsTable({ favorites }: Props) {
@@ -22,19 +22,32 @@ export default async function FavsTable({ favorites }: Props) {
   let Products: Product[];
 
   if (favorites) {
-    Products = await fetchProductsbyIDs(favorites) ?? ''
+    Products = (await fetchProductsbyIDs(favorites)) ?? "";
   } else {
-    Products = []
+    Products = [];
   }
 
   return (
     <>
-        <h1 className="text-2xl font-bold">Tus productos favoritos</h1>
+      <div className="flex items-center gap-4">
+        <Link href="/dashboard/fav">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="h-7 w-7"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            <span className="sr-only">Back</span>
+          </Button>
+        </Link>
+        <h1 className="text-2xl font-bold">Todos tus productos favoritos</h1>
+      </div>
       <Separator className="my-4"></Separator>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-stretch py-4">
-        {favproducts
-          ? Products.map((product) => (
+        {favproducts ? (
+          Products.map((product) => (
             //   <Card key={product.id}>
             //   {/* <Link className="absolute inset-0 rounded-lg overflow-hidden z-10" href="#" /> */}
             //   <div className="grid gap-2.5 p-4">
@@ -51,11 +64,16 @@ export default async function FavsTable({ favorites }: Props) {
             //     </div>
             //   </div>
             // </Card>
-            <ProductCard key={product.id} product={product} id_user={1}></ProductCard>
+            <ProductCard
+              key={product.id}
+              product={product}
+              id_user={1}
+            ></ProductCard>
           ))
-          : <h2>No has añadido productos a tus Favoritos</h2>
-        }
+        ) : (
+          <h2>No has añadido productos a tus Favoritos</h2>
+        )}
       </div>
     </>
-  )
+  );
 }

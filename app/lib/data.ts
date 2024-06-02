@@ -5,48 +5,29 @@ import { sleep } from "./utils";
 import { Prisma, User } from "@prisma/client";
 import { auth } from "@/auth";
 
+// Gestión de usuarios
+
+// function authenticateUser(token: string): User {
+  export async function getUserLogged(): Promise<User | null> {
+    const authentication = await auth();
+  
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          email: authentication?.user?.email ?? "",
+        },
+      });
+      return user;
+    } catch (error) {
+      console.error("Failed to fetch user:", error);
+      throw new Error("Failed to fetch user.");
+    }
+  }
+
+// function checkPermissions(user: User, requiredPermission: string): void {
+
+
 // USER
-// Define la función para recuperar un usuario por su email
-export async function getUserByEmail(email: string) {
-  try {
-    // Utiliza el cliente de Prisma para encontrar el usuario por email
-    const user = await prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
-
-    // Retorna el usuario encontrado, o null si no existe
-    return user;
-  } catch (error) {
-    // Manejo de errores
-    console.error("Error al recuperar el usuario por email:", error);
-    throw error;
-  }
-}
-
-export async function login(): Promise<User | null> {
-  const authentication = await auth();
-
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        email: authentication?.user?.email ?? "",
-      },
-    });
-    return user;
-  } catch (error) {
-    console.error("Failed to fetch user:", error);
-    throw new Error("Failed to fetch user.");
-  }
-}
-
-export async function getUserIDSession(): Promise<number> {
-  const authentication = await auth();
-  const id_user = Number(authentication?.user?.id);
-  return id_user;
-}
-
 export async function getUserIDDB() {
   const authentication = await auth();
 
@@ -66,7 +47,74 @@ export async function getUserIDDB() {
   }
 }
 
-// PRODUCTS
+// Define la función para recuperar un usuario por su email
+export async function getUserByEmail(email: string) {
+  try {
+    // Utiliza el cliente de Prisma para encontrar el usuario por email
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    // Retorna el usuario encontrado, o null si no existe
+    return user;
+  } catch (error) {
+    // Manejo de errores
+    console.error("Error al recuperar el usuario por email:", error);
+    throw error;
+  }
+}
+
+export async function getUserIDSession(): Promise<number> {
+  const authentication = await auth();
+  const id_user = Number(authentication?.user?.id);
+  return id_user;
+}
+
+//todo addresses
+export async function getAddresByUserLog() {
+  const userId = await getUserIDDB();
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId?.id },
+      include: { address: true },
+    });
+
+    if (!user) {
+      throw new Error(`User with id ${userId} not found`);
+    }
+
+    return user.address;
+  } catch (error) {
+    console.error("Error al añadir usuario:", error);
+    throw error;
+  }
+}
+
+export async function getPaymentMethodsByUser() {
+  const userId = await getUserIDDB();
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { paymentMethods: true },
+    });
+
+    if (!user) {
+      throw new Error(`User with id ${userId} not found`);
+    }
+
+    return user.paymentMethods;
+  } catch (error) {
+    console.error("Error al obtener métodos de pago del usuario:", error);
+    throw error;
+  }
+}
+
+
+//Gestión de Productos
+// function viewCart(userId: string): Cart {
+
 /**
  * Devuelve todos los Productos
  * @param query
@@ -141,61 +189,8 @@ export async function fetchProductsbyIDs(products_ids: Array<number> = [1]) {
   return products;
 }
 
-type Condition = {
-  name?: {
-    contains: string;
-    mode?: string;
-  };
-  price?: {
-    gte: number;
-    lte: number;
-  };
-  category?: {
-    name: {
-      contains: string;
-    };
-  };
-}
-//! esto no funciona y sin embargo la siguiente funcion si lo hace
-// export async function fetchfilteredProductsperCategories(
-//   query: string,
-//   currentPage: number,
-//   productsOnPage: number,
-//   category?: string,
-//   priceRange?: { min: number, max: number }
-// ) {
-//   const productsToSkip = (currentPage - 1) * productsOnPage;
-
-//   // Define the base conditions for the query
-//   let conditions: Condition = {
-//     name: {
-//       contains: query,
-//       mode: 'insensitive'
-//     },
-//     price: priceRange ? { gte: priceRange.min, lte: priceRange.max} : undefined
-//   };
-
-//   // If a category is specified, add it to the conditions
-//   if (category) {
-//     conditions.category = {
-//       name: {
-//         contains: category,
-//       },
-//     };
-//   }
-
-//   const products = await prisma.product.findMany({
-//     where: conditions,
-//     include: { ProductImage: true, variants: true },
-//     take: productsOnPage,
-//     skip: productsToSkip,
-//   });
-  
-//   return products;
-// }
-
-
-export async function fetchfilteredProductsperCategories(
+//Filtrar productos por nombre, categoría y precio
+export async function fetchfilteredProducts(
   query: string,
   currentPage: number,
   productsOnPage: number,
@@ -208,14 +203,8 @@ export async function fetchfilteredProductsperCategories(
   let conditions: Prisma.ProductWhereInput = {
     name: query ? { contains: query, mode: 'insensitive' } : undefined,
     price: priceRange ? { gte: priceRange.min, lte: priceRange.max } : undefined,
-  };
-
-  // If a category is specified, add it to the conditions
-  if (category) {
-    conditions.category = {
-      name: { contains: category, mode: 'insensitive' },
-    };
-  }
+    category: category ? { name: { contains: category, mode: 'insensitive' }} : undefined,
+    }
 
   const products = await prisma.product.findMany({
     where: conditions,
@@ -227,77 +216,46 @@ export async function fetchfilteredProductsperCategories(
   return products;
 }
 
+// async function getFilteredProducts({ category, minPrice, maxPrice, brands }) {
+//   // (
+//   //   query: string,
+//   //   currentPage: number,
+//   //   productsOnPage: number,
+//   //   category?: string
+//   // )
+//   // Construye el objeto de condiciones de búsqueda
+//   let searchConditions = {};
 
+//   // Filtro por categoría
+//   if (category) {
+//     searchConditions.category = category;
+//   }
 
-/**
- * Filtrar Productos por nombre
- * @param query
- * @param currentPage
- * @returns
- */
-export async function fetchFilteredProducts(
-  query: string,
-  currentPage: number,
-  productsOnPage: number
-) {
-  // sleep(3)
+//   // Filtro por rango de precios
+//   if (minPrice || maxPrice) {
+//     searchConditions.price = {};
+//     if (minPrice) {
+//       searchConditions.price.gte = minPrice; // Mayor o igual que
+//     }
+//     if (maxPrice) {
+//       searchConditions.price.lte = maxPrice; // Menor o igual que
+//     }
+//   }
 
-  const productsToSkip = (currentPage - 1) * productsOnPage;
+//   // Filtro por marcas
+//   if (brands && brands.length > 0) {
+//     searchConditions.brand = {
+//       in: brands, // La marca debe estar en el array de marcas seleccionadas
+//     };
+//   }
 
-  const filteredProducts = await prisma.product.findMany({
-    where: {
-      name: {
-        contains: query,
-      },
-    },
-    include: { ProductImage: true },
-    take: productsOnPage,
-    skip: productsToSkip,
-  });
+//   // Realiza la consulta con los filtros aplicados
+//   const products = await prisma.product.findMany({
+//     where: searchConditions,
+//   });
 
-  return filteredProducts;
-}
-
-async function getFilteredProducts({ category, minPrice, maxPrice, brands }) {
-  // (
-  //   query: string,
-  //   currentPage: number,
-  //   productsOnPage: number,
-  //   category?: string
-  // )
-  // Construye el objeto de condiciones de búsqueda
-  let searchConditions = {};
-
-  // Filtro por categoría
-  if (category) {
-    searchConditions.category = category;
-  }
-
-  // Filtro por rango de precios
-  if (minPrice || maxPrice) {
-    searchConditions.price = {};
-    if (minPrice) {
-      searchConditions.price.gte = minPrice; // Mayor o igual que
-    }
-    if (maxPrice) {
-      searchConditions.price.lte = maxPrice; // Menor o igual que
-    }
-  }
-
-  // Filtro por marcas
-  if (brands && brands.length > 0) {
-    searchConditions.brand = {
-      in: brands, // La marca debe estar en el array de marcas seleccionadas
-    };
-  }
-
-  // Realiza la consulta con los filtros aplicados
-  const products = await prisma.product.findMany({
-    where: searchConditions,
-  });
-
-  return products;
-}
+//   return products;
+// }
 
 /**
  * Calcula el total de páginas para una búsqueda
@@ -353,7 +311,11 @@ export async function countProductsCatalog(
   return totalPages;
 }
 
-// ORDERS
+//Gestión de Pedidos
+
+// function getOrderById(orderId: string): Order {
+
+  // function listOrders(userId: string): Order[] {
 export async function fetchAllOrders() {
   try {
     const orders = await prisma.order.findMany();
@@ -364,7 +326,7 @@ export async function fetchAllOrders() {
   }
 }
 
-export async function fetchOrder(id: number) {
+export async function fetchOrder(id: string) {
   try {
     const order = await prisma.order.findFirst({
       where: {
@@ -380,6 +342,77 @@ export async function fetchOrder(id: number) {
     throw error;
   }
 }
+
+export async function fetchOrderDetails(id_order: string) {
+  const id = (Number(id_order))
+  const user = await getUserIDDB()
+  try {
+    const order = await prisma.order.findFirst({
+      where: {
+        id: id,
+        id_user: user?.id,
+      },
+      include: {
+        OrderItem: true,
+      },
+    });
+    return order;
+  } catch (error) {
+    console.error("Error fetching orders by user ID:", error);
+    throw error;
+  }
+}
+
+export async function fetchShippingAddressOrder(id_order: string) {
+  const id = (Number(id_order))
+  const user = await getUserIDDB()
+  try {
+    const order = await prisma.order.findFirst({
+      where: {
+        id: id,
+        id_user: user?.id,
+      },
+      include: {
+        address: true,
+      },
+    });
+
+    if (!order) {
+      throw new Error('Order not found or does not belong to this user');
+    }
+
+    return order
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function fetchTotalPriceOrder(id_order: string) {
+  const id = (Number(id_order))
+  const user = await getUserIDDB()
+  try {
+    const order = await prisma.order.findFirst({
+      where: {
+        id: id,
+        id_user: user?.id,
+      },
+      select: {
+        total:true
+      }
+    });
+
+    if (!order) {
+      throw new Error('Order not found or does not belong to this user');
+    }
+
+    return order
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 
 export async function fetchOrdersByUserId(userId: string | undefined) {
   if (userId == undefined) return [];
@@ -451,6 +484,7 @@ export async function fetchProvinces() {}
 
 export async function fetchCitiesFromProvinces() {}
 
+// Gestión Administrativa
 export async function fetchTotalRevenues() {
   return await prisma.order.aggregate({
     _sum: {
@@ -470,3 +504,17 @@ export async function fetchTotalClients() {
     },
   });
 }
+
+
+
+//Gestión de Envíos
+// function calculateShipping(address: Address): ShippingRates {
+
+// // function trackShipment(trackingNumber: string): ShipmentStatus {
+
+// //Utilidades
+// function validateProduct(product: Product): void {
+
+//   function isValidToken(token: string): boolean {
+
+//     function isValidInput(input: any): boolean {

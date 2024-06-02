@@ -1,131 +1,151 @@
 import { z } from "zod";
-  
-  export const userSchema = z.object({
-    id: z.number(),
-    first_name: z.string().min(2, {
-      message: "El nombre de usuario debe ser más largo",
-    }),
-    id_address: z.number(),
-    postcode: z.string(),
-    phone: z.string(),
-    email: z.string().email("Introduce un email válido"),
-    password: z.string().min(6, "La contraseña debe ser más larga"),
-    confirmPassword: z.string().min(1, "La confirmación de la contraseña es obligatoria"),
-    created_at: z.date(),
-  });
 
-  export const addressSchema = z.object({
-    id_address: z.number(),
-    address: z.string(),
-    id_city: z.number(),
-    last_update: z.date(),
-  });
-  
-  export const citySchema = z.object({
-    id_city: z.number(),
-    city: z.string(),
-    id_province: z.number(),
-  });
-  
-  export const provinceSchema = z.object({
-    id_province: z.number(),
-    iso_code: z.string().max(2, "ISO code must be 2 characters."),
-    province: z.string(),
-    id_country: z.number(),
-  });
-  
-  export const countrySchema = z.object({
-    id_country: z.number(),
-    iso_code: z.string().max(2, "ISO code must be 2 characters."),
-    country: z.string(),
-  });
-  
+// Esquema para campos opcionales y nulos
+const optionalNullableString = z.string().nullable().optional();
+const optionalNullableNumber = z.number().nullable().optional();
 
-  export const productSchema = z.object({
-  id_product: z.number(),
-  code: z.string().nullable().optional(),
-  name: z.string(),
-  description: z.string().nullable().optional(),
-  marca: z.number().nullable().optional(),
-  provider: z.number().nullable().optional(),
-  category: z.number().nullable().optional(),
-  thumbnail: z.string().nullable().optional(),
-  price: z.number(),
-  discount: z.number().nullable().optional(),
+// Esquema para el código ISO
+const isoCodeSchema = z.string()
+  .length(2, "El código ISO debe tener 2 caracteres.")
+  .refine(code => /^[A-Z]{2}$/.test(code), "El código ISO debe estar en mayúsculas.");
+
+  
+export const userSchema = z.object({
+  id: z.number(),
+  first_name: z.string().min(2, {
+    message: "El nombre de usuario debe ser más largo",
+  }),
+  id_address: z.number(),
+  postcode: z.string(),
+  phone: z.string(),
+  email: z.string().email("Introduce un email válido"),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+  confirmPassword: z.string().min(1, "La confirmación de la contraseña es obligatoria"),
+  created_at: z.date(),
+});
+
+export const addressSchema = z.object({
+  id_address: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  id_city: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  last_update: z.date(),
+  address: z.string().nonempty({ message: "La dirección es obligatoria" }),
+  number: z
+    .number({ invalid_type_error: "El número debe ser un valor numérico" })
+    .int()
+    .positive({ message: "El número debe ser mayor que cero" })
+    .optional(), // No es obligatorio en el formulario
+  letter: z.string().optional(),
+  staircase: z.enum(['left', 'right']).optional(), // Opciones: 'left' o 'right'
+  block: z.string().optional(),
+  postalCode: z.string().regex(/^\d{5}$/, { message: "Código postal inválido" }), // Código postal de 5 dígitos
+  city: z.string().nonempty({ message: "La ciudad es obligatoria" }),
+  province: z.string().nonempty({ message: "La provincia es obligatoria" })
+});
+
+export const citySchema = z.object({
+  id_city: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  city: z.string().nonempty("El nombre de la ciudad no puede estar vacío."),
+  id_province: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+});
+
+export const provinceSchema = z.object({
+  id_province: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  iso_code: isoCodeSchema,
+  province: z.string().nonempty("El nombre de la provincia no puede estar vacío."),
+  id_country: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+});
+
+export const countrySchema = z.object({
+  id_country: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  iso_code: isoCodeSchema,
+  country: z.string().nonempty("El nombre del país no puede estar vacío."),
+});
+
+export const productSchema = z.object({
+  id_product: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  code: optionalNullableString,
+  name: z.string().nonempty("El nombre del producto no puede estar vacío."),
+  description: optionalNullableString,
+  marca: optionalNullableNumber,
+  provider: optionalNullableNumber,
+  category: optionalNullableNumber,
+  thumbnail: optionalNullableString,
+  price: z.number().nonnegative(),
+  discount: optionalNullableNumber,
 });
 
 export const addProductSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  price: z.number(),
-  material: z.string().optional(),
-  stock: z.number().optional(),
-  color: z.string().optional(),
-  size: z.number().optional(),
-  category: z.string(),
-  state: z.string(),
+  name: z.string().nonempty("El nombre del producto no puede estar vacío."),
+  description: z.string().nonempty("La descripción del producto no puede estar vacía."),
+  price: z.number().nonnegative(),
+  material: optionalNullableString,
+  stock: optionalNullableNumber,
+  color: optionalNullableString,
+  size: optionalNullableNumber,
+  category: z.string().nonempty("La categoría del producto no puede estar vacía."),
+  state: z.string().nonempty("El estado del producto no puede estar vacío."),
   image: z.instanceof(File).optional(),
 });
 
-export const editProductSchema = z.object({
-  id: z.number().optional(),
-  name: z.string(),
-  description: z.string(),
-  price: z.number(),
-  material: z.string().optional(),
-  stock: z.number().optional(),
-  color: z.string().optional(),
-  size: z.number().optional(),
-  category: z.string(),
-  state: z.string(),
-  image: z.instanceof(File).optional(),
+export const editProductSchema = addProductSchema.extend({
+  id: optionalNullableNumber,
 });
 
 export const addVariantProductSchema = z.object({
-  id_product: z.number(),
-  code: z.string(),
-  stock: z.number(),
-  id_color: z.number(),
-  size: z.number(),
+  id_product: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  code: z.string().nonempty("El código del producto no puede estar vacío."),
+  stock: z.number().nonnegative(),
+  id_color: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  size: z.number().positive(),
 });
-  
-  export const cartDetailSchema = z.object({
-    id_cart: z.number(),
-    id_product: z.number(),
-    quantity: z.number(),
-  });
 
-  export const UserLogInFormSchema = userSchema.pick({
+export const cartDetailSchema = z.object({
+  id_cart: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  id_product: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  quantity: z.number().positive(),
+});
+
+export const UserLogInFormSchema = userSchema.pick({
+  email: true,
+  password: true,
+});
+
+export const UserRegisterFormSchema = userSchema
+  .pick({
+    first_name: true,
     email: true,
     password: true,
+    confirmPassword: true,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Las contraseñas deben coincidir",
+    path: ["confirmPassword"],
   });
-
-
 
   // SETTING
-  export const profileFormSchema = z.object({
-    username: z
-      .string()
-      .min(2, {
-        message: "Username must be at least 2 characters.",
-      })
-      .max(30, {
-        message: "Username must not be longer than 30 characters.",
+export const profileFormSchema = z.object({
+  username: z
+    .string()
+    .min(2, {
+      message: "Username must be at least 2 characters.",
+    })
+    .max(30, {
+      message: "Username must not be longer than 30 characters.",
+    }),
+  email: z
+    .string({
+      required_error: "Please select an email to display.",
+    })
+    .email(),
+  bio: z.string().max(160).min(4),
+  urls: z
+    .array(
+      z.object({
+        value: z.string().url({ message: "Please enter a valid URL." }),
       }),
-    email: z
-      .string({
-        required_error: "Please select an email to display.",
-      })
-      .email(),
-    bio: z.string().max(160).min(4),
-    urls: z
-      .array(
-        z.object({
-          value: z.string().url({ message: "Please enter a valid URL." }),
-        }),
-      )
-      .optional(),
-  });
+    )
+    .optional(),
+});
   
 export const accountFormSchema = z.object({
   name: z

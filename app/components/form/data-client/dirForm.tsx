@@ -9,13 +9,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn";
-import { getAddresByUserLog, saveAddress } from "@/lib/actionscommands";
+import { saveAddress } from "@/lib/actionscommands";
 import { CityAndProvinceSelector } from "./CityAndProvinceSelector";
 import { Address } from "@prisma/client";
 import { useFormStatus } from "react-dom";
 import { useState } from "react";
 
-export default function DirForm(addr: { address?: Address }) {
+export default function DirForm(addr: { address: any; }) {
   const { address } = addr;
   const [selectedValue, setSelectedValue] = useState("");
   const [selectedCity, setSelectedCity] = useState("");

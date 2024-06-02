@@ -20,7 +20,6 @@ export default function AddCartButton({
   const cart = useCart();
   const {items, addItem } = cart || {};
 
-
   function addProduct(product: Product, color: string,size: number) {
     try {
       if (!addItem) {

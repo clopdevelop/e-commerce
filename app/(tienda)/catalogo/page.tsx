@@ -8,7 +8,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Filters } from "@/components/products/Filters";
 import { Card, CardContent, CardFooter } from "@/components/shadcn";
-import { ProductSkeletonCard } from "@/components/product/ProductSkeletonCard";
+import { ProductSkeletonCard } from "@/components/skeletons/ProductSkeletonCard";
 import ProductCard from "@/components/product/ProductCard";
 
 export const dynamicParams = false;

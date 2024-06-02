@@ -4,12 +4,12 @@ import { auth } from "@/auth";
 import { User } from "@/lib/definitions";
 import { User as NextAuthUser } from 'next-auth';
 import { convertNextAuthUserToMyUser } from '@/lib/utils';
-import { login } from "@/lib/data";
+import { getUserLogged } from "@/lib/data";
 
 
 export default async function SettingsProfilePage() {
   
-  const completeUser = await login();
+  const completeUser = await getUserLogged();
   
   if(!completeUser)
     return 0;

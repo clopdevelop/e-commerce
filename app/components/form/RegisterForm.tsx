@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { userSchema } from "@/lib/schemas";
+import { UserRegisterFormSchema, userSchema } from "@/lib/schemas";
 import { Button } from "@/components/shadcn/button";
 import {
   Form,
@@ -14,41 +14,23 @@ import {
   FormMessage,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
-import { addUser2, signInGoogle } from "@/lib/actionscommands";
+import { registerUser, signInGoogle } from "@/lib/actionscommands";
 import Link from "next/link";
 import { Separator } from "../shadcn/separator";
 import { AtSign } from "lucide-react";
-export const UserRegisterFormSchema = userSchema
-  .pick({
-    first_name: true,
-    email: true,
-    password: true,
-    confirmPassword: true,
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Las contraseñas deben coincidir",
-    path: ["confirmPassword"],
-  });
 
 export function RegisterForm() {
-  // 1. Define your form.
+
   const form = useForm<z.infer<typeof UserRegisterFormSchema>>({
-    resolver: zodResolver(UserRegisterFormSchema),
-    defaultValues: {
-      first_name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
+    resolver: zodResolver(UserRegisterFormSchema)
   });
 
-  // 2. Define a submit handler.
+
   function onSubmit(values: z.infer<typeof UserRegisterFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+    
    console.log(values)
     
-    addUser2(values); // Uncomment to send formData
+    registerUser(values); // Uncomment to send formData
   }
 
   return (

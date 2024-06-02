@@ -26,13 +26,11 @@ export default function PopoverSize({
   product: Product;
   onSelection: any;
 }) {
-  const [size, setSize] = useState("0");
+  const [size, setSize] = useState('XX');
 
   const handleChangeSize = (value: string) => {
-    const newValue = value;
-    console.log(newValue);
-    setSize(newValue);
-    // onSelection(newValue);
+    setSize(value);
+    onSelection(value);
   };
 
   return (
@@ -143,10 +141,6 @@ export default function PopoverSize({
             </RadioGroup>
           </div>
         </PopoverClose>
-        {/* <div className="flex justify-end gap-2">
-          <AddCartButton product={product} color={""} size={0}></AddCartButton>
-          <PayButton />
-        </div> */}
       </PopoverContent>
     </Popover>
   );

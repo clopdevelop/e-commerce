@@ -1,99 +1,98 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
 
 import { Button } from "@/components/shadcn/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/shadcn/dropdown-menu";
 
-import { Repeat2Icon, ScrollText } from "lucide-react"
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-
-import { Input } from "@/components/shadcn/input";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
 import { Order } from "@/lib/definitions";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { useState } from "react";
+import {
+  FilterUserOrderStatus,
+  FilterUserOrderType,
+} from "@/components/order/FilterUserOrder";
+import { ActionUserOrder } from "@/components/order/ActionsUserOrder";
+import { Badge, Input, TableCell } from "@/components/shadcn";
 
-function HandleSearch(term: string) {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
-
-  const params = new URLSearchParams(searchParams);
-  if (term) {
-    params.set("order", term);
-  } else {
-    params.delete("order");
-  }
-  replace(`${pathname}?${params.toString()}`);
-}
+const formatDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 export const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "code",
-    header: "Codigo de Pedido"
+    header: "Codigo de Pedido",
+    cell: ({ row }) => <TableCell>{row.original.code}</TableCell>,
   },
   {
     accessorKey: "type",
-    header: "Tipo"
-  },
-  {
-    accessorKey: "status",
-    header: "Estado"
+    header: ({ column }) => {
+      return <p className="text-sm text-gray-500 dark:text-gray-400">Tipo</p>;
+    },
+    cell: ({ row }) => (
+      <TableCell>
+        <span
+          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+            row.original.type === "Compra"
+              ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
+              : row.original.type === "Subscripción"
+              ? "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
+              : "bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100"
+          }`}
+        >
+          {row.original.type}
+        </span>
+      </TableCell>
+    ),
   },
   {
     accessorKey: "created_at",
-    header: "Fecha"
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <p className="text-sm text-gray-500 dark:text-gray-400">Fecha</p>
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <TableCell>{formatDate(new Date(row.original.created_at))}</TableCell>
+    ),
   },
-  // {
-  //   accessorKey: "total",
-  //   header: () => <div className="text-right">Total</div>,
-  //   cell: ({ row }) => {
-  //     let total = parseFloat(row.getValue("total"));
-  //     const formatted = new Intl.NumberFormat("es-ES", {
-  //       style: "currency",
-  //       currency: "eur",
-  //     }).format(total);
-
-  //     return <div className="text-right font-medium">{formatted}</div>;
-  //   },
-  // },
+  {
+    accessorKey: "status",
+    header: ({ column }) => {
+      return <p className="text-sm text-gray-500 dark:text-gray-400">Estado</p>;
+    },
+    cell: ({ row }) => (
+      <TableCell>
+        <Badge
+          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full`}
+          variant={`${
+            row.original.status === "Entregado"
+              ? "secondary"
+              : row.original.status === "Devuelto"
+              ? "outline"
+              : "destructive"
+          }`}
+        >
+          {row.original.status}
+        </Badge>
+      </TableCell>
+    ),
+  },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
       const order = String(row.original.id);
-
-      return (
-        <div className="flex justify-end">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Abrir menu</span>
-                <DotsHorizontalIcon className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
-              <DropdownMenuItem className="flex justify-between items-center"
-              // onClick={() => navigator.clipboard.writeText(payment.id)}
-              >
-               Pedir   <Repeat2Icon className="h-4 w-4"></Repeat2Icon>
-              </DropdownMenuItem>
-              {/* <DropdownMenuItem>Compartir</DropdownMenuItem> */}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem  className="flex justify-between items-center">
-                <a href={`/dashboard/orders/${order}`}>Detalles</a><ScrollText className="h-4 w-4"></ScrollText>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
+      return <ActionUserOrder order={order}></ActionUserOrder>;
     },
   },
 ];

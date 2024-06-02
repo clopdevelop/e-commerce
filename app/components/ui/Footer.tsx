@@ -8,7 +8,7 @@ import { LucideGithub } from "lucide-react"
 
 export default function Footer() {
   return (
-    <footer className="relative bottom-0 w-full text-center p-6 border-t">
+    <footer className="relative w-full text-center p-6 border-t">
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="flex flex-col items-start space-x-2 space-y-2 mb-4">

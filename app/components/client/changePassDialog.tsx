@@ -11,13 +11,13 @@ import {
 } from "@/components/shadcn/dialog";
 import { Input } from "@/components/shadcn/input";
 import { Label } from "@/components/shadcn/label";
-import changePass from "@/lib/actionscommands";
+import { updatePass } from "@/lib/actionscommands";
 import { CircleAlert } from "lucide-react";
 import Link from "next/link";
 import { useFormState, useFormStatus } from "react-dom";
 
 export function ChangePassDialog() {
-  const [state, formAction] = useFormState(changePass, undefined);
+  const [state, formAction] = useFormState(updatePass, undefined);
 
   return (
     <Dialog>

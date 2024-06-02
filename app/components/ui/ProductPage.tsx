@@ -176,7 +176,7 @@ export default function Component({ product }: { product: Product }) {
                     onChange={(e) => setQuantity(Number(e.target.value))}
                   ></Input>
                 </div>
-                <AddCartButton product={product} quantity={quantity}></AddCartButton>
+                <AddCartButton product={product} color={color}  size={size}></AddCartButton>
                 <PayBotton />
               </div>
             </div>

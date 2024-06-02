@@ -9,7 +9,7 @@ datasource db {
 }
 
 model City {
-  id     Int       @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   city        String
   province    Province  @relation(fields: [id_province], references: [id_province])
   id_province Int
@@ -17,8 +17,8 @@ model City {
 }
 
 model Province {
-  id_province Int     @id @default(autoincrement())
-  iso_code    String  @unique
+  id_province Int    @id @default(autoincrement())
+  iso_code    String @unique
   province    String
   City        City[]
 }
@@ -38,11 +38,10 @@ model Product {
   category    Category? @relation(fields: [id_category], references: [id])
   id_category Int?
 
-  variants    ProductVariant[]
+  variants     ProductVariant[]
   ProductImage ProductImage[]
   OrderItem    OrderItem[]
 }
-
 
 model Category {
   id      Int       @id @default(autoincrement())
@@ -50,29 +49,28 @@ model Category {
   Product Product[]
 }
 
-
 model Color {
-  id    Int    @id @default(autoincrement())
-  name  String
+  id       Int              @id @default(autoincrement())
+  name     String
   variants ProductVariant[]
 }
 
 model Size {
-  id    Int    @id @default(autoincrement())
-  value Int
+  id       Int              @id @default(autoincrement())
+  value    Int
   variants ProductVariant[]
 }
 
 model ProductVariant {
-  id          Int       @id @default(autoincrement())
-  code        String
-  stock       Int
-  productId   Int
-  product     Product   @relation(fields: [productId], references: [id])
-  colorId     Int
-  color       Color     @relation(fields: [colorId], references: [id])
-  sizeId      Int
-  size        Size      @relation(fields: [sizeId], references: [id])
+  id        Int     @id @default(autoincrement())
+  code      String
+  stock     Int
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  colorId   Int
+  color     Color   @relation(fields: [colorId], references: [id])
+  sizeId    Int
+  size      Size    @relation(fields: [sizeId], references: [id])
 }
 
 model ProductImage {
@@ -84,37 +82,6 @@ model ProductImage {
 }
 
 //PEDIDOS
-model Order {
-  id         Int      @id @default(autoincrement())
-  code       String   @unique
-  type       String
-  total      Float
-  status     String
-  paid       Boolean  @default(false)
-  discount   Float    @default(0)
-  created_at DateTime @default(now())
-
-  user             User         @relation(fields: [id_user], references: [id])
-  id_user          String
-  deliveryType     DeliveryType @relation(fields: [id_delivery_type], references: [id])
-  id_delivery_type Int
-
-  OrderItem OrderItem[]
-  invoice   Invoice[]
-}
-
-
-model OrderItem {
-  id         Int   @id @default(autoincrement())
-  name       String
-  quantity   Int
-  unit_price Float
-
-  Order      Order   @relation(fields: [id_order], references: [id])
-  id_order   Int
-  product    Product @relation(fields: [id_product], references: [id])
-  id_product Int
-}
 
 model DeliveryType {
   id    Int     @id @default(autoincrement())
@@ -136,43 +103,92 @@ model Invoice {
 }
 
 model PaymentMethod {
-  id               Int      @id @default(autoincrement())
-  name             String
+  id              Int       @id @default(autoincrement())
+  name            String
   // PaymentMethodName             String
-  cardHolderName   String
-  cardNumber       String
-  expirationMonth  Int
-  expirationYear   Int
-  cvc              String
-  saveBillingInfo  Boolean
-  user             User?     @relation(fields: [id_user], references: [id])
-  id_user          String?
-  Invoice          Invoice[]
+  cardHolderName  String
+  cardNumber      String
+  expirationMonth Int
+  expirationYear  Int
+  cvc             String
+  saveBillingInfo Boolean
+  user            User?     @relation(fields: [id_user], references: [id])
+  id_user         String?
+  Invoice         Invoice[]
 }
+
 //USUARIO
 model User {
-  id               String  @id @default(cuid())
-  name             String
-  username         String?
-  bio              String?
-  email            String       @unique
-  emailVerified    DateTime?
-  image            String?
-  role             String       @default("user")
-  phone            String?
-  password         String
-  address          Address?     @relation(fields: [id_address], references: [id])
-  id_address       Int?
-  postcode         String?
-  created_at       DateTime     @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(cuid())
+  name          String
+  username      String?
+  bio           String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          String    @default("user")
+  phone         String?
+  password      String
+  id_address    Int?
+  postcode      String?
+  created_at    DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  paymentMethods   PaymentMethod[]
+  paymentMethods PaymentMethod[]
+  addresses      Address[]
   // accounts         Account[]
   // sessions         Session[]
-    // Optional for WebAuthn support
-  Authenticator    Authenticator[]
-  Order            Order[]
+  // Optional for WebAuthn support
+  Authenticator  Authenticator[]
+  Order          Order[]
+}
+
+model Address {
+  id          Int      @id @default(autoincrement())
+  name        String
+  number      Int
+  letter      String?
+  block       String?
+  staircase   String?
+  last_update DateTime @default(now()) @updatedAt
+  city        City     @relation(fields: [id_city], references: [id])
+  id_city     Int
+  users       User[]
+  orders      Order[]
+}
+
+model Order {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique
+  type       String
+  total      Float
+  status     String
+  paid       Boolean  @default(false)
+  discount   Float    @default(0)
+  created_at DateTime @default(now())
+
+  user             User         @relation(fields: [id_user], references: [id])
+  id_user          String
+  deliveryType     DeliveryType @relation(fields: [id_delivery_type], references: [id])
+  id_delivery_type Int
+
+  address    Address @relation(fields: [id_address], references: [id])
+  id_address Int
+
+  OrderItem OrderItem[]
+  invoice   Invoice[]
+}
+
+model OrderItem {
+  id         Int    @id @default(autoincrement())
+  name       String
+  quantity   Int
+  unit_price Float
+
+  Order      Order   @relation(fields: [id_order], references: [id])
+  id_order   Int
+  product    Product @relation(fields: [id_product], references: [id])
+  id_product Int
 }
 
 // Optional for WebAuthn support
@@ -190,25 +206,11 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Address {
-  id          Int        @id @default(autoincrement())
-  name        String
-  number      Int
-  letter      String?
-  block       String?
-  staircase   String?
-  last_update DateTime   @default(now()) @updatedAt
-  users       User[]     // Change to plural form to represent many-to-one relation
-  city    City  @relation(fields: [id_city], references: [id])
-  id_city Int
-}
-
 // const enum PaymentMethodName {
 //   CARD,
 //   PAYPAL,
 //   APPLE
 // }
-
 
 // // NEXT-AUTH
 // model Account {
@@ -255,8 +257,6 @@ model Address {
 
 //   @@unique([identifier, token])
 // }
-
-
 
 // TODO POSTGREE
 // model User {
@@ -313,4 +313,3 @@ model Address {
 
 //   @@id([identifier, token])
 // }
-
