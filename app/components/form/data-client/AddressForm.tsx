@@ -1,178 +1,209 @@
 "use client";
+import {
+  Input,
+  Select,
+  Label,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  Form,
+  FormMessage,
+  Button,
+  Checkbox,
+} from "@/components/shadcn";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { addressFormschema } from "@/lib/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { CityAndProvinceSelector } from "./CityAndProvinceSelector";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { useForm } from 'react-hook-form';
-import clsx from 'clsx';
+type AddressFormInputs = z.infer<typeof addressFormschema>;
 
-
-// import type { Address, Country } from '@/interfaces';
-// import { useAddressStore } from '@/store';
-// import { deleteUserAddress, setUserAddress } from '@/actions';
-
-
-type FormInputs = {
-  firstName: string;
-  lastName: string;
-  address: string;
-  address2?: string;
-  postalCode: string;
-  city: string;
-  country: string;
-  phone: string;
-  rememberAddress: boolean;
+interface AddressFormProps {
+  onSubmitForm: (values: AddressFormInputs) => void;
 }
 
+export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm }) => {
+  const [deliveryType, setDeliveryType] = useState("");
 
-// interface Props {
-//   countries: Country[];
-//   userStoredAddress?: Partial<Address>;
-// }
-
-
-// export const AddressForm = ({ countries, userStoredAddress = {} }: Props) => {
-  export const AddressForm = () => {
-
-  const router = useRouter();
-  const { handleSubmit, register, formState: { isValid }, reset } = useForm<FormInputs>({
-    defaultValues: {
-      // ...(userStoredAddress as any),
-      rememberAddress: false,
-    }
+  const form = useForm<AddressFormInputs>({
+    resolver: zodResolver(addressFormschema),
   });
+  const { control, handleSubmit } = form;
 
-  // const { data: session } = useSession({
-  //   required: true,
-  // })
-
-  // const setAddress = useAddressStore( state => state.setAddress );
-  // const address = useAddressStore( state => state.address );
-
-
-
-  // useEffect(() => {
-  //   if ( address.firstName ) {
-  //     reset(address)
-  //   }
-  // },[address, reset])
-  
-  
-  const onSubmit = async( data: FormInputs ) => {
-    
-
-    const { rememberAddress, ...restAddress } = data;
-
-    // setAddress(restAddress);
-
-    // if ( rememberAddress ) {
-    //   await setUserAddress(restAddress, session!.user.id );
-    // } else {
-    //   await deleteUserAddress(session!.user.id);
-    // }
-
-    router.push('/checkout');
-
+  function onSubmit(values: AddressFormInputs) {
+    console.log(values);
+    onSubmitForm(values);
   }
 
-
-
   return (
-    <form onSubmit={ handleSubmit( onSubmit ) }  className="grid grid-cols-1 gap-2 sm:gap-5 sm:grid-cols-2">
-      <div className="flex flex-col mb-2">
-        <span>Nombres</span>
-        <input type="text" className="p-2 border rounded-md bg-gray-200" { ...register('firstName', { required: true  }) } />
-      </div>
+    <Form {...form}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex gap-5">
+          <div className="w-full">
+            <div className="grid gap-4 mb-5">
+              <div className="font-semibold">Información de Envío</div>
 
-      <div className="flex flex-col mb-2">
-        <span>Apellidos</span>
-        <input type="text" className="p-2 border rounded-md bg-gray-200" { ...register('lastName', { required: true  }) } />
-      </div>
+              <FormField
+                control={control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem className="grid gap-2">
+                    <FormLabel>Dirección</FormLabel>
+                    <FormControl>
+                      <Input placeholder="C/, Avda, ctra ...." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-      <div className="flex flex-col mb-2">
-        <span>Dirección</span>
-        <input type="text" className="p-2 border rounded-md bg-gray-200" { ...register('address', { required: true  }) } />
-      </div>
+              <div className="grid gap-4 md:grid-cols-4">
+                <FormField
+                  control={control}
+                  name="number"
+                  render={({ field }) => (
+                    <FormItem className="grid gap-2">
+                      <FormLabel>Número</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-      <div className="flex flex-col mb-2">
-        <span>Dirección 2 (opcional)</span>
-        <input type="text" className="p-2 border rounded-md bg-gray-200" { ...register('address2') } />
-      </div>
+                <FormField
+                  control={control}
+                  name="letter"
+                  render={({ field }) => (
+                    <FormItem className="grid gap-2">
+                      <FormLabel>Letra</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Letra" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-      <div className="flex flex-col mb-2">
-        <span>Código postal</span>
-        <input type="text" className="p-2 border rounded-md bg-gray-200" { ...register('postalCode', { required: true  }) } />
-      </div>
+                <FormField
+                  control={control}
+                  name="staircase"
+                  render={({ field }) => (
+                    <FormItem className="grid gap-2">
+                      <FormLabel>Escalera</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-      <div className="flex flex-col mb-2">
-        <span>Ciudad</span>
-        <input type="text" className="p-2 border rounded-md bg-gray-200" { ...register('city', { required: true  }) } />
-      </div>
+                <FormField
+                  control={control}
+                  name="block"
+                  render={({ field }) => (
+                    <FormItem className="grid gap-2">
+                      <FormLabel>Bloque</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-      <div className="flex flex-col mb-2">
-        <span>País</span>
-        <select className="p-2 border rounded-md bg-gray-200" { ...register('country', { required: true  }) }>
-          <option value="">[ Seleccione ]</option>
-          {/* {
-            countries.map( country => (
-              <option key={ country.id } value={ country.id }>{ country.name }</option>
-            ))
-          } */}
-        </select>
-      </div>
-
-      <div className="flex flex-col mb-2">
-        <span>Teléfono</span>
-        <input type="text" className="p-2 border rounded-md bg-gray-200" { ...register('phone', { required: true  }) } />
-      </div>
-
-      <div className="flex flex-col mb-2 sm:mt-1">
-        
-        <div className="inline-flex items-center mb-10 ">
-          <label
-            className="relative flex cursor-pointer items-center rounded-full p-3"
-            htmlFor="checkbox"
-          >
-            <input
-              type="checkbox"
-              className="border-gray-500 before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-blue-500 hover:before:opacity-10"
-              id="checkbox"
-              { ...register('rememberAddress') }
-            />
-            <div className="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-3.5 w-3.5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
+              <div className="flex gap-4 items-center">
+                <CityAndProvinceSelector />
+                <FormField
+                  control={control}
+                  name="postalCode"
+                  render={({ field }) => (
+                    <FormItem className="grid gap-2">
+                      <FormLabel>C. P</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="w-2/12"
+                          placeholder="C. P"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
-          </label>
 
-          <span>¿Recordar dirección?</span>
+            <FormField
+              control={control}
+              name="save"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 mb-5">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Guardar la información de envío</FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
+
+            <div className="grid gap-5 mt-12">
+              <Label htmlFor="shippingMethod">
+                Selecciona tu método de envío:
+              </Label>
+              <FormField
+                control={control}
+                name="shippingMethod"
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      setDeliveryType(value);
+                    }}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Elige un método" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white rounded-md shadow-md">
+                      <SelectItem value="standard">
+                        Envío Estándar (3-5 días hábiles)
+                      </SelectItem>
+                      <SelectItem value="express">
+                        Envío Exprés (1-2 días hábiles)
+                      </SelectItem>
+                      <SelectItem value="premium">
+                        Envío Premium (Entrega prioritaria)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+          </div>
         </div>
-
-        <button
-          disabled={ !isValid }
-          // href="/checkout"
-          type="submit"
-          // className="btn-primary flex w-full sm:w-1/2 justify-center "
-          className={ clsx({
-            'btn-primary': isValid,
-            'btn-disabled': !isValid,
-          })}
-        >
-          Siguiente
-        </button>
-      </div>
-    </form>
+        <div className="flex justify-end mt-5">
+          <Button type="submit" size="sm">
+            Siguiente
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };

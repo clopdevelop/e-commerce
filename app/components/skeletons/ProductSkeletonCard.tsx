@@ -9,7 +9,6 @@ import {
 } from "@/components/shadcn/card";
 import { HeartIcon } from "lucide-react";
 import AddCartButton from "../cart/AddCartButton";
-import PayButton from "../utils/PayButton";
 
 export function ProductSkeletonCard() {
   return (

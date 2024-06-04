@@ -53,7 +53,7 @@ export default async function ProductsTable({
       ) : (
         <div className="flex flex-col p-2 text-xl">No hay resultados </div>
       )}
-      <Toaster></Toaster>
+      <Toaster richColors></Toaster>
     </div>
   );
 }

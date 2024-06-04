@@ -2,7 +2,6 @@ import ProductsTable from "@/components/products/ProductsTable";
 import Search from "@/components/utils/Search";
 import MyPagination from "@/components/utils/myPagination";
 import { fetchProductsPages, getUserIDSession } from "@/lib/data";
-import { CarouselProducts } from "@/components/products/CarouselProducts";
 import { Suspense } from "react";
 // import { addUserGoogle } from "@/lib/actionscommands";
 import type { Metadata } from "next";
@@ -83,8 +82,6 @@ export default async function Home({
           </div>
         </CardFooter>
       </Card>
-
-      {/* <CarouselProducts></CarouselProducts> */}
     </>
   );
 }

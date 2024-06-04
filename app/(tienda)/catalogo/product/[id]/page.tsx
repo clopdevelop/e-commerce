@@ -1,8 +1,9 @@
 import { Product } from "@/lib/definitions";
 import { Metadata } from "next";
 import { countProducts, fetchProduct } from "@/lib/data";
-import ProductPage from "@/components/ui/ProductPage";
 import { notFound } from "next/navigation";
+import { CarouselProducts } from "@/components/products/CarouselProducts";
+import ProductView from "@/components/ui/ProductView";
 
 interface Props {
   params: { id: string };
@@ -43,15 +44,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     },
     openGraph: url ? { images: [{ url, width, height, alt }] } : null,
-    
   };
 }
 
 export default async function Page({ params }: Props) {
   try {
-    const product: Product = await fetchProduct(Number(params.id));
 
-    return <ProductPage product={product}></ProductPage>;
+    return (
+      <>
+        <ProductView id={params.id}></ProductView>;
+        <CarouselProducts></CarouselProducts>
+      </>
+    );
   } catch (error) {
     notFound();
     // throw new Error('Producto no encontrado');

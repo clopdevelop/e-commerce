@@ -9,7 +9,6 @@ import {
 } from "@/components/shadcn/card";
 import AddCartButton from "@/components/cart/AddCartButton";
 
-import PayButton from "../utils/PayButton";
 import Link from "next/link";
 import { Input } from "../shadcn/input";
 import { Provider, Category, OrderItem } from "@/lib/definitions";
@@ -64,16 +63,6 @@ export default function ProductCard({
     setSize(newData);
   };
 
-  useEffect(()=>{
-    console.log(size)
-  },[size])
-
-  useEffect(()=>{
-    console.log(color)
-  },[color])
-
-  
-
   return (
     <Card className="relative border rounded-lg p-4 min-w-full  overflow-hidden hover:shadow-xl  duration-300 ease-in-out ">
       {/* // todo max-w-56 max-h-[500px] */}
@@ -124,7 +113,6 @@ export default function ProductCard({
         <p className="font-bold">{product.price}€</p>
         <div className="flex gap-2 mr-4">
           <AddCartButton product={product} color={color} size={size}></AddCartButton>
-          <PayButton />
         </div>
       </CardFooter>
     </Card>

@@ -26,7 +26,6 @@ import { Separator } from "../shadcn/separator";
 import { useCart } from "@/context/CartProvider";
 import Link from "next/link";
 import { Product } from "@/lib/definitions";
-import PayBotton from "../utils/PayButton";
 import { toggleVariants } from "../shadcn";
 
 export function NavigationMenuDemo() {

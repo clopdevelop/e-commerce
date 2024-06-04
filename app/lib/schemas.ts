@@ -12,15 +12,15 @@ const isoCodeSchema = z.string()
   
 export const userSchema = z.object({
   id: z.number(),
-  first_name: z.string().min(2, {
+  first_name: z.string({ required_error: 'Ingrese su nombre' } ).min(2, {
     message: "El nombre de usuario debe ser más largo",
   }),
   id_address: z.number(),
   postcode: z.string(),
   phone: z.string(),
-  email: z.string().email("Introduce un email válido"),
-  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
-  confirmPassword: z.string().min(1, "La confirmación de la contraseña es obligatoria"),
+  email: z.string({ required_error: 'Ingrese su email' }).email("Introduce un email válido"),
+  password: z.string({ required_error: 'Ingrese su contraseña' }).min(6, "La contraseña debe tener al menos 6 caracteres"),
+  confirmPassword: z.string({ required_error: 'Repita su contraseña' }).min(1, "La confirmación de la contraseña es obligatoria"),
   created_at: z.date(),
 });
 
@@ -35,11 +35,25 @@ export const addressSchema = z.object({
     .positive({ message: "El número debe ser mayor que cero" })
     .optional(), // No es obligatorio en el formulario
   letter: z.string().optional(),
-  staircase: z.enum(['left', 'right']).optional(), // Opciones: 'left' o 'right'
+  staircase: z.enum(['left', 'right']).optional(),
   block: z.string().optional(),
   postalCode: z.string().regex(/^\d{5}$/, { message: "Código postal inválido" }), // Código postal de 5 dígitos
   city: z.string().nonempty({ message: "La ciudad es obligatoria" }),
   province: z.string().nonempty({ message: "La provincia es obligatoria" })
+});
+
+export const addressFormschema = z.object({
+  address: z.string({ required_error: 'La dirección no puede estar en blanco' }),
+  // number: z.number({ required_error: 'El número no puede estar en blanco' }).min(1, "El número debe ser mayor que 0"),
+  number: z.string({ required_error: 'El número no puede estar en blanco' }),
+  letter: z.string().optional(),
+  staircase: z.enum(['left', 'right']).optional(),
+  block: z.number().min(1, "El bloque debe ser mayor que 0").optional(),
+  // city: z.string({ required_error: 'La ciudad no puede estar en blanco' }),
+  // province: z.string({ required_error: 'La provincia no puede estar en blanco' }),
+  postalCode: z.string({ required_error: 'La código postal no puede estar en blanco' }),
+  shippingMethod: z.enum(["standard", "express", "premium"]),
+  save: z.boolean().optional()
 });
 
 export const citySchema = z.object({

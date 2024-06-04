@@ -82,11 +82,58 @@ model ProductImage {
 }
 
 //PEDIDOS
+enum order_type {
+  compra
+  cambio
+  subscripcion
+  devolucion
+}
 
-model DeliveryType {
-  id    Int     @id @default(autoincrement())
-  name  String  @unique
-  Order Order[]
+enum order_state {
+  entregado
+  devuelto
+  pendiente
+  cancelado
+}
+
+model Order {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique
+  order_type String
+  total      Float
+  status     String
+  paid       Boolean  @default(false)
+  discount   Float    @default(0)
+  created_at DateTime @default(now())
+
+  user             User         @relation(fields: [id_user], references: [id])
+  id_user          String
+  deliveryType     DeliveryType
+  id_delivery_type Int
+
+  address    Address @relation(fields: [id_address], references: [id])
+  id_address Int
+
+  OrderItem OrderItem[]
+  invoice   Invoice[]
+}
+
+model OrderItem {
+  id         Int    @id @default(autoincrement())
+  name       String
+  quantity   Int
+  unit_price Float
+
+  Order      Order   @relation(fields: [id_order], references: [id])
+  id_order   Int
+  product    Product @relation(fields: [id_product], references: [id])
+  id_product Int
+}
+
+enum DeliveryType {
+  STANDAR
+  EXPRESS
+  PREMIUM
 }
 
 model Invoice {
@@ -98,24 +145,24 @@ model Invoice {
   created_at        DateTime      @default(now())
   amount            Float
   state             String
-  paymentMethod     PaymentMethod @relation(fields: [id_payment_method], references: [id])
+  // paymentMethod     PaymentMethod @relation(fields: [id_payment_method], references: [id])
+  paymentMethod     PaymentMethod 
   id_payment_method Int
 }
 
-model PaymentMethod {
-  id              Int       @id @default(autoincrement())
-  name            String
-  // PaymentMethodName             String
-  cardHolderName  String
-  cardNumber      String
-  expirationMonth Int
-  expirationYear  Int
-  cvc             String
-  saveBillingInfo Boolean
-  user            User?     @relation(fields: [id_user], references: [id])
-  id_user         String?
-  Invoice         Invoice[]
+enum PaymentMethod {
+  CARD
+  CASH
 }
+
+// model PaymentMethod {
+//   id              Int       @id @default(autoincrement())
+//   PaymentMethodName String
+//   saveBillingInfo Boolean
+//   user            User?     @relation(fields: [id_user], references: [id])
+//   id_user         String?
+//   Invoice         Invoice[]
+// }
 
 //USUARIO
 model User {
@@ -157,40 +204,6 @@ model Address {
   orders      Order[]
 }
 
-model Order {
-  id         Int      @id @default(autoincrement())
-  code       String   @unique
-  type       String
-  total      Float
-  status     String
-  paid       Boolean  @default(false)
-  discount   Float    @default(0)
-  created_at DateTime @default(now())
-
-  user             User         @relation(fields: [id_user], references: [id])
-  id_user          String
-  deliveryType     DeliveryType @relation(fields: [id_delivery_type], references: [id])
-  id_delivery_type Int
-
-  address    Address @relation(fields: [id_address], references: [id])
-  id_address Int
-
-  OrderItem OrderItem[]
-  invoice   Invoice[]
-}
-
-model OrderItem {
-  id         Int    @id @default(autoincrement())
-  name       String
-  quantity   Int
-  unit_price Float
-
-  Order      Order   @relation(fields: [id_order], references: [id])
-  id_order   Int
-  product    Product @relation(fields: [id_product], references: [id])
-  id_product Int
-}
-
 // Optional for WebAuthn support
 model Authenticator {
   id                   String  @id @default(cuid())
@@ -206,73 +219,9 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-// const enum PaymentMethodName {
-//   CARD,
-//   PAYPAL,
-//   APPLE
-// }
+
 
 // // NEXT-AUTH
-// model Account {
-//     id               Int          @id @default(autoincrement())
-
-//   // userId            String
-//   userId            Int
-//   type              String
-//   provider          String
-//   providerAccountId String
-//   refresh_token     String?
-//   access_token      String?
-//   expires_at        Int?
-//   token_type        String?
-//   scope             String?
-//   id_token          String?
-//   session_state     String?
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-//   @@unique([provider, providerAccountId])
-// }
-
-// model Session {
-//   // id           String   @id @default(cuid())
-//   id           Int      @id @default(autoincrement())
-//   sessionToken String   @unique
-//   userId       Int
-//   // userId       String
-//   expires      DateTime
-//   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-
-// model VerificationToken {
-//   identifier String
-//   token      String
-//   expires    DateTime
-
-//   @@unique([identifier, token])
-// }
-
-// TODO POSTGREE
-// model User {
-//   id            String          @id @default(cuid())
-//   name          String?
-//   email         String          @unique
-//   emailVerified DateTime?
-//   image         String?
-//   accounts      Account[]
-//   sessions      Session[]
-//   // Optional for WebAuthn support
-//   Authenticator Authenticator[]
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
 
 // model Account {
 //   id                String  @id @default(cuid())
@@ -297,6 +246,7 @@ model Authenticator {
 // }
 
 // model Session {
+  // id           String   @id @default(cuid())
 //   sessionToken String   @unique
 //   userId       String
 //   expires      DateTime

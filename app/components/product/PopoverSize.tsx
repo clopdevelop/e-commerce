@@ -14,7 +14,6 @@ import { Input } from "@/components/shadcn/input";
 import { RadioGroupItem, RadioGroup } from "@/components/shadcn/radio-group";
 import { JSX, SVGProps, useState } from "react";
 import { SettingsIcon } from "lucide-react";
-import PayButton from "../utils/PayButton";
 import AddCartButton from "../cart/AddCartButton";
 import { Product } from "@prisma/client";
 import { PopoverClose } from "@radix-ui/react-popover";

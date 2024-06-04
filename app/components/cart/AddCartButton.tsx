@@ -46,7 +46,7 @@ export default function AddCartButton({
       };
       
       addItem(newItem, 1);
-      toast("Producto agregado al carrito!");
+      toast.success("Producto agregado al carrito!");
     } catch (error) {
       toast.error("No se pudo agregar el producto al carrito.");
     }

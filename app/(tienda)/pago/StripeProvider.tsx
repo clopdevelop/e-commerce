@@ -16,88 +16,48 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/shadcn/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/shadcn/dropdown-menu";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-} from "@/components/shadcn/pagination";
 import { Separator } from "@/components/shadcn/separator";
 import { useCart } from "@/context/CartProvider";
 import { CartItem, Order, ShippingPrices } from "@/lib/definitions";
-import { Apple, EuroIcon, Link } from "lucide-react";
 import {
   Input,
-  Select,
-  Label,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  Form,
-  RadioGroup,
-  RadioGroupItem,
 } from "@/components/shadcn";
-import UserAddress from "@/components/client/AddressConfig";
-import { Checkbox } from "@/components/shadcn/checkbox";
 import { useForm } from "react-hook-form";
-import { CityAndProvinceSelector } from "@/components/form/data-client/CityAndProvinceSelector";
-import { BuyProduct } from "@/lib/payFunctions";
 import { loadFromLocalStorage } from "@/lib/localStorage";
-import {
-  CardElement,
-  AddressElement,
-  PaymentElement,
-  useElements,
-  useStripe,
-} from "@stripe/react-stripe-js";
-import { addOrder } from "@/lib/actionscommands";
+
 
 //----------------------------------
 
 import React, { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import ClientPay from "@/components/form/data-client/ClientPay";
 import CheckoutForm from "@/components/form/pay/checkoutForm";
-import { Address, PaymentMethod, User } from "@prisma/client";
+import { Address, User } from "@prisma/client";
+
+import { AddressForm } from "@/components/form/data-client/AddressForm";
 
 interface Props {
   user: User;
   address: Address | null;
-  payment: PaymentMethod[] | null;
 }
-// This is your test publishable API key.
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "",
   { apiVersion: "2024-04-10" }
 );
 
-export default function StripeProvider({ user, address, payment }: Props) {
+export default function StripeProvider({ user, address }: Props) {
   const [open, setOpen] = useState(true);
   const [clientSecret, setClientSecret] = useState("");
   const [shippingPrice, setShippingPrice] = useState(0);
-  const [deliveryType, setDeliveryType] = useState("");
-  const form = useForm();
+
 
   const productInCart = loadFromLocalStorage();
   const [products, setProducts] = useState<CartItem[]>(productInCart);
-  const { items } = useCart();
-
+  const { items, updateItemQuantity } = useCart();
   useEffect(() => {
     setProducts(products);
   }, [products]);
+
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
@@ -126,15 +86,12 @@ export default function StripeProvider({ user, address, payment }: Props) {
   }, []);
 
   type ThemeType = "stripe" | "night" | "flat" | undefined;
-
   interface Appearance {
     theme: ThemeType;
   }
-
   const appearance: Appearance = {
     theme: "stripe",
   };
-
   const options = {
     layout: {
       type: "",
@@ -145,7 +102,10 @@ export default function StripeProvider({ user, address, payment }: Props) {
     appearance,
   };
 
-  console.log(clientSecret);
+  const handleFormSubmit = (values: any) => {
+    console.log(values);
+    setOpen(false); 
+  };
 
   return (
     <>
@@ -155,108 +115,7 @@ export default function StripeProvider({ user, address, payment }: Props) {
             <CardTitle className="text-lg pt-2">Introduce tus datos</CardTitle>
           </CardHeader>
           <CardContent className="p-6 text-sm">
-            <Form {...form}>
-              <form className="flex gap-5">
-                <div className="w-full">
-                  <div className="grid gap-4 mb-5">
-                    <div className="font-semibold">Información de Envío</div>
-
-                    <Input
-                      placeholder={address?.name ?? "C/, Avda, ctra ...."}
-                      type="text"
-                    />
-                    <div className="grid gap-4 md:grid-cols-4">
-                      <Input
-                        defaultValue={
-                          Number(address?.number) ? Number(address?.number) : 2
-                        }
-                        type="number"
-                      />
-                      <Input
-                        placeholder={address?.letter ?? "Letra"}
-                        type="text"
-                      />
-                      <Input
-                        placeholder={address?.staircase ?? "Escalera"}
-                        type="number"
-                      />
-                      <Input
-                        placeholder={address?.block ?? "Bloque"}
-                        type="number"
-                      />
-                    </div>
-                    <div className="flex gap-4 items-center">
-                      <CityAndProvinceSelector />
-                      <Input
-                        className="w-2/12"
-                        placeholder="C. P"
-                        type="text"
-                      />
-                    </div>
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name="mobile"
-                    render={({ field }) => (
-                      <>
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 mb-5">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <div className="space-y-1 leading-none">
-                            <FormLabel>
-                              Guardar la información de envío
-                            </FormLabel>
-                          </div>
-                        </FormItem>
-                      </>
-                    )}
-                  />
-                  <div className="grid gap-5 mt-12">
-                    <Label htmlFor="shippingMethod">
-                      Selecciona tu método de envío:
-                    </Label>
-                    <Select
-                      name="shippingMethod"
-                      onValueChange={(value) => {
-                        setDeliveryType(value);
-                      }}
-                      value={deliveryType}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Elige un método" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white rounded-md shadow-md">
-                        <SelectItem value="standard">
-                          Envío Estándar (3-5 días hábiles)
-                        </SelectItem>
-                        <SelectItem value="express">
-                          Envío Exprés (1-2 días hábiles)
-                        </SelectItem>
-                        <SelectItem value="premium">
-                          Envío Premium (Entrega prioritaria)
-                        </SelectItem>
-                        <SelectItem value="international">
-                          Envío Internacional (Tiempo variable)
-                        </SelectItem>
-                        <SelectItem value="subscribe">
-                          Suscripción de Envío (Descuentos exclusivos)
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </form>
-            </Form>
-            <div className="flex justify-end mt-5">
-              <Button onClick={() => setOpen(false)} type="button" size="sm">
-                Siguiente
-              </Button>
-            </div>
+            <AddressForm onSubmitForm={handleFormSubmit} ></AddressForm>
           </CardContent>
           <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
             <div className="text-xs text-muted-foreground">1/2</div>
@@ -299,6 +158,7 @@ export default function StripeProvider({ user, address, payment }: Props) {
                         <Input
                           className="w-16"
                           defaultValue={item.quantity}
+                          onChange={(e)=>updateItemQuantity(item.id,Number(e.target.value))}
                           type="number"
                           min={1}
                           max={99}

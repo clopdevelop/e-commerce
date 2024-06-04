@@ -9,6 +9,7 @@ type CartContextType = {
   removeItem: (itemId: number) => void;
   updateItemColor: (itemId: number, color: string) => void;
   updateItemSize: (itemId: number, size: number) => void;
+  updateItemQuantity: (itemId: number, quantity: number) => void;
 };
 
 export const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -71,8 +72,19 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     );
   };
 
+  const updateItemQuantity = (itemId: number, quantity: number) => {
+    setItems((prevItems) =>
+      prevItems.map((item) => {
+        if (item.id === itemId) {
+          return { ...item, quantity: quantity };
+        }
+        return item;
+      })
+    );
+  };
+
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateItemColor, updateItemSize }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateItemColor, updateItemSize, updateItemQuantity }}>
       {children}
     </CartContext.Provider>
   );

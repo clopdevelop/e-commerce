@@ -72,7 +72,7 @@ export async function getUserIDSession(): Promise<number> {
   return id_user;
 }
 
-//todo addresses
+
 export async function getAddresByUserLog() {
   const userId = await getUserIDDB();
   try {
@@ -87,7 +87,7 @@ export async function getAddresByUserLog() {
 
     return user.address;
   } catch (error) {
-    console.error("Error al añadir usuario:", error);
+    console.error("Error al obtener la dirección del usuario:", error);
     throw error;
   }
 }
@@ -96,7 +96,7 @@ export async function getPaymentMethodsByUser() {
   const userId = await getUserIDDB();
   try {
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { id: userId?.id },
       include: { paymentMethods: true },
     });
 

@@ -5,6 +5,7 @@ import { z } from "zod";
 import { UserRegisterFormSchema, userSchema } from "@/lib/schemas";
 import { Button } from "@/components/shadcn/button";
 import {
+  Input,
   Form,
   FormControl,
   FormDescription,
@@ -12,25 +13,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/shadcn/form";
-import { Input } from "@/components/shadcn/input";
+} from "@/components/shadcn";
 import { registerUser, signInGoogle } from "@/lib/actionscommands";
 import Link from "next/link";
-import { Separator } from "../shadcn/separator";
 import { AtSign } from "lucide-react";
 
 export function RegisterForm() {
-
   const form = useForm<z.infer<typeof UserRegisterFormSchema>>({
-    resolver: zodResolver(UserRegisterFormSchema)
+    resolver: zodResolver(UserRegisterFormSchema),
   });
 
-
   function onSubmit(values: z.infer<typeof UserRegisterFormSchema>) {
-    
-   console.log(values)
-    
-    registerUser(values); // Uncomment to send formData
+    console.log(values);
+
+    registerUser(values);
   }
 
   return (
@@ -122,18 +118,15 @@ export function RegisterForm() {
           </form>
         </Form>
         <div className="flex justify-center text-center text-sm">
-        o también puedes
+          o también puedes
         </div>
-        <form
-          action={signInGoogle}
-          className="text-center pb-2"
-        >
+        <form action={signInGoogle} className="text-center pb-2">
           <Button type="submit" className="mt-3 mb-3">
             <AtSign className="mr-2"></AtSign>
-            Continuar con Google</Button>
+            Continuar con Google
+          </Button>
         </form>
       </div>
-    
     </div>
   );
 }
