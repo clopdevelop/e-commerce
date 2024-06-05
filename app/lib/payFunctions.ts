@@ -15,7 +15,6 @@ import { PaymentMethod } from "@prisma/client";
       if (!res.ok) {
         throw new Error("Failed to create checkout session");
       }
-
   
       const session = await res.json();
       window.location = session.url;

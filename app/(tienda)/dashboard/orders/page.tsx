@@ -1,10 +1,6 @@
 import { columns } from "./columns"
-import { auth } from "@/auth";
 import { DataTable } from "./data-table"
-import { fetchOrdersByUserId, fetchInvoicesByUserId, getUserLogged } from "@/lib/data";
-import OrderTable from "@/components/ui/OrderTable";
-import { Order, OrderItem } from ".prisma/client";
-
+import { fetchOrdersByUserId, getUserLogged } from "@/lib/data";
 
 async function getData() {
 
@@ -19,7 +15,6 @@ async function getData() {
 export default async function DemoPage() {
   const data = await getData()
  
-  console.log(data)
   return (
     <div className="container mx-auto">
         {data && <DataTable columns={columns} data={data} />}

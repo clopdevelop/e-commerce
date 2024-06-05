@@ -1,18 +1,10 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
-
 import { Button } from "@/components/shadcn/button";
-
 import { Order } from "@/lib/definitions";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { useState } from "react";
-import {
-  FilterUserOrderStatus,
-  FilterUserOrderType,
-} from "@/components/order/FilterUserOrder";
+import { ArrowUpDown } from "lucide-react";
 import { ActionUserOrder } from "@/components/order/ActionsUserOrder";
-import { Badge, Input, TableCell } from "@/components/shadcn";
+import { Badge,  TableCell } from "@/components/shadcn";
 
 const formatDate = (date: Date) => {
   const year = date.getFullYear();

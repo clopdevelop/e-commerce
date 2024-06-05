@@ -60,7 +60,6 @@ export default function StripeProvider({ user, address }: Props) {
 
 
   useEffect(() => {
-    // Create PaymentIntent as soon as the page loads
     fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

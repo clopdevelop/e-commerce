@@ -1,5 +1,5 @@
 import { addOrder } from '@/lib/actionscommands';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
@@ -22,11 +22,9 @@ export async function POST(req: Request) {
   if (!items || items.length === 0) {
     return NextResponse.json({ error: "No items provided" }, { status: 400 });
   }
-
   if (!customer || !customer.email || !customer.name || !customer.address) {
     return NextResponse.json({ error: "Customer information is incomplete" }, { status: 400 });
   }
-
   
   const amount = items.reduce((total: any, item: { price: any; id: any; }) => {
     if (!item.price) {
@@ -49,26 +47,22 @@ export async function POST(req: Request) {
   const paymentIntent = await stripe.paymentIntents.create({
     amount: amount,
     currency: "eur",
-
-    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
-    automatic_payment_methods: {
-      enabled: true,
-    },
     metadata: metadata,
     receipt_email: customer.email, // Email del cliente para el recibo
-      shipping: {
-        name: customer.name,
-        address: {
-          line1: customer.address.line1,
-          line2: customer.address.line2,
-          city: customer.address.city,
-          state: customer.address.state,
-          postal_code: customer.address.postal_code,
-          country: customer.address.country,
-        },
+    shipping: {
+      name: customer.name,
+      address: {
+        line1: customer.address.line1,
+        line2: customer.address.line2,
+        city: customer.address.city,
+        state: customer.address.state,
+        postal_code: customer.address.postal_code,
+        country: customer.address.country,
       },
+    },
   });
-  addOrder(paymentIntent);
+  console.log(paymentIntent)
+  // addOrder(paymentIntent);
 
   const data ={
     clientSecret: paymentIntent.client_secret,

@@ -1,12 +1,9 @@
 import {addOrder} from '@/lib/actionscommands';
-// import { headers } from 'next/headers';
 import { headers } from "next/headers";
 import Stripe from "stripe";
 
 const stripeSecretKey: string = process.env.STRIPE_SECRET_KEY ?? "";
-
 const stripe = new Stripe(stripeSecretKey) ?? "";
-
 const endpointSecret = "whsec_YC3GYnYa07HQ42Z8if0Vf1TrovCKZIJz"
 
 export async function POST(request: Request) {
