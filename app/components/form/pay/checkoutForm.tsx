@@ -3,16 +3,15 @@ import {
   PaymentElement,
   useStripe,
   useElements,
+  LinkAuthenticationElement,
 } from "@stripe/react-stripe-js";
 import { Button } from "@/components/shadcn";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 
 
 export default function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
-
-
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,20 +25,6 @@ export default function CheckoutForm() {
 
     setIsLoading(true);
 
-    //CONST ERROR, PAYMENTMETHOD = CREATE PAYMENT METHOD
-    //TYPE: CARD
-    //CARD: ELEMENTS.GET(CARD)
-
-    // SI NO EXISTE EL ERROR
-    // MOSTRAR EL PAYMENT METHOD
-    // EL PAYMENT METHOD CONTIENE UN ID
-    // TENDREMOS QUE ENVIAR EL ID AL BACKEND
-    // Y EN EL HACER LA PETICIÓN A STRIPE
-    // const { error, paymentMethod } = await stripe.createPaymentMethod({
-    //   type: 'card',
-    //   card: elements.getElement(PaymentElement),
-    // });
-
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -49,70 +34,48 @@ export default function CheckoutForm() {
     });
   
 
-    if (error) {
-      setMessage("Error de confirmación de pago:");
+    if (error.type === "card_error" || error.type === "validation_error") {
+      setMessage(error.message!);
     } else {
-      setMessage("Pago confirmado exitosamente.");
+      setMessage("An unexpected error occured.");
     }
 
-//-------------- OTRA FORMA
-    // Trigger form validation and wallet collection
-  // const {error: submitError} = await elements.submit();
-  // if (submitError) {
-  //   handleError(submitError);
-  //   return;
-  // }
-  
-     // Create the PaymentIntent and obtain clientSecret
-  // const res = await fetch("/create-intent", {
-  //   method: "POST",
-  //   headers: {"Content-Type": "application/json"},
-  // });
-
-  // const {client_secret: clientSecret} = await res.json();
-
-  // // Use the clientSecret and Elements instance to confirm the setup
-  // const {error} = await stripe.confirmPayment({
-  //   elements,
-  //   clientSecret,
-  //   confirmParams: {
-  //     return_url: 'https://example.com/order/123/complete',
-  //   },
-  //   // Uncomment below if you only want redirect for redirect-based payments
-  //   // redirect: "if_required",
-  // });
-
-  // if (error) {
-  //   handleError(error);
-  // }
-
-
     setIsLoading(false);
-
-
-
   };
 
-
-
   return (
-          <form id="payment-form" data-secret="{{ client_secret }}" onSubmit={handleSubmit}>
+          <form id="payment-form" onSubmit={handleSubmit}>
+            <LinkAuthenticationElement id="link-authentication-element"
+            className="mb-6"
+        // Access the email value like so:
+        // onChange={(event) => {
+        //  setEmail(event.value.email);
+        // }}
+        //
+        // Prefill the email field like so:
+        options={{defaultValues: {email: 'foo@bar.com'}}}
+        />
             <PaymentElement
               id="payment-element"
             />
+            <div
+            className=" flex justify-end">
             <Button
               disabled={isLoading || !stripe || !elements}
               id="submit"
-              className="my-4"
+              className="mt-6"
             >
               <span id="button-text">
                 {isLoading ? (
-                  <div className="spinner" id="spinner"></div>
+                  <div className="spinner"></div>
                 ) : (
-                  "Pay now"
+                  // "Pagar"
+                  "Hacer Pedido"
                 )}
               </span>
             </Button>
+            </div>
+            {message && <div id="payment-message">{message}</div>}
           </form>
   );
 }

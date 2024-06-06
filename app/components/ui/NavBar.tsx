@@ -87,7 +87,7 @@ export async function NavBar() {
             </MenubarContent>
           </div>
         </MenubarMenu>
-        <div className="flex">
+        <div className="flex gap-4">
           <div className="flex justify-center items-center">
             <ModeToggle></ModeToggle>
           </div>

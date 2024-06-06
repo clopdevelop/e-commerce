@@ -7,26 +7,20 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from "@/components/shadcn/menubar";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/shadcn/avatar";
-
-
-
 import { signOut } from "@/auth";
 import Link from "next/link";
 import { Button } from "../shadcn/button";
-
+import AvatarNameUser from "./AvatarNameUser";
+import { getUserLogged  } from '@/lib/data'
 
 async function Profile() {
   //todo no funciona con google auth a
 
+  const user = await getUserLogged() 
   return (
     <MenubarMenu>
       <MenubarTrigger>
-        <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+       <AvatarNameUser value={user?.name || ''}/>
       </MenubarTrigger>
       <MenubarContent>
       {/*No funciona con <MenubarItem> porque no se ejecuta la lógica del formulario*/}

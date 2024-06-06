@@ -23,15 +23,19 @@ import { addressFormschema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { CityAndProvinceSelector } from "./CityAndProvinceSelector";
+import { useRouter } from "next/navigation";
+import { Address } from "@prisma/client";
 
 type AddressFormInputs = z.infer<typeof addressFormschema>;
 
 interface AddressFormProps {
+  address?: Address | null
   onSubmitForm: (values: AddressFormInputs) => void;
 }
 
-export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm }) => {
+export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm, address }) => {
   const [deliveryType, setDeliveryType] = useState("");
+  const router = useRouter();
 
   const form = useForm<AddressFormInputs>({
     resolver: zodResolver(addressFormschema),
@@ -40,7 +44,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm }) => {
 
   function onSubmit(values: AddressFormInputs) {
     console.log(values);
-    onSubmitForm(values);
+    return values
   }
 
   return (
@@ -129,12 +133,12 @@ export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm }) => {
                   control={control}
                   name="postalCode"
                   render={({ field }) => (
-                    <FormItem className="grid gap-2">
-                      <FormLabel>C. P</FormLabel>
+                    <FormItem className="grid gap-1 pt-2 pb-8">
+                      <FormLabel>Código Postal</FormLabel>
                       <FormControl>
                         <Input
-                          className="w-2/12"
-                          placeholder="C. P"
+                        className="w-6/12"
+                          placeholder="C. P "
                           {...field}
                         />
                       </FormControl>
@@ -199,9 +203,6 @@ export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm }) => {
           </div>
         </div>
         <div className="flex justify-end mt-5">
-          <Button type="submit" size="sm">
-            Siguiente
-          </Button>
         </div>
       </form>
     </Form>

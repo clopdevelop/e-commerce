@@ -16,7 +16,7 @@ import {
   MapPinIcon,
   LinkedinIcon,
 } from "lucide-react";
-
+import AvatarUser from "./avatarUser";
 export default async function Home() {
   // const authentication = await auth();
   // //? Otra forma de manejar el acceso a rutas
@@ -51,10 +51,7 @@ export default async function Home() {
       <div className="grid gap-12 grid-cols-2">
         <div className="grid md:grid-cols-[150px_1fr] gap-6">
           <div className="flex items-center justify-center">
-            <Avatar className="w-[150px] h-[150px] border-4 border-gray-100 dark:border-gray-800">
-              {/* <img src="/placeholder.svg" alt="User Avatar" /> */}
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
+         <AvatarUser value={user?.name || ''}></AvatarUser>
           </div>
           <div className="grid gap-4">
             <div className="grid gap-1">

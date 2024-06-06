@@ -57,38 +57,38 @@ export async function POST(req: Request) {
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency: "eur",
-      metadata: metadata,
-      description: "Product name",
-      // payment_method: ID DEL PAYMENTMETHOD FRONTEND,
-      receipt_email: customer.email, // Email del cliente para el recibo
-      shipping: {
-        name: customer.name,
-        address: {
-          line1: customer.address.line1, //e.g., street, PO Box, or company name
-          line2: customer.address.line2, // (e.g., apartment, suite, unit, or building).
-          city: customer.address.city,
-          state: customer.address.state, //State, county, province, or region.
-          postal_code: customer.address.postal_code,
-        },
-        phone: "+34 123 123 123" //Recipient phone (including extension).
-      },
-      // CON ESTO SOLO SE ACTUALIZA EL ESTADO PARA PODER CONFIRMARLO
-      // PARA CONFIRMARLO ⬇
-      // confirmation_method: 'manual'
-      confirm: true,
+      // metadata: metadata,
+      // description: "Product name",
+      // // payment_method: ID DEL PAYMENTMETHOD FRONTEND,
+      // receipt_email: customer.email, // Email del cliente para el recibo
+      // shipping: {
+      //   name: customer.name,
+      //   address: {
+      //     line1: customer.address.line1, //e.g., street, PO Box, or company name
+      //     line2: customer.address.line2, // (e.g., apartment, suite, unit, or building).
+      //     city: customer.address.city,
+      //     state: customer.address.state, //State, county, province, or region.
+      //     postal_code: customer.address.postal_code,
+      //   },
+      //   phone: "+34 123 123 123" //Recipient phone (including extension).
+      // },
+      // // CON ESTO SOLO SE ACTUALIZA EL ESTADO PARA PODER CONFIRMARLO
+      // // PARA CONFIRMARLO ⬇
+      // // confirmation_method: 'manual'
+      // confirm: true,
     });
     console.log(paymentIntent);
    
     // addOrder(paymentIntent);
 
     // "PAGO SATISFACTORIO"
-    // const data ={
-    //   clientSecret: paymentIntent.client_secret,
-    // };
-    // return NextResponse.json(data)
+    const data ={
+      clientSecret: paymentIntent.client_secret,
+    };
+    return NextResponse.json(data)
   } catch (error) {
     // return error.raw.message
-    return NextResponse.json(error)
+    return NextResponse.json(error.raw.message)
   }
 }
 
