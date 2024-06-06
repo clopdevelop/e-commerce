@@ -47,7 +47,7 @@ const stripePromise = loadStripe(
 
 export default function StripeProvider({ user, address }: Props) {
   const [open, setOpen] = useState(true);
-  const [clientSecret, setClientSecret] = useState("");
+  const [clientSecret, setClientSecret] = useState("pi_3PON8nRxuIsR3WCz1cHd4CGd_secret_KI5hi6PXl1pk3GkWE0GhjyGhY");
   const [shippingPrice, setShippingPrice] = useState(0);
 
 
@@ -59,30 +59,30 @@ export default function StripeProvider({ user, address }: Props) {
   }, [products]);
 
 
-  useEffect(() => {
-    fetch("/api/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        items: [{ id: "xl-tshirt", price: 1000 }],
-        customer: {
-          id: "clwly2gxm0000hteqnutne391",
-          name: "Usuario",
-          email: "usuario@gmail.com",
-          address: {
-            line1: "123 Main St",
-            line2: "",
-            city: "Anytown",
-            state: "CA",
-            postal_code: "12345",
-            country: "US",
-          },
-        },
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
-  }, []);
+  // useEffect(() => {
+  //   fetch("/api/checkout", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       items: [{ id: "xl-tshirt", price: 1000 }],
+  //       customer: {
+  //         id: "clwly2gxm0000hteqnutne391",
+  //         name: "Usuario",
+  //         email: "usuario@gmail.com",
+  //         address: {
+  //           line1: "123 Main St",
+  //           line2: "",
+  //           city: "Anytown",
+  //           state: "CA",
+  //           postal_code: "12345",
+  //           country: "US",
+  //         },
+  //       },
+  //     }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => setClientSecret(data.clientSecret));
+  // }, []);
 
   type ThemeType = "stripe" | "night" | "flat" | undefined;
   interface Appearance {
@@ -108,7 +108,7 @@ export default function StripeProvider({ user, address }: Props) {
 
   return (
     <>
-      {open && (
+      {/* {open && (
         <Card className="overflow-hidden w-9/12 mx-auto">
           <CardHeader className="flex flex-row items-start bg-muted/50">
             <CardTitle className="text-lg pt-2">Introduce tus datos</CardTitle>
@@ -120,8 +120,8 @@ export default function StripeProvider({ user, address }: Props) {
             <div className="text-xs text-muted-foreground">1/2</div>
           </CardFooter>
         </Card>
-      )}
-      {!open && clientSecret && (
+      )} */}
+      {open && clientSecret && (
         <Elements options={options} stripe={stripePromise}>
           <Card className="overflow-hidden w-9/12 mx-auto">
             <CardHeader className="flex flex-row items-start bg-muted/50">
@@ -144,7 +144,7 @@ export default function StripeProvider({ user, address }: Props) {
               <div className="w-full">
                 <div className="grid gap-3">
                   <div className="font-semibold">Detalles del Pedido</div>
-                  <ul className="grid gap-3">
+                  {/* <ul className="grid gap-3">
                     {items?.map((item) => (
                       <li
                         key={item.id}
@@ -202,7 +202,7 @@ export default function StripeProvider({ user, address }: Props) {
                         €
                       </span>
                     </li>
-                  </ul>
+                  </ul> */}
                 </div>
                 <Separator className="my-4" />
               </div>

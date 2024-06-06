@@ -48,17 +48,23 @@ export default function CheckoutForm() {
     e.preventDefault();
 
     if (!stripe || !elements) {
-      // Stripe.js hasn't yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
 
     setIsLoading(true);
 
+    //CONST ERROR, PAYMENTMETHOD = CREATE PAYMENT METHOD
+    //TYPE: CARD
+    //CARD: ELEMENTS.GET(CARD)
+
+    //SI NO EXISTE EL ERROR
+    //MOSTRAR EL PAYMENT METHOD
+    // EL PAYMENT METHOD CONTIENE UN ID
+    // TENDREMOS QUE ENVIAR EL ID AL BACKEND 
+    //Y EN EL HACER LA PETICIÓN A STRIPE
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // Make sure to change this to your payment completion page
         return_url: "http://localhost:3000/?success=true",
         // receipt_email: 'correo electrónico',
       },
@@ -79,7 +85,6 @@ export default function CheckoutForm() {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       <Button disabled={isLoading || !stripe || !elements} id="submit" className="my-4">
         <span id="button-text">
