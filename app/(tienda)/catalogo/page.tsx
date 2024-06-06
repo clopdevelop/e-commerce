@@ -9,6 +9,7 @@ import { Filters } from "@/components/products/Filters";
 import { Card, CardContent, CardFooter } from "@/components/shadcn";
 import { ProductSkeletonCard } from "@/components/skeletons/ProductSkeletonCard";
 import ProductCard from "@/components/product/ProductCard";
+import { StripeMessage } from "@/components/stripe/StripeMessage";
 
 export const dynamicParams = false;
 
@@ -46,6 +47,7 @@ export default async function Home({
 
   return (
     <>
+    <StripeMessage></StripeMessage>
       {/* <h1 className="flex justify-center  mt-5"> */}
       <h1 className="font-semibold text-4xl leading-none tracking-tight p-5 text-center">
         TIENDA

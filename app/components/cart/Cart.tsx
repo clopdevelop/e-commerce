@@ -65,7 +65,7 @@ function Cart() {
                   }
                 `}</style>
                 <div
-                  className={`w-4 h-4 rounded-full ${colors[product.color]}`}
+                  className={`w-4 h-4 rounded-full ${colors[product.color||'default']}`}
                 />
                 <span className="bg-gray-200 dark:bg-gray-800 p-1  rounded-md text-gray-700 dark:text-gray-300 text-sm font-medium">
                 Talla:{' '}

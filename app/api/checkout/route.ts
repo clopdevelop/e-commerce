@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   }
   if (!customer || !customer.email || !customer.name || !customer.address) {
     return NextResponse.json(
-      { error: "Customer information is incomplete" },
+      { error: "Información del usuario incompleta" },
       { status: 400 }
     );
   }
@@ -55,39 +55,47 @@ export async function POST(req: Request) {
   try {
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount,
+      amount,
       currency: "eur",
       metadata: metadata,
-      description: "nameProduct",
+      description: "Product name",
       // payment_method: ID DEL PAYMENTMETHOD FRONTEND,
       receipt_email: customer.email, // Email del cliente para el recibo
       shipping: {
         name: customer.name,
         address: {
-          line1: customer.address.line1,
-          line2: customer.address.line2,
+          line1: customer.address.line1, //e.g., street, PO Box, or company name
+          line2: customer.address.line2, // (e.g., apartment, suite, unit, or building).
           city: customer.address.city,
-          state: customer.address.state,
+          state: customer.address.state, //State, county, province, or region.
           postal_code: customer.address.postal_code,
-          country: customer.address.country,
         },
+        phone: "+34 123 123 123" //Recipient phone (including extension).
       },
       // CON ESTO SOLO SE ACTUALIZA EL ESTADO PARA PODER CONFIRMARLO
       // PARA CONFIRMARLO ⬇
+      // confirmation_method: 'manual'
       confirm: true,
     });
     console.log(paymentIntent);
+   
     // addOrder(paymentIntent);
 
+    // "PAGO SATISFACTORIO"
     // const data ={
     //   clientSecret: paymentIntent.client_secret,
     // };
     // return NextResponse.json(data)
-
-    return "pago satisfactorio";
-    // "PAGO SATISFACTORIO"
   } catch (error) {
     // return error.raw.message
-    return "pago error"
+    return NextResponse.json(error)
   }
+}
+
+export async function GET(req: Request, res: any) {
+    // const intent = Fetch or create the PaymentIntent
+    // const paymentIntent = await stripe.paymentIntents.create({
+
+    // res.render('checkout', { client_secret: intent.client_secret });
+
 }
