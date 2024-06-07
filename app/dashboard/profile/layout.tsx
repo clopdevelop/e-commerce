@@ -42,7 +42,7 @@ interface SettingsLayoutProps {
 
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto">
        <h1 className="text-2xl font-bold">Configuración</h1>
        <Separator className="my-4"></Separator>
       <div className="flex flex-col lg:flex-row lg:space-x-12">

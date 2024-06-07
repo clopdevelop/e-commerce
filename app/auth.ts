@@ -3,7 +3,7 @@ import type { NextAuthConfig, User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { z } from "zod";
-import { getUser, getUserByEmail } from "./lib/data";
+import {  getUserByEmail } from "./lib/data";
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import prisma from "./lib/prisma";
 
@@ -91,7 +91,7 @@ const authConfig: NextAuthConfig = {
     }),
   ],
   trustHost: true,
-  useSecureCookies: true,
+  // useSecureCookies: true,
   // adapter: PrismaAdapter(prisma),
   // basePath?: string, // La ruta base de los puntos de conexión de la API de Auth.js.
   // cookies?: Partial< CookiesOptions >,
