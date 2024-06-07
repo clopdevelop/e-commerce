@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/globals.css";
-import Providers from "@/components/providers"
+import Providers from "@/components/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -9,8 +9,8 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   description: "Implementación General de una Tienda Web",
   openGraph: {
-    type: 'website'
-  }
+    type: "website",
+  },
 };
 
 import { NavBar } from "@/components/ui/NavBar";
@@ -20,16 +20,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
-    <>
       <Providers>
         <NavBar></NavBar>
-        
-        <main>
-          {children}
-        </main>
+        <div className="flex flex-col flex-grow">
+        {children}</div>
       </Providers>
-      </>
   );
 }

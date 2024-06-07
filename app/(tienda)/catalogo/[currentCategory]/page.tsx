@@ -12,7 +12,7 @@ import type { Metadata } from "next";
 import Categories from "@/components/products/Categories";
 import { Card, CardContent } from "@/components/shadcn";
 import { Filters } from "@/components/products/Filters";
-import { ProductSkeletonCard } from "@/components/product/ProductSkeletonCard";
+import { ProductSkeletonCard } from "@/components/skeletons/ProductSkeletonCard";
 
 // Los segmentos dinámicos no incluidos en devolverán un error 404
 export const dynamicParams = false;

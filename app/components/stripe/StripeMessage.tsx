@@ -43,12 +43,37 @@
 //   }, [stripe, clientSecret]);
 //   return <>{message && <div id="payment-message">{message}</div>}</>;
 // }
-'use client';
+"use client";
+import { AlertCircle, CheckCircle } from "lucide-react";
 
-export function StripeMessage() {
+import { Alert, AlertDescription, AlertTitle } from "@/components/shadcn/alert";
+
+export function StripeMessage({type}:{type:string}) {
   return (
-    <div>
-      <h1>Client Component</h1>
+    <div className="flex justify-center">
+      {type === "true" ? (
+        <Alert
+          variant="default"
+          className="absolute top-10 z-50 bg-green-500 text-black w-50 animate-combo pointer-events-none"
+        >
+          <CheckCircle className="h-4 w-4" color="black" />
+          <AlertTitle className="font-bold">Pedido Completado</AlertTitle>
+          <AlertDescription>
+            Todo ha salido bien. Gracias por su compra.
+          </AlertDescription>
+        </Alert>
+      ) : (
+        <Alert
+          variant="default"
+          className="absolute top-10 z-50 bg-red-500 text-black w-50 animate-combo pointer-events-none"
+        >
+          <AlertCircle className="h-4 w-4" color="black" />
+          <AlertTitle className="font-bold">Pedido Cancelado</AlertTitle>
+          <AlertDescription>
+            Hubo un problema con su compra. Por favor, inténtelo de nuevo.
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 }

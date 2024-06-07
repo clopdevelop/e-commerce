@@ -13,14 +13,6 @@ interface Props {
 
 export function ProfileForm({ user }: Props) {
   return (
-    <>
-      <div>
-        <h3 className="text-lg font-medium">Perfil</h3>
-        <p className="text-sm text-muted-foreground">
-          Este son los datos de tu perfil que podrán ver otros usuarios.
-        </p>
-      </div>
-      <Separator />
       <form action={updateProfile} className="space-y-8">
         {/* todo solo permitir cambiar el username cada 30 días */}
         <div className="flex flex-col gap-3">
@@ -42,6 +34,5 @@ export function ProfileForm({ user }: Props) {
         </div>
         <Button type="submit">Actualizar Perfil</Button>
       </form>
-    </>
   );
 }

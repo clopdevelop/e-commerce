@@ -34,12 +34,12 @@ import AddCartButton from "../cart/AddCartButton";
 import { Toaster } from "sonner";
 
 const colors: any = {
-    default: "bg-black-and-white-lines",
-    blue: "bg-blue-500",
-    green: "bg-green-500",
-    red: "bg-red-500",
-    yellow: "bg-yellow-500",
-  };
+  default: "bg-black-and-white-lines",
+  blue: "bg-blue-500",
+  green: "bg-green-500",
+  red: "bg-red-500",
+  yellow: "bg-yellow-500",
+};
 
 export default function ProductInfo({ product }: { product: Product }) {
   const size = "";
@@ -47,25 +47,24 @@ export default function ProductInfo({ product }: { product: Product }) {
 
   return (
     // <div className="flex min-h-screen w-full">
-    <>
-        <div className="grid w-9/12 mx-auto">
-          <main className="flex flex-col gap-4 pt-6 md:gap-8 md:pt-10">
-            <div className="flex flex-row justify-around w-full border p-10 ">
-              <Image
-                alt="Product image"
-                className="aspect-square rounded-md object-cover"
-                src={product?.ProductImage?.[0]?.url || ""}
-                width={300}
-                height={300}
-                priority={true}
-              />
-              <div className="grid gap-4">
-                <h1 className="text-2xl font-semibold tracking-tight lg:text-4xl md:tracking-tighter">
-                  {product?.name}
-                </h1>
-                <div className="flex items-center gap-4">
-                  {/* todo añadir valoraciones */}
-                  {/* <div className="flex items-center gap-0.5">
+    <div className="grid w-9/12 mx-auto">
+      <main className="flex flex-col gap-4 pt-6 md:gap-8 md:pt-10">
+        <div className="flex flex-row justify-around w-full border p-10 ">
+          <Image
+            alt="Product image"
+            className="aspect-square rounded-md object-cover"
+            src={product?.ProductImage?.[0]?.url || ""}
+            width={300}
+            height={300}
+            priority={true}
+          />
+          <div className="grid gap-4">
+            <h1 className="text-2xl font-semibold tracking-tight lg:text-4xl md:tracking-tighter">
+              {product?.name}
+            </h1>
+            <div className="flex items-center gap-4">
+              {/* todo añadir valoraciones */}
+              {/* <div className="flex items-center gap-0.5">
       <StarIcon className="w-5 h-5 fill-primary" />
       <StarIcon className="w-5 h-5 fill-primary" />
       <StarIcon className="w-5 h-5 fill-primary" />
@@ -75,29 +74,28 @@ export default function ProductInfo({ product }: { product: Product }) {
         (3.5)
       </span>
     </div> */}
-                  <div className="text-3xl font-semibold md:text-4xl lg:text-5xl">
-                    {product?.price}€
-                  </div>
-                </div>
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <Label className="text-base" htmlFor="description">
-                      Descripcion
-                    </Label>
-                    <p>Descripcion</p>
-                  </div>
-                </div>
-                <AddCartButton
-                  product={product}
-                  color={color}
-                  size={size}
-                ></AddCartButton>
+              <div className="text-3xl font-semibold md:text-4xl lg:text-5xl">
+                {product?.price}€
               </div>
             </div>
-            <Toaster richColors></Toaster>
-          </main>
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Label className="text-base" htmlFor="description">
+                  Descripcion
+                </Label>
+                <p>Descripcion</p>
+              </div>
+            </div>
+            <AddCartButton
+              product={product}
+              color={color}
+              size={size}
+            ></AddCartButton>
+          </div>
         </div>
-    </>
+        <Toaster richColors></Toaster>
+      </main>
+    </div>
   );
 }
 

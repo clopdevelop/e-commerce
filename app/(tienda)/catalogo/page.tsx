@@ -26,12 +26,15 @@ export default async function Home({
     page?: string;
     min?: string;
     max?: string;
+    success?: string;
   };
 }) {
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
   const min = Number(searchParams?.min) || 0;
   const max = Number(searchParams?.max) || 100;
+  const success = searchParams?.success || "";
+
 
   // const totalPages = await fetchProductsPages(query, productsOnPage);
   const productsOnPage = 3;
@@ -47,7 +50,7 @@ export default async function Home({
 
   return (
     <>
-    <StripeMessage></StripeMessage>
+    {success && <StripeMessage type={success}></StripeMessage>}
       {/* <h1 className="flex justify-center  mt-5"> */}
       <h1 className="font-semibold text-4xl leading-none tracking-tight p-5 text-center">
         TIENDA

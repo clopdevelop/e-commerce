@@ -26,13 +26,6 @@ export async function AccountForm() {
 
   return (
     <>
-      <div>
-        <h3 className="text-lg font-medium">Cuenta</h3>
-        <p className="text-sm text-muted-foreground">
-          Actualiza los datos de tu cuenta.
-        </p>
-      </div>
-      <Separator />
       {/* <form action={updateUserEmail}>
         <Label>Email</Label>
         <Input name="email" placeholder={user?.email} />

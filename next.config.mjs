@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     poweredByHeader: false,
+    experimental: {
+      serverActions: {
+        allowedOrigins: ["localhost:3000"],
+        // Asegúrate de tener la versión next@v14.0.2-canary.4 o superior
+        // Puedes necesitar usar la propiedad allowedForwardedHosts dependiendo de tu versión exacta
+        allowedForwardedHosts: ["rwn8jxt0-3000.uks1.devtunnels.ms"],
+      }
+    },
     async redirects() {
       return [
         {
@@ -22,6 +30,7 @@ const nextConfig = {
         },
       ]
     },
+    trustProxy: ['rwn8jxt0-3000.uks1.devtunnels.ms', 'https'],
     images: {
         // domains: ['res.cloudinary.com'], // Esta línea es la antigua configuración
         // remotePatterns: ['https://res.cloudinary.com/*'], // Nueva configuración utilizando 

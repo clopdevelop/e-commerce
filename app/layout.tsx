@@ -2,24 +2,24 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./context/theme-provider";
-import CookieConsent  from "@/components/cookie-consent";
-import type { Viewport } from 'next'
+import CookieConsent from "@/components/cookie-consent";
+import type { Viewport } from "next";
 import Footer from "./components/ui/Footer";
- 
+
 export const viewport: Viewport = {
-  themeColor: 'black',
-}
+  themeColor: "black",
+};
 
 const inter = Inter({ subsets: ["latin"] });
 
-const { SITE_NAME, AUTHOR, GITHUB, APPLICATION_NAME } = process.env
+const { SITE_NAME, AUTHOR, GITHUB, APPLICATION_NAME } = process.env;
 export const metadata: Metadata = {
-  metadataBase: new URL('https://Tienda.com'),
+  metadataBase: new URL("https://Tienda.com"),
   alternates: {
-    canonical: '/',
+    canonical: "/",
     languages: {
-      'en-US': '/en-US',
-      'de-DE': '/de-DE',
+      "en-US": "/en-US",
+      "de-DE": "/de-DE",
     },
   },
   title: {
@@ -27,10 +27,10 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
     absolute: SITE_NAME,
   },
-  generator: 'Next.js',
+  generator: "Next.js",
   applicationName: APPLICATION_NAME,
-  referrer: 'origin-when-cross-origin',
-  keywords: ['Next.js', 'React', 'JavaScript'],
+  referrer: "origin-when-cross-origin",
+  keywords: ["Next.js", "React", "JavaScript"],
   authors: [{ name: AUTHOR, url: GITHUB }],
   creator: AUTHOR,
   publisher: AUTHOR,
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     //   'max-snippet': -1,
     // },
   },
-   // openGraph: {
+  // openGraph: {
   //   title: 'Next.js',
   //   description: 'The React Framework for the Web',
   //   url: 'https://nextjs.org',
@@ -75,21 +75,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
-      <html lang="es">
-        <body className={inter.className}>
+    <html lang="es">
+      <body className={inter.className}>
         <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          {/* <CookieConsent /> */}
-          <Footer></Footer>
-          </ThemeProvider>
-        </body>
-      </html>
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+           <div className="flex flex-col min-h-screen">
+            <div className="flex flex-col flex-grow">{children}</div>
+            {/* <CookieConsent /> */}
+            <Footer></Footer>
+          </div>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

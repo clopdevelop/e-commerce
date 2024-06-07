@@ -49,7 +49,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   try {
-
     return (
       <>
         <ProductView id={params.id}></ProductView>;

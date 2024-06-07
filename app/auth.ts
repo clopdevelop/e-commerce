@@ -91,6 +91,7 @@ const authConfig: NextAuthConfig = {
     }),
   ],
   trustHost: true,
+  useSecureCookies: true,
   // adapter: PrismaAdapter(prisma),
   // basePath?: string, // La ruta base de los puntos de conexión de la API de Auth.js.
   // cookies?: Partial< CookiesOptions >,

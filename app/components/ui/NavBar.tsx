@@ -40,6 +40,7 @@ import {
 } from "@/components/shadcn/sheet";
 import { Button, buttonVariants } from "../shadcn/button";
 import Cart from "@/components/cart/Cart";
+import { MobileMenu } from "./mobile-menu";
 
 export async function NavBar() {
   const session = await auth();
@@ -47,7 +48,6 @@ export async function NavBar() {
   const email = session ? session.user?.email ?? "" : "";
 
   return (
-    <>
       <Menubar className="py-10 flex w-full items-center justify-between px-4 sm:px-6 lg:px-8">
         <svg
           className="block text-white w-36"
@@ -65,35 +65,14 @@ export async function NavBar() {
           />
         </svg>
         <NavigationMenuDemo></NavigationMenuDemo>
-        <MenubarMenu>
-          <div className="p-2 sm:hidden">
-            <MenubarTrigger>Menu</MenubarTrigger>
-            <MenubarContent>
-              <Link href={"/dashboard"}>
-                <MenubarItem>Inicio</MenubarItem>
-              </Link>
-              <Link href={"/catalogo"}>
-                <MenubarItem>Tienda</MenubarItem>
-              </Link>
-              
-              <MenubarSeparator />
-              <Link href={"/entrada"}>
-                <MenubarItem>Iniciar sesión</MenubarItem>
-              </Link>
-              <MenubarSeparator />
-              <Link href={"/registro"}>
-                <MenubarItem>Registrate</MenubarItem>
-              </Link>
-            </MenubarContent>
-          </div>
-        </MenubarMenu>
+       <MobileMenu></MobileMenu>
         <div className="flex gap-4">
           <div className="flex justify-center items-center">
             <ModeToggle></ModeToggle>
           </div>
-        <Profile></Profile>
+          <Profile></Profile>
         </div>
+        
       </Menubar>
-    </>
   );
 }

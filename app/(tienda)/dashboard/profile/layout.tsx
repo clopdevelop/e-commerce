@@ -22,10 +22,10 @@ const sidebarNavItems = [
     title: "Dirección",
     href: "/dashboard/profile/dir",
   },
-  // {
-  //   title: "Notificaciones",
-  //   href: "/dashboard/profile/notifications",
-  // },
+  {
+    title: "Método de Pago",
+    href: "/dashboard/profile/payment-method",
+  },
   // {
   //   title: "Display",
   //   href: "/examples/forms/display",
@@ -42,17 +42,15 @@ interface SettingsLayoutProps {
 
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
-    <div className="container mx-auto">
-        <div className="space-y-0.5">
-          <h2 className="text-2xl font-bold tracking-tight">Configuración</h2>
-        </div>
-        <Separator className="my-4" />
-        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <aside className="w-24 lg:w-1/5">
-            <SidebarNav items={sidebarNavItems} />
-          </aside>
-          <div className="flex-1 w-96 m-1 lg:max-w-2xl">{children}</div>
-        </div>
+    <div className="container mx-auto px-4">
+       <h1 className="text-2xl font-bold">Configuración</h1>
+       <Separator className="my-4"></Separator>
+      <div className="flex flex-col lg:flex-row lg:space-x-12">
+        <aside className="w-full lg:w-1/5">
+          <SidebarNav items={sidebarNavItems} />
+        </aside>
+        <div className="flex-1">{children}</div>
+      </div>
     </div>
   );
 }
