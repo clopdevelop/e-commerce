@@ -26,14 +26,6 @@ const sidebarNavItems = [
     title: "Método de Pago",
     href: "/dashboard/profile/payment-method",
   },
-  // {
-  //   title: "Display",
-  //   href: "/examples/forms/display",
-  // },
-  // {
-  //   title: "Appearance",
-  //   href: "/examples/forms/appearance",
-  // },
 ];
 
 interface SettingsLayoutProps {

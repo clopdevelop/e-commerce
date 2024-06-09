@@ -3,7 +3,7 @@ import { AccountForm } from "./account-form";
 import { auth } from "@/auth";
 import { User } from "@/lib/definitions";
 import { User as NextAuthUser } from "next-auth";
-import { convertNextAuthUserToMyUser } from "../../../../lib/utils";
+import { convertNextAuthUserToMyUser } from "@/lib/utils"; 
 
 export default async function SettingsAccountPage() {
   const authentication = await auth();

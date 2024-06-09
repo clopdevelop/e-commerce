@@ -8,30 +8,19 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model City {
-  id          Int       @id @default(autoincrement())
-  city        String
-  province    Province  @relation(fields: [id_province], references: [id_province])
-  id_province Int
-  Address     Address[]
-}
-
-model Province {
-  id_province Int    @id @default(autoincrement())
-  iso_code    String @unique
-  province    String
-  City        City[]
-}
-
 //PRODUCTO
+model Category {
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  Product Product[]
+}
+
 model Product {
   id          Int       @id @default(autoincrement())
-  name        String
-  description String?
-  state       String?
-  price       Float     @default(0)
-  discount    Int?      @default(0)
-  material    String?
+  name        String    @unique
+  description String
+  state       String
+  price       Float
   created_at  DateTime  @default(now())
   last_update DateTime? @updatedAt
 
@@ -43,34 +32,38 @@ model Product {
   OrderItem    OrderItem[]
 }
 
-model Category {
-  id      Int       @id @default(autoincrement())
-  name    String    @unique
-  Product Product[]
+enum Color {
+  DEFAULT
+  BLUE
+  GREEN
+  RED
+  YELLOW
 }
 
-model Color {
-  id       Int              @id @default(autoincrement())
-  name     String
-  variants ProductVariant[]
-}
-
-model Size {
-  id       Int              @id @default(autoincrement())
-  value    Int
-  variants ProductVariant[]
+enum Size {
+  SIZE_35
+  SIZE_36
+  SIZE_37
+  SIZE_38
+  SIZE_39
+  SIZE_40
+  SIZE_41
+  SIZE_42
+  SIZE_43
+  SIZE_44
+  SIZE_45
+  SIZE_46
 }
 
 model ProductVariant {
   id        Int     @id @default(autoincrement())
-  code      String
   stock     Int
   productId Int
   product   Product @relation(fields: [productId], references: [id])
-  colorId   Int
-  color     Color   @relation(fields: [colorId], references: [id])
-  sizeId    Int
-  size      Size    @relation(fields: [sizeId], references: [id])
+  color     Color
+  size      Size
+
+  @@unique([productId, color, size])
 }
 
 model ProductImage {
@@ -115,7 +108,7 @@ model Order {
   id_address Int
 
   OrderItem OrderItem[]
-  invoice   Invoice[]
+  // invoice   Invoice[]
 }
 
 model OrderItem {
@@ -136,60 +129,26 @@ enum DeliveryType {
   PREMIUM
 }
 
-model Invoice {
-  id                Int           @id @default(autoincrement())
-  invoice_n         String        @unique
-  type              String
-  Order             Order         @relation(fields: [id_order], references: [id])
-  id_order          Int
-  created_at        DateTime      @default(now())
-  amount            Float
-  state             String
-  // paymentMethod     PaymentMethod @relation(fields: [id_payment_method], references: [id])
-  paymentMethod     PaymentMethod 
-  id_payment_method Int
-}
-
-enum PaymentMethod {
-  CARD
-  CASH
-}
-
-// model PaymentMethod {
-//   id              Int       @id @default(autoincrement())
-//   PaymentMethodName String
-//   saveBillingInfo Boolean
-//   user            User?     @relation(fields: [id_user], references: [id])
-//   id_user         String?
-//   Invoice         Invoice[]
-// }
 
 //USUARIO
 model User {
   id            String    @id @default(cuid())
   name          String
-  username      String?
+  username      String
   bio           String?
   email         String    @unique
-  emailVerified DateTime?
-  image         String?
+  password      String
   role          String    @default("user")
   phone         String?
-  password      String
-  id_address    Int?
-  postcode      String?
   created_at    DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  paymentMethods PaymentMethod[]
   addresses      Address[]
-  // accounts         Account[]
-  // sessions         Session[]
-  // Optional for WebAuthn support
   Authenticator  Authenticator[]
   Order          Order[]
 }
 
+//DIRECCION
 model Address {
   id          Int      @id @default(autoincrement())
   name        String
@@ -202,6 +161,21 @@ model Address {
   id_city     Int
   users       User[]
   orders      Order[]
+}
+
+model City {
+  id          Int       @id @default(autoincrement())
+  name        String
+  province    Province  @relation(fields: [id_province], references: [id_province])
+  id_province Int
+  Address     Address[]
+}
+
+model Province {
+  id_province Int    @id @default(autoincrement())
+  iso_code    String @unique
+  name        String @unique
+  City        City[]
 }
 
 // Optional for WebAuthn support
@@ -219,7 +193,19 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-
+// model Invoice {
+//   id                Int           @id @default(autoincrement())
+//   invoice_n         String        @unique
+//   type              String
+//   Order             Order         @relation(fields: [id_order], references: [id])
+//   id_order          Int
+//   created_at        DateTime      @default(now())
+//   amount            Float
+//   state             String
+//   // paymentMethod     PaymentMethod @relation(fields: [id_payment_method], references: [id])
+//   paymentMethod     PaymentMethod 
+//   id_payment_method Int
+// }
 
 // // NEXT-AUTH
 
@@ -246,7 +232,7 @@ model Authenticator {
 // }
 
 // model Session {
-  // id           String   @id @default(cuid())
+// id           String   @id @default(cuid())
 //   sessionToken String   @unique
 //   userId       String
 //   expires      DateTime

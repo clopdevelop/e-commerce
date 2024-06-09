@@ -27,6 +27,7 @@ export function PayPage({ user, address }: Props) {
   const [shippingPrice, setShippingPrice] = useState(0);
 
   const productInCart = loadFromLocalStorage();
+
   const [products, setProducts] = useState<CartItem[]>(productInCart);
   const { items, updateItemQuantity, removeItem } = useCart();
   useEffect(() => {

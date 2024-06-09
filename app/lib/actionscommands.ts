@@ -6,12 +6,13 @@ import { auth, signIn } from "../auth";
 import { AuthError } from "next-auth";
 import Stripe from "stripe";
 import {
+  UserRegisterFormSchema,
   addProductSchema,
   addVariantProductSchema,
+  addressSchema,
   editProductSchema,
 } from "./schemas";
 import { sleep } from "./utils";
-
 
 // Gestión de usuarios
 
@@ -65,7 +66,9 @@ export async function signInGoogle() {
  * @param formData
  * @returns
  */
-export async function registerUser(values: z.infer<typeof UserRegisterFormSchema>) {
+export async function registerUser(
+  values: z.infer<typeof UserRegisterFormSchema>
+) {
   try {
     console.log(values);
 
@@ -76,7 +79,6 @@ export async function registerUser(values: z.infer<typeof UserRegisterFormSchema
         password: values.password,
       },
     });
-    
   } catch (error) {
     console.error("Error al añadir usuario:", error);
     throw error;
@@ -99,10 +101,11 @@ export async function registerUser(values: z.infer<typeof UserRegisterFormSchema
   }
 }
 
-//todo 
-export async function saveAddress(formData: FormData) {
+
+export async function createAddress(formData: FormData) {
   try {
-    const id = await getUserIDDB(); // Obtener el ID del usuario (supongo que tienes una función así)
+    const id = await getUserIDDB();
+    if (!id) return; // Obtener el ID del usuario (supongo que tienes una función así)
 
     const address = formData.get("address")?.toString();
     const numberString = formData.get("number")?.toString();
@@ -115,55 +118,105 @@ export async function saveAddress(formData: FormData) {
     const city = formData.get("city")?.toString();
     const province = formData.get("province")?.toString();
 
-    // Validar los datos obligatorios
-    // if (!address || isNaN(number)) {
-    //   console.log("Faltan datos obligatorios o son inválidos.");
-    //   return 0
-    // }
+    const addressData = {
+      address,
+      number,
+      letter,
+      block,
+      staircase,
+      postalCode,
+      city,
+      province,
+    };
 
-    // Actualizar la dirección del usuario en la base de datos utilizando Prisma
-    // const updatedUser = await prisma.user.update({
-    //   where: {
-    //     id: id,
-    //   },
-    //   include: {
-    //     address: true,
-    //   },
-    //   data: {
-    //     address: {
-    //       upsert: {
-    //         create: {
-    //           name: address,
-    //           number: number,
-    //           letter: letter,
-    //           block: block,
-    //           staircase: staircase,
-    //           // postalCode: postalCode,
-    //         },
-    //         update: {
-    //           name: address,
-    //           number: number,
-    //           letter: letter,
-    //           block: block,
-    //           staircase: staircase,
-    //           // postalCode: postalCode,
-    //         },
-    //         where: {
-    //           id: id,
-    //         },
-    //       },
-    //     },
-    //   },
-    // });
+    try {
+      addressSchema.parse(addressData);
+      console.log("Validación exitosa:", addressData);
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        console.error("Validación fallida:", e.errors);
+      } else {
+        console.error("Error Inesperado:", e);
+      }
+    }
 
-    // // Realizar cualquier otra acción necesaria, como revalidar la ruta
-    // revalidatePath("/dashboard/profile");
+    const existingAddress = await prisma.address.findFirst({
+      where: {
+        users: { some: { id: id } },
+      },
+    });
+    
+    if (existingAddress) {
+      return 0
+    }
+
+     // Find or create the province
+     let provinceRecord = await prisma.province.findUnique({
+      where: {
+        name: province,
+      },
+    });
+    if (!provinceRecord) {
+      provinceRecord = await prisma.province.create({
+        data: {
+          name: province,
+          iso_code: "ISO_CODE_HERE", // Asegúrate de proporcionar el código ISO de la provincia
+        },
+      });
+    }
+    
+    // Find or create the city
+    let cityRecord = await prisma.city.findUnique({
+      where: {
+        name: city,
+        id_province: provinceRecord.id_province
+      },
+    });
+    if (!cityRecord) {
+      cityRecord = await prisma.city.create({
+        data: {
+          name: city,
+          province: {
+            connect: { id_province: provinceRecord.id_province },
+          },
+        },
+      });
+    }
+
+    // Create the address
+    const newAddress = await prisma.address.create({
+      data: {
+        name: address!,
+        number: number,
+        letter: letter || undefined,
+        block: block || undefined,
+        staircase: staircase || undefined,
+        city: {
+          connect: { id: cityRecord.id },
+        },
+      },
+    });
+    
+    // Associate the address with the user
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        addresses: {
+          connect: { id: newAddress.id },
+        },
+      },
+    });
 
     console.log(
       `Dirección actualizada: ${address}, ${number}, ${letter},${staircase}, ${block},
       ${postalCode}, ${city}, ${province}
       `
     );
+
+    revalidatePath("/dashboard/profile/dir");
+
+    return newAddress;
+    
   } catch (error) {
     console.error("Error al guardar la dirección:", error);
     console.log("Faltan datos obligatorios o son inválidos.");
@@ -289,7 +342,8 @@ export async function updatePass(prevState: any, formData: FormData) {
   return { error: false, message: "Contraseña actualizada con éxito" };
 }
 
-async function updateUserAddress(
+// todo revisar
+export async function updateUserAddress(
   id_user: number,
   newAddress: string,
   id_city: number
@@ -312,6 +366,44 @@ async function updateUserAddress(
   } else {
     console.log("El usuario no tiene una dirección asociada.");
   }
+
+  // Actualizar la dirección del usuario en la base de datos utilizando Prisma
+  // const updatedUser = await prisma.user.update({
+  //   where: {
+  //     id: id,
+  //   },
+  //   include: {
+  //     address: true,
+  //   },
+  //   data: {
+  //     address: {
+  //       upsert: {
+  //         create: {
+  //           name: address ?? '',
+  //           number: number,
+  //           letter: letter,
+  //           block: block,
+  //           staircase: staircase,
+  //           city: {
+
+  //           },
+  //           // postalCode: postalCode,
+  //         },
+  //         update: {
+  //           name: address,
+  //           number: number,
+  //           letter: letter,
+  //           block: block,
+  //           staircase: staircase,
+  //           // postalCode: postalCode,
+  //         },
+  //         where: {
+  //           id: ,
+  //         },
+  //       },
+  //     },
+  //   },
+  // });
 }
 
 export async function updateProfile(formData: FormData) {
@@ -355,7 +447,6 @@ export async function eliminarFacturación(formData: {
   email: string;
   text: string;
 }) {}
-
 
 //Gestión de Productos
 
@@ -649,7 +740,6 @@ export async function editVariantProduct(formData: FormData) {
   }
 }
 
-
 //Gestión de Carrito de Compras
 //HOOK USECART
 // function addToCart(userId: string, productId: string, quantity: number): void {
@@ -658,14 +748,12 @@ export async function editVariantProduct(formData: FormData) {
 
 // function checkout(userId: string): Order {
 
-
 //Gestión de Cupones y Descuentos
 // function createCoupon(code: string, discount: number, expiryDate: Date): void {
 
 // function applyCoupon(userId: string, couponCode: string): void {
 
 // function removeCoupon(userId: string): void {
-
 
 //Gestión de Pedidos
 // ! Esto se debe ejecutar en el webHook una vez que el pago está completado
@@ -785,9 +873,6 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
 
 // function updateOrderStatus(orderId: string, status: OrderStatus): void {
 
-
-
-
 // STRIPE
 const stripe = new Stripe(
   "sk_test_51OxXxKRxuIsR3WCz8Ztm83HlPvRBwH4SqObd6cumXxEStd6ATzFwoxJ6bJPLoFkMQrHvuE9jFNE424RQ1TAfi8u100OvxLfAUr",
@@ -871,11 +956,8 @@ export async function stripePay(formdata: FormData) {
 //   return paymentIntent;
 // }
 
-
-
 //Gestión de Envíos
 // function scheduleDelivery(orderId: string): void {
-
 
 // EMAIL
 import { EmailTemplate } from "@/components/contact/email-template";
@@ -883,10 +965,8 @@ import { Resend } from "resend";
 import { revalidatePath } from "next/cache";
 import { Address, CartItem } from "./definitions";
 import { getUserIDDB, getUserLogged } from "./data";
-import { UserRegisterFormSchema } from "@/components/form/RegisterForm";
 import { z } from "zod";
 import { User } from "@prisma/client";
-
 
 const EmailDataSchema = z.object({
   name: z.string(),
@@ -895,24 +975,22 @@ const EmailDataSchema = z.object({
 });
 
 export async function enviarEmail(prevState: any, formData: FormData) {
-
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   // return { error: true, message: "No estás logueado" };
 
   try {
     const { name, email, text } = EmailDataSchema.parse({
-      name: formData.get('name'),
-      email: formData.get('email'),
-      text: formData.get('text'),
+      name: formData.get("name"),
+      email: formData.get("email"),
+      text: formData.get("text"),
     });
-    
+
     const emailContent = EmailTemplate({
       firstName: name,
       email: email,
       text: text,
     });
-
 
     const data = await resend.emails.send({
       from: "Eh, un Comercio <onboarding@resend.dev>",

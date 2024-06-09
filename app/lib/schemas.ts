@@ -24,24 +24,6 @@ export const userSchema = z.object({
   created_at: z.date(),
 });
 
-export const addressSchema = z.object({
-  id_address: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
-  id_city: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
-  last_update: z.date(),
-  address: z.string().nonempty({ message: "La dirección es obligatoria" }),
-  number: z
-    .number({ invalid_type_error: "El número debe ser un valor numérico" })
-    .int()
-    .positive({ message: "El número debe ser mayor que cero" })
-    .optional(), // No es obligatorio en el formulario
-  letter: z.string().optional(),
-  staircase: z.enum(['left', 'right']).optional(),
-  block: z.string().optional(),
-  postalCode: z.string().regex(/^\d{5}$/, { message: "Código postal inválido" }), // Código postal de 5 dígitos
-  city: z.string().nonempty({ message: "La ciudad es obligatoria" }),
-  province: z.string().nonempty({ message: "La provincia es obligatoria" })
-});
-
 export const addressFormschema = z.object({
   address: z.string({ required_error: 'La dirección no puede estar en blanco' }),
   // number: z.number({ required_error: 'El número no puede estar en blanco' }).min(1, "El número debe ser mayor que 0"),
@@ -267,3 +249,160 @@ export const formSchema = z.object({
     zip: z.string(),
   }),
 });
+
+
+
+const ciudadesPorProvincia: { [key: string]: string[] } = {
+  Alava: ["Vitoria-Gasteiz", "Llodio", "Amurrio"],
+  Albacete: ["Albacete", "Hellín", "Villarrobledo"],
+  Alicante: ["Alicante", "Elche", "Torrevieja"],
+  Almeria: ["Almería", "Roquetas de Mar", "El Ejido"],
+  Asturias: ["Oviedo", "Gijón", "Avilés"],
+  Avila: ["Ávila", "Arévalo", "El Tiemblo"],
+  Barcelona: ["Barcelona", "Hospitalet de Llobregat", "Badalona"],
+  Burgos: ["Burgos", "Miranda de Ebro", "Aranda de Duero"],
+  Cadiz: ["Cádiz", "Jerez de la Frontera", "Algeciras"],
+  Cantabria: ["Santander", "Torrelavega", "Camargo"],
+  Castellon: ["Castellón de la Plana", "Villarreal", "Benicàssim"],
+  Ciudad_real: ["Ciudad Real", "Puertollano", "Tomelloso"],
+  Cordoba: ["Córdoba", "Lucena", "Puente Genil"],
+  Cuenca: ["Cuenca", "Tarancón", "San Clemente"],
+  Girona: ["Gerona", "Lloret de Mar", "Figueras"],
+  Granada: ["Granada", "Motril", "Almuñécar"],
+  Guadalajara: ["Guadalajara", "Azuqueca de Henares", "Sigüenza"],
+  Guipuzcoa: ["San Sebastián", "Irun", "Rentería"],
+  Huelva: ["Huelva", "Isla Cristina", "Lepe"],
+  Huesca: ["Huesca", "Monzón", "Fraga"],
+  Islas_baleares: ["Palma de Mallorca", "Ibiza", "Manacor"],
+  Jaen: ["Jaén", "Linares", "Úbeda"],
+  La_coruna: ["La Coruña", "Santiago de Compostela", "Ferrol"],
+  La_rioja: ["Logroño", "Calahorra", "Arnedo"],
+  Las_palmas: ["Las Palmas de Gran Canaria", "Telde", "Santa Lucía de Tirajana"],
+  Leon: ["León", "Ponferrada", "San Andrés del Rabanedo"],
+  Lerida: ["Lérida", "Tárrega", "Balaguer"],
+  Lugo: ["Lugo", "Villalba", "Monforte de Lemos"],
+  Madrid: ["Madrid", "Móstoles", "Alcalá de Henares"],
+  Malaga: ["Málaga", "Marbella", "Torremolinos"],
+  Murcia: ["Murcia", "Cartagena", "Lorca"],
+  Navarra: ["Pamplona", "Tudela", "Barañáin"],
+  Ourense: ["Orense", "Pontevedra", "Vigo"],
+  Palencia: ["Palencia", "Aguilar de Campoo", "Dueñas"],
+  Pontevedra: ["Pontevedra", "Vigo", "Redondela"],
+  Salamanca: ["Salamanca", "Béjar", "Ciudad Rodrigo"],
+  Segovia: ["Segovia", "Cuéllar", "La Granja de San Ildefonso"],
+  Sevilla: ["Sevilla", "Dos Hermanas", "Alcalá de Guadaíra"],
+  Soria: ["Soria", "Almazán", "El Burgo de Osma"],
+  Tarragona: ["Tarragona", "Reus", "El Vendrell"],
+  Tenerife: ["Santa Cruz de Tenerife", "San Cristóbal de La Laguna", "Arona"],
+  Teruel: ["Teruel", "Alcañiz", "Calamocha"],
+  Toledo: ["Toledo", "Talavera de la Reina", "Illescas"],
+  Valencia: ["Valencia", "Torrent", "Gandía"],
+  Valladolid: ["Valladolid", "Medina del Campo", "Laguna de Duero"],
+  Vizcaya: ["Bilbao", "Barakaldo", "Getxo"],
+  Zamora: ["Zamora", "Benavente", "Toro"],
+  Zaragoza: ["Zaragoza", "Calatayud", "Ejea de los Caballeros"]
+};
+
+// Definir el esquema de provincias y ciudades de manera explícita
+const provinciaSchema = z.enum([
+  "Alava", "Albacete", "Alicante", "Almeria", "Asturias", "Avila", "Barcelona",
+  "Burgos", "Cadiz", "Cantabria", "Castellon", "Ciudad_real", "Cordoba", "Cuenca",
+  "Girona", "Granada", "Guadalajara", "Guipuzcoa", "Huelva", "Huesca", "Islas_baleares",
+  "Jaen", "La_coruna", "La_rioja", "Las_palmas", "Leon", "Lerida", "Lugo", "Madrid",
+  "Malaga", "Murcia", "Navarra", "Ourense", "Palencia", "Pontevedra", "Salamanca",
+  "Segovia", "Sevilla", "Soria", "Tarragona", "Tenerife", "Teruel", "Toledo", "Valencia",
+  "Valladolid", "Vizcaya", "Zamora", "Zaragoza"
+]);
+
+const ciudadSchemaMap = {
+  Alava: z.enum(["Vitoria-Gasteiz", "Llodio", "Amurrio"]),
+  Albacete: z.enum(["Albacete", "Hellín", "Villarrobledo"]),
+  Alicante: z.enum(["Alicante", "Elche", "Torrevieja"]),
+  Almeria: z.enum(["Almería", "Roquetas de Mar", "El Ejido"]),
+  Asturias: z.enum(["Oviedo", "Gijón", "Avilés"]),
+  Avila: z.enum(["Ávila", "Arévalo", "El Tiemblo"]),
+  Barcelona: z.enum(["Barcelona", "Hospitalet de Llobregat", "Badalona"]),
+  Burgos: z.enum(["Burgos", "Miranda de Ebro", "Aranda de Duero"]),
+  Cadiz: z.enum(["Cádiz", "Jerez de la Frontera", "Algeciras"]),
+  Cantabria: z.enum(["Santander", "Torrelavega", "Camargo"]),
+  Castellon: z.enum(["Castellón de la Plana", "Villarreal", "Benicàssim"]),
+  Ciudad_real: z.enum(["Ciudad Real", "Puertollano", "Tomelloso"]),
+  Cordoba: z.enum(["Córdoba", "Lucena", "Puente Genil"]),
+  Cuenca: z.enum(["Cuenca", "Tarancón", "San Clemente"]),
+  Girona: z.enum(["Gerona", "Lloret de Mar", "Figueras"]),
+  Granada: z.enum(["Granada", "Motril", "Almuñécar"]),
+  Guadalajara: z.enum(["Guadalajara", "Azuqueca de Henares", "Sigüenza"]),
+  Guipuzcoa: z.enum(["San Sebastián", "Irun", "Rentería"]),
+  Huelva: z.enum(["Huelva", "Isla Cristina", "Lepe"]),
+  Huesca: z.enum(["Huesca", "Monzón", "Fraga"]),
+  Islas_baleares: z.enum(["Palma de Mallorca", "Ibiza", "Manacor"]),
+  Jaen: z.enum(["Jaén", "Linares", "Úbeda"]),
+  La_coruna: z.enum(["La Coruña", "Santiago de Compostela", "Ferrol"]),
+  La_rioja: z.enum(["Logroño", "Calahorra", "Arnedo"]),
+  Las_palmas: z.enum(["Las Palmas de Gran Canaria", "Telde", "Santa Lucía de Tirajana"]),
+  Leon: z.enum(["León", "Ponferrada", "San Andrés del Rabanedo"]),
+  Lerida: z.enum(["Lérida", "Tárrega", "Balaguer"]),
+  Lugo: z.enum(["Lugo", "Villalba", "Monforte de Lemos"]),
+  Madrid: z.enum(["Madrid", "Móstoles", "Alcalá de Henares"]),
+  Malaga: z.enum(["Málaga", "Marbella", "Torremolinos"]),
+  Murcia: z.enum(["Murcia", "Cartagena", "Lorca"]),
+  Navarra: z.enum(["Pamplona", "Tudela", "Barañáin"]),
+  Ourense: z.enum(["Orense", "Pontevedra", "Vigo"]),
+  Palencia: z.enum(["Palencia", "Aguilar de Campoo", "Dueñas"]),
+  Pontevedra: z.enum(["Pontevedra", "Vigo", "Redondela"]),
+  Salamanca: z.enum(["Salamanca", "Béjar", "Ciudad Rodrigo"]),
+  Segovia: z.enum(["Segovia", "Cuéllar", "La Granja de San Ildefonso"]),
+  Sevilla: z.enum(["Sevilla", "Dos Hermanas", "Alcalá de Guadaíra"]),
+  Soria: z.enum(["Soria", "Almazán", "El Burgo de Osma"]),
+  Tarragona: z.enum(["Tarragona", "Reus", "El Vendrell"]),
+  Tenerife: z.enum(["Santa Cruz de Tenerife", "San Cristóbal de La Laguna", "Arona"]),
+  Teruel: z.enum(["Teruel", "Alcañiz", "Calamocha"]),
+  Toledo: z.enum(["Toledo", "Talavera de la Reina", "Illescas"]),
+  Valencia: z.enum(["Valencia", "Torrent", "Gandía"]),
+  Valladolid: z.enum(["Valladolid", "Medina del Campo", "Laguna de Duero"]),
+  Vizcaya: z.enum(["Bilbao", "Barakaldo", "Getxo"]),
+  Zamora: z.enum(["Zamora", "Benavente", "Toro"]),
+  Zaragoza: z.enum(["Zaragoza", "Calatayud", "Ejea de los Caballeros"]),
+};
+
+
+export const addressSchema = z.object({
+  address: z.string().nonempty(),
+  number: z.number().int().positive(),
+  letter: z.string().optional(),
+  block: z.string().optional(),
+  staircase: z.string().optional(),
+  postalCode: z.string().nonempty(),
+  city: z.string().nonempty(),
+  province: provinciaSchema,
+}).refine((data) => {
+  const citySchema = ciudadSchemaMap[data.province];
+  try {
+    citySchema.parse(data.city);
+    return true;
+  } catch {
+    return false;
+  }
+}, {
+  message: "La ciudad no corresponde a la provincia indicada",
+  path: ['city'],
+});
+
+// ! Deprecated addressschema
+// export const addressSchema = z.object({
+//   id_address: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+//   id_city: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+//   last_update: z.date(),
+//   address: z.string().nonempty({ message: "La dirección es obligatoria" }),
+//   number: z
+//     .number({ invalid_type_error: "El número debe ser un valor numérico" })
+//     .int()
+//     .positive({ message: "El número debe ser mayor que cero" })
+//     .optional(), // No es obligatorio en el formulario
+//   letter: z.string().optional(),
+//   staircase: z.enum(['left', 'right']).optional(),
+//   block: z.string().optional(),
+//   postalCode: z.string().regex(/^\d{5}$/, { message: "Código postal inválido" }), // Código postal de 5 dígitos
+//   city: z.string().nonempty({ message: "La ciudad es obligatoria" }),
+//   province: z.string().nonempty({ message: "La provincia es obligatoria" })
+// });

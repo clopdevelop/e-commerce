@@ -3,6 +3,8 @@ import StripeProvider from "../StripeProvider";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
+
+
 export default function StripePayPage() {
   return (
     <Card className="overflow-hidden w-9/12 mx-auto">
@@ -18,22 +20,7 @@ export default function StripePayPage() {
         </div>
       </CardHeader>
       <CardContent className="p-6 gap-10">
-      <StripeProvider products={[]} customer={{
-          id: "",
-          name: "",
-          username: null,
-          bio: null,
-          email: "",
-          emailVerified: null,
-          image: null,
-          role: "",
-          phone: null,
-          password: "",
-          id_address: null,
-          postcode: null,
-          created_at: new Date,
-          updatedAt: new Date
-      }}></StripeProvider>
+      <StripeProvider></StripeProvider>
       </CardContent>
       <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
         <div className="text-xs text-muted-foreground">2/2</div>

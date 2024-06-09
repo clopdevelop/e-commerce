@@ -32,7 +32,7 @@ export async function getUserIDDB() {
   const authentication = await auth();
 
   try {
-    const id = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
         email: authentication?.user?.email ?? "",
       },
@@ -40,7 +40,7 @@ export async function getUserIDDB() {
         id: true,
       },
     });
-    return id;
+    return user?.id;
   } catch (error) {
     console.error("Failed to fetch user:", error);
     throw new Error("Failed to fetch user.");
@@ -77,7 +77,7 @@ export async function getAddresByUserLog() {
   const userId = await getUserIDDB();
   try {
     const user = await prisma.user.findUnique({
-      where: { id: userId?.id },
+      where: { id: userId },
       include: { address: true },
     });
 
@@ -96,7 +96,7 @@ export async function getPaymentMethodsByUser() {
   const userId = await getUserIDDB();
   try {
     const user = await prisma.user.findUnique({
-      where: { id: userId?.id },
+      where: { id: userId },
       include: { paymentMethods: true },
     });
 

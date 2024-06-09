@@ -2,7 +2,11 @@
 const nextConfig = {
     poweredByHeader: false,
     // experimental: {
+    //   taint: true,
+    // },
+    // experimental: {
     //   serverActions: {
+      // allowedOrigins: ['my-proxy.com', '*.my-proxy.com'],
     //     allowedOrigins: ["localhost:3000"],
     //     // Asegúrate de tener la versión next@v14.0.2-canary.4 o superior
     //     // Puedes necesitar usar la propiedad allowedForwardedHosts dependiendo de tu versión exacta

@@ -1,0 +1,294 @@
+[
+  {
+    "schemaName": "public",
+    "tableName": "Address",
+    "predictions": [
+      {
+        "input": "public address block",
+        "column": "block",
+        "shape": "STREET_ADDRESS",
+        "confidence": 0.5552510023117065,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public address letter",
+        "column": "letter",
+        "shape": "FULL_ADDRESS",
+        "confidence": 0.9159615635871887,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public address name",
+        "column": "name",
+        "shape": "STREET_ADDRESS",
+        "confidence": 0.7753094434738159,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public address staircase",
+        "column": "staircase",
+        "shape": "STREET_ADDRESS",
+        "confidence": 0.7925549745559692,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "Authenticator",
+    "predictions": [
+      {
+        "input": "public authenticator credential_device_type",
+        "column": "credentialDeviceType",
+        "shape": "AUTHENTICATION_PROVIDER",
+        "confidence": 0.1732916086912155,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public authenticator credential_id",
+        "column": "credentialID",
+        "shape": "UUID",
+        "confidence": 0.6159886121749878,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public authenticator credential_public_key",
+        "column": "credentialPublicKey",
+        "shape": "AUTHENTICATION_PROVIDER",
+        "confidence": 0.4259949326515198,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public authenticator id",
+        "column": "id",
+        "shape": "UUID",
+        "confidence": 0.5991231799125671,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public authenticator provider_account_id",
+        "column": "providerAccountId",
+        "shape": "FINANCE_IBAN",
+        "confidence": 0.4954651892185211,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public authenticator transports",
+        "column": "transports",
+        "shape": "AUTHENTICATION_PROVIDER",
+        "confidence": 0.1905191689729691,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "Category",
+    "predictions": [
+      {
+        "input": "public category name",
+        "column": "name",
+        "shape": "COMMERCE_DEPARTMENT",
+        "confidence": 1,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "City",
+    "predictions": [
+      {
+        "input": "public city name",
+        "column": "name",
+        "shape": "CITY",
+        "confidence": 0.9949359893798828,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "Order",
+    "predictions": [
+      {
+        "input": "public order code",
+        "column": "code",
+        "shape": "ZIP_CODE",
+        "confidence": 0.3561260998249054,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public order order_type",
+        "column": "order_type",
+        "shape": "DATABASE_COLUMN",
+        "confidence": 0.4501814842224121,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public order status",
+        "column": "status",
+        "shape": "STATUS",
+        "confidence": 0.9735201597213745,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "OrderItem",
+    "predictions": [
+      {
+        "input": "public order_item name",
+        "column": "name",
+        "shape": "COMMERCE_PRODUCT_NAME",
+        "confidence": 0.9040895104408264,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "Product",
+    "predictions": [
+      {
+        "input": "public product description",
+        "column": "description",
+        "shape": "COMMERCE_PRODUCT_DESCRIPTION",
+        "confidence": 0.8473999500274658,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public product name",
+        "column": "name",
+        "shape": "COMMERCE_PRODUCT_NAME",
+        "confidence": 0.9166077375411987,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public product state",
+        "column": "state",
+        "shape": "STATE",
+        "confidence": 0.9969059824943542,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "ProductImage",
+    "predictions": [
+      {
+        "input": "public product_image url",
+        "column": "url",
+        "shape": "IMAGE_URL",
+        "confidence": 0.7145541310310364,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "Province",
+    "predictions": [
+      {
+        "input": "public province iso_code",
+        "column": "iso_code",
+        "shape": "COUNTRY_CODE",
+        "confidence": 0.6943415999412537,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public province name",
+        "column": "name",
+        "shape": "COMPANY_NAME",
+        "confidence": 0.6797109246253967,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  },
+  {
+    "schemaName": "public",
+    "tableName": "User",
+    "predictions": [
+      {
+        "input": "public user bio",
+        "column": "bio",
+        "shape": "PERSON_BIO",
+        "confidence": 0.7,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public user email",
+        "column": "email",
+        "shape": "EMAIL",
+        "confidence": 0.99404376745224,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public user id",
+        "column": "id",
+        "shape": "UUID",
+        "confidence": 0.9964122176170349,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public user name",
+        "column": "name",
+        "shape": "USERNAME",
+        "confidence": 0.9706624150276184,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public user password",
+        "column": "password",
+        "shape": "PASSWORD",
+        "confidence": 0.9340711236000061,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public user phone",
+        "column": "phone",
+        "shape": "PHONE_NUMBER",
+        "confidence": 0.9625558853149414,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      },
+      {
+        "input": "public user username",
+        "column": "username",
+        "shape": "USERNAME",
+        "confidence": 0.9716823697090149,
+        "context": "GENERAL",
+        "confidenceContext": 0
+      }
+    ]
+  }
+]

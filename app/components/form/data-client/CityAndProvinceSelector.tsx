@@ -19,7 +19,7 @@ import {
   PopoverTrigger,
 } from "@/components/shadcn/popover";
 
-const ciudadesPorProvincia: any = {
+const ciudadesPorProvincia: { [key: string]: string[] } = {
   Alava: ["Vitoria-Gasteiz", "Llodio", "Amurrio"],
   Albacete: ["Albacete", "Hellín", "Villarrobledo"],
   Alicante: ["Alicante", "Elche", "Torrevieja"],

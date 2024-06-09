@@ -1,4 +1,5 @@
 import { addOrder } from "@/lib/actionscommands";
+import { getUserLogged } from "@/lib/data";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -11,14 +12,18 @@ const calculateOrderAmount = (items: any) => {
   return 1500;
 };
 
+
 export async function POST(req: Request) {
+  const customer = await getUserLogged();
+  
   const body = await req.json();
-  const { items, customer } = body;
+
+  const { items } = body;
 
   if (!items || items.length === 0) {
     return NextResponse.json({ error: "No items provided" }, { status: 400 });
   }
-  if (!customer || !customer.email || !customer.name || !customer.address) {
+  if (!customer || !customer.email || !customer.name) {
     return NextResponse.json(
       { error: "Información del usuario incompleta" },
       { status: 400 }
