@@ -7,6 +7,14 @@ import { useCart } from "@/context/CartProvider";
 import { ShoppingCartIcon } from 'lucide-react'
 import { Product } from "@prisma/client";
 
+const coloresANumeros = {
+  default: 0,
+  blue:1,
+  green: 2,
+  red: 3,
+  yellow:4,
+};
+
 export default function AddCartButton({
   product,
   color,
@@ -33,14 +41,15 @@ export default function AddCartButton({
       }
       if(!product.ProductImage)
         return 0;
-      
+      const num = coloresANumeros[color]
+
       const newItem: CartItem = {
         id: items.length,
         id_product: product.id,
         name: product.name,
         unit_price: product.price,
         quantity: 1,
-        thumbnail: product.ProductImage[0],
+        thumbnail: product.ProductImage[num],
         color: color,
         size: size
       };
@@ -54,7 +63,7 @@ export default function AddCartButton({
   
   return (
   <>
-    <Button onClick={() => addProduct(product, color, size)} className="text-white">
+    <Button onClick={() => addProduct(product, color, size)} className="text-white" size='lg'>
       <ShoppingCartIcon/>
       </Button>
   </>

@@ -51,7 +51,10 @@ export default async function Page({ params }: Props) {
   try {
     return (
       <>
-        <ProductView id={params.id}></ProductView>;
+      <div className="my-10">
+
+        <ProductView id={params.id}></ProductView>
+      </div>
         <CarouselProducts></CarouselProducts>
       </>
     );

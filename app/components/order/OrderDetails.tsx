@@ -28,7 +28,6 @@ export async function OrderDetails({ id_order }: { id_order: string }) {
       total,
       status,
       paid,
-      discount,
       created_at,
       id_user,
       id_delivery_type,

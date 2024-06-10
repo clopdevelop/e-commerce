@@ -20,7 +20,7 @@ export default async function NamePage() {
 
   const user: User | null = await getUserLogged();
   if (!user) redirect("/");
-
+console.log(address)
   return (
     <PayPage user={user} address={address}></PayPage>
   );

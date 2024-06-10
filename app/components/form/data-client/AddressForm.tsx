@@ -29,13 +29,14 @@ import { Address } from "@prisma/client";
 type AddressFormInputs = z.infer<typeof addressFormschema>;
 
 interface AddressFormProps {
-  address?: Address | null
+  address?: Address | null;
   onSubmitForm: (values: AddressFormInputs) => void;
 }
 
-export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm, address }) => {
-  const [deliveryType, setDeliveryType] = useState("");
-  const router = useRouter();
+export const AddressForm: React.FC<AddressFormProps> = ({
+  onSubmitForm,
+  address,
+}) => {
 
   const form = useForm<AddressFormInputs>({
     resolver: zodResolver(addressFormschema),
@@ -43,8 +44,12 @@ export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm, address 
   const { control, handleSubmit } = form;
 
   function onSubmit(values: AddressFormInputs) {
+    if(values.save){
+      // Añadir la dir al usuario
+      return 0
+    }
     console.log(values);
-    return values
+    onSubmitForm(values)
   }
 
   return (
@@ -62,7 +67,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm, address 
                   <FormItem className="grid gap-2">
                     <FormLabel>Dirección</FormLabel>
                     <FormControl>
-                      <Input placeholder="C/, Avda, ctra ...." {...field} />
+                      <Input placeholder="C/, Avda, ctra ...." defaultValue={address?.name} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -77,7 +82,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm, address 
                     <FormItem className="grid gap-2">
                       <FormLabel>Número</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <Input type="number" defaultValue={address?.number} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -91,7 +96,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm, address 
                     <FormItem className="grid gap-2">
                       <FormLabel>Letra</FormLabel>
                       <FormControl>
-                        <Input placeholder="Letra" {...field} />
+                        <Input placeholder="Letra" defaultValue={address?.letter} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -105,7 +110,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm, address 
                     <FormItem className="grid gap-2">
                       <FormLabel>Escalera</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <Input type="text" defaultValue={address?.staircase} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -137,7 +142,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm, address 
                       <FormLabel>Código Postal</FormLabel>
                       <FormControl>
                         <Input
-                        className="w-6/12"
+                          className="w-6/12"
                           placeholder="C. P "
                           {...field}
                         />
@@ -167,42 +172,43 @@ export const AddressForm: React.FC<AddressFormProps> = ({ onSubmitForm, address 
               )}
             />
 
-            <div className="grid gap-5 mt-12">
-              <Label htmlFor="shippingMethod">
-                Selecciona tu método de envío:
-              </Label>
-              <FormField
-                control={control}
-                name="shippingMethod"
-                render={({ field }) => (
-                  <Select
-                    value={field.value}
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      setDeliveryType(value);
-                    }}
-                  >
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Elige un método" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white rounded-md shadow-md">
-                      <SelectItem value="standard">
-                        Envío Estándar (3-5 días hábiles)
-                      </SelectItem>
-                      <SelectItem value="express">
-                        Envío Exprés (1-2 días hábiles)
-                      </SelectItem>
-                      <SelectItem value="premium">
-                        Envío Premium (Entrega prioritaria)
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
+            <div className="flex justify-between items-center mt-12 mb-6 ">
+              <div className="grid gap-5">
+                <Label htmlFor="shippingMethod">
+                  Selecciona tu método de envío:
+                </Label>
+                <FormField
+                  control={control}
+                  name="shippingMethod"
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                      }}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Elige un método" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white rounded-md shadow-md">
+                        <SelectItem value="standard">
+                          Envío Estándar (3-5 días hábiles)
+                        </SelectItem>
+                        <SelectItem value="express">
+                          Envío Exprés (1-2 días hábiles)
+                        </SelectItem>
+                        <SelectItem value="premium">
+                          Envío Premium (Entrega prioritaria)
+                        </SelectItem>
+                      </SelectContent>
+                      <FormMessage></FormMessage>
+                    </Select>
+                  )}
+                />
+              </div>
+              <Button className="mt-10">Guardar</Button>
             </div>
           </div>
-        </div>
-        <div className="flex justify-end mt-5">
         </div>
       </form>
     </Form>

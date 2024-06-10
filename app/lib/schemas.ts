@@ -25,18 +25,32 @@ export const userSchema = z.object({
 });
 
 export const addressFormschema = z.object({
-  address: z.string({ required_error: 'La dirección no puede estar en blanco' }),
+  address: z.string({ required_error: 'La dirección no puede estar en blanco' })
+    .min(1, { message: 'La dirección no puede estar en blanco' })
+    .max(100, { message: 'La dirección no puede exceder los 100 caracteres' }),
+  number: z.string({ required_error: 'El número no puede estar en blanco' })
+    .min(1, { message: 'El número no puede estar en blanco' })
+    .regex(/^\d+$/, { message: 'El número debe ser un número entero' }),
+  letter: z.string()
+  .max(1, { message: 'La letra debe ser un solo carácter' })
+  .regex(/^[A-Za-z]$/, { message: 'La letra debe ser una sola letra' })
+  .optional(),
+  staircase: z.enum(['left', 'right', 'izquierda', 'derecha'])
+    .optional(),
+  block: z.union([
+    z.string().regex(/^\d+$/, { message: 'El bloque debe ser un número positivo' }),
+    z.number().int().positive({ message: 'El bloque debe ser un número positivo' })
+  ]).optional(),
+  postalCode: z.string({ required_error: 'El código postal no puede estar en blanco' })
+    .regex(/^\d{5}$/, { message: 'El código postal debe tener exactamente 5 dígitos' }),
+  shippingMethod: z.enum(["standard", "express", "premium"], { required_error: 'El método de envío es obligatorio' }),
+  save: z.boolean()
+    .optional()
+});
   // number: z.number({ required_error: 'El número no puede estar en blanco' }).min(1, "El número debe ser mayor que 0"),
-  number: z.string({ required_error: 'El número no puede estar en blanco' }),
-  letter: z.string().optional(),
-  staircase: z.enum(['left', 'right']).optional(),
-  block: z.number().min(1, "El bloque debe ser mayor que 0").optional(),
   // city: z.string({ required_error: 'La ciudad no puede estar en blanco' }),
   // province: z.string({ required_error: 'La provincia no puede estar en blanco' }),
-  postalCode: z.string({ required_error: 'La código postal no puede estar en blanco' }),
-  shippingMethod: z.enum(["standard", "express", "premium"]),
-  save: z.boolean().optional()
-});
+// });
 
 export const citySchema = z.object({
   id_city: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
@@ -67,7 +81,6 @@ export const productSchema = z.object({
   category: optionalNullableNumber,
   thumbnail: optionalNullableString,
   price: z.number().nonnegative(),
-  discount: optionalNullableNumber,
 });
 
 export const addProductSchema = z.object({

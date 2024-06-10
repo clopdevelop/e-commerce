@@ -96,7 +96,6 @@ model Order {
   total      Float
   status     String
   paid       Boolean  @default(false)
-  discount   Float    @default(0)
   created_at DateTime @default(now())
 
   user             User         @relation(fields: [id_user], references: [id])

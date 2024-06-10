@@ -21,6 +21,19 @@ import { Product } from "@prisma/client";
 import PopoverSize from "./PopoverSize";
 import PopoverColor from "./PopoverColor";
 
+const coloresANumeros = {
+  default: 0,
+  blue:1,
+  green: 2,
+  red: 3,
+  yellow:4,
+};
+
+function asignarNumero(color: string) {
+  return coloresANumeros[color] || null; // Devuelve null si el color no está definido
+}
+
+
 export default function ProductCard({
   product,
   id_user,
@@ -58,15 +71,19 @@ export default function ProductCard({
 
   const handleColor = (newData: SetStateAction<string>) => {
     setColor(newData);
+    const num = coloresANumeros[newData]
+    setColorImage(num)
   };
   const handleSize = (newData: SetStateAction<string>) => {
     setSize(newData);
   };
 
+
+  const [colorImage, setColorImage] = useState(0)
+  
   return (
     <Card className="relative border rounded-lg p-4 min-w-full  overflow-hidden hover:shadow-xl  duration-300 ease-in-out ">
-      {/* // todo max-w-56 max-h-[500px] */}
-      <CardHeader className="min-h-[180px]">
+      <CardHeader className="min-h-[160px]">
         <div className="flex justify-between">
           <div>
             <CardTitle className="h-15 leading-relaxed line-clamp-2 text-balance py-3">
@@ -77,7 +94,7 @@ export default function ProductCard({
                 {product.name}
               </Link>
             </CardTitle>
-            <CardDescription className="h-8 text-lg">
+            <CardDescription className="text-lg">
               {product.description}
             </CardDescription>
           </div>
@@ -92,13 +109,14 @@ export default function ProductCard({
           </div>
         </div>
       </CardHeader>
-      <CardContent className=" min-h-[290px] flex flex-col py-2 gap-6">
+      <CardContent className=" min-h-[305px] flex flex-col gap-6">
         {product.ProductImage && product.ProductImage[0] && (
           <div className="relative item-detail flex justify-center items-center">
             <Image
               alt="Product image"
-              className="aspect-square rounded-md object-cover"
-              src={product.ProductImage[0].url ?? ""}
+              // className="aspect-square rounded-md object-cover"
+              className="w-full sm:w-auto rounded-lg object-cover"
+              src={product.ProductImage[colorImage].url ?? ""}
               width={150}
               height={150}
             />

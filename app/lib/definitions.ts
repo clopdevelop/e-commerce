@@ -66,7 +66,6 @@ export type Product = {
   description?: string | null;
   state?: string | null;
   price: number;
-  discount?: number | null;
   created_at: Date;
   last_update?: Date | null;
   stock: number;
@@ -128,7 +127,6 @@ export type Order = {
   total: number;
   status: string;
   paid: boolean;
-  discount: number;
   created_at: Date;
   user?: User;
   id_user: number;

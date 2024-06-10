@@ -9,11 +9,11 @@ async function main() {
 
     await prisma.orderItem.deleteMany(),
     await prisma.order.deleteMany(),
-
+    await prisma.category.deleteMany(),
+    
     await prisma.productImage.deleteMany(),
     await prisma.productVariant.deleteMany(),
     await prisma.product.deleteMany(),
-    await prisma.category.deleteMany(),
 
     await prisma.address.deleteMany(),
     await prisma.user.deleteMany(),

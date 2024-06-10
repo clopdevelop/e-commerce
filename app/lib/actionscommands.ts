@@ -839,7 +839,6 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
         paid: false, // Asume que el pedido inicialmente no está pagado
         id_user: metadata.id,
         id_delivery_type: 1, // habría que ver como se determina cual es el 1
-        discount: 0, // Sin descuento inicialmente
         OrderItem: {
           createMany: {
             data: productData,

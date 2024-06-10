@@ -8,24 +8,23 @@ import { auth } from "@/auth";
 // Gestión de usuarios
 
 // function authenticateUser(token: string): User {
-  export async function getUserLogged(): Promise<User | null> {
-    const authentication = await auth();
-  
-    try {
-      const user = await prisma.user.findUnique({
-        where: {
-          email: authentication?.user?.email ?? "",
-        },
-      });
-      return user;
-    } catch (error) {
-      console.error("Failed to fetch user:", error);
-      throw new Error("Failed to fetch user.");
-    }
+export async function getUserLogged(): Promise<User | null> {
+  const authentication = await auth();
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: authentication?.user?.email ?? "",
+      },
+    });
+    return user;
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+    throw new Error("Failed to fetch user.");
   }
+}
 
 // function checkPermissions(user: User, requiredPermission: string): void {
-
 
 // USER
 export async function getUserIDDB() {
@@ -72,25 +71,37 @@ export async function getUserIDSession(): Promise<number> {
   return id_user;
 }
 
-
 export async function getAddresByUserLog() {
   const userId = await getUserIDDB();
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: { address: true },
-    });
+  // try {
+  //   const user = await prisma.user.findUnique({
+  //     where: { id: userId },
+  //     include: { address: true },
+  //   });
 
-    if (!user) {
-      throw new Error(`User with id ${userId} not found`);
-    }
+  //   if (!user) {
+  //     throw new Error(`User with id ${userId} not found`);
+  //   }
 
-    return user.address;
-  } catch (error) {
-    console.error("Error al obtener la dirección del usuario:", error);
-    throw error;
-  }
+  //   return user.address;
+  // } catch (error) {
+  //   console.error("Error al obtener la dirección del usuario:", error);
+  //   throw error;
+  // }
+// }
+  const usuarioConDirecciones = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      addresses: {
+        take: 1,
+      },
+    },
+  });
+
+  return usuarioConDirecciones?.addresses[0];
 }
+
+
 
 export async function getPaymentMethodsByUser() {
   const userId = await getUserIDDB();
@@ -110,7 +121,6 @@ export async function getPaymentMethodsByUser() {
     throw error;
   }
 }
-
 
 //Gestión de Productos
 // function viewCart(userId: string): Cart {
@@ -195,16 +205,20 @@ export async function fetchfilteredProducts(
   currentPage: number,
   productsOnPage: number,
   category?: string,
-  priceRange?: { min: number, max: number }
+  priceRange?: { min: number; max: number }
 ) {
   const productsToSkip = (currentPage - 1) * productsOnPage;
 
   // Define the base conditions for the query
   let conditions: Prisma.ProductWhereInput = {
-    name: query ? { contains: query, mode: 'insensitive' } : undefined,
-    price: priceRange ? { gte: priceRange.min, lte: priceRange.max } : undefined,
-    category: category ? { name: { contains: category, mode: 'insensitive' }} : undefined,
-    }
+    name: query ? { contains: query, mode: "insensitive" } : undefined,
+    price: priceRange
+      ? { gte: priceRange.min, lte: priceRange.max }
+      : undefined,
+    category: category
+      ? { name: { contains: category, mode: "insensitive" } }
+      : undefined,
+  };
 
   const products = await prisma.product.findMany({
     where: conditions,
@@ -212,50 +226,9 @@ export async function fetchfilteredProducts(
     take: productsOnPage,
     skip: productsToSkip,
   });
-  
+
   return products;
 }
-
-// async function getFilteredProducts({ category, minPrice, maxPrice, brands }) {
-//   // (
-//   //   query: string,
-//   //   currentPage: number,
-//   //   productsOnPage: number,
-//   //   category?: string
-//   // )
-//   // Construye el objeto de condiciones de búsqueda
-//   let searchConditions = {};
-
-//   // Filtro por categoría
-//   if (category) {
-//     searchConditions.category = category;
-//   }
-
-//   // Filtro por rango de precios
-//   if (minPrice || maxPrice) {
-//     searchConditions.price = {};
-//     if (minPrice) {
-//       searchConditions.price.gte = minPrice; // Mayor o igual que
-//     }
-//     if (maxPrice) {
-//       searchConditions.price.lte = maxPrice; // Menor o igual que
-//     }
-//   }
-
-//   // Filtro por marcas
-//   if (brands && brands.length > 0) {
-//     searchConditions.brand = {
-//       in: brands, // La marca debe estar en el array de marcas seleccionadas
-//     };
-//   }
-
-//   // Realiza la consulta con los filtros aplicados
-//   const products = await prisma.product.findMany({
-//     where: searchConditions,
-//   });
-
-//   return products;
-// }
 
 /**
  * Calcula el total de páginas para una búsqueda
@@ -315,7 +288,7 @@ export async function countProductsCatalog(
 
 // function getOrderById(orderId: string): Order {
 
-  // function listOrders(userId: string): Order[] {
+// function listOrders(userId: string): Order[] {
 export async function fetchAllOrders() {
   try {
     const orders = await prisma.order.findMany();
@@ -326,7 +299,7 @@ export async function fetchAllOrders() {
   }
 }
 
-export async function fetchOrder(id: string) {
+export async function fetchOrder(id: number) {
   try {
     const order = await prisma.order.findFirst({
       where: {
@@ -344,13 +317,13 @@ export async function fetchOrder(id: string) {
 }
 
 export async function fetchOrderDetails(id_order: string) {
-  const id = (Number(id_order))
-  const user = await getUserIDDB()
+  const id = Number(id_order);
+  const id_user = await getUserIDDB();
   try {
     const order = await prisma.order.findFirst({
       where: {
         id: id,
-        id_user: user?.id,
+        id_user: id_user,
       },
       include: {
         OrderItem: true,
@@ -364,24 +337,22 @@ export async function fetchOrderDetails(id_order: string) {
 }
 
 export async function fetchShippingAddressOrder(id_order: string) {
-  const id = (Number(id_order))
-  const user = await getUserIDDB()
+  const id = Number(id_order);
+  const id_user = await getUserIDDB();
   try {
     const order = await prisma.order.findFirst({
       where: {
         id: id,
-        id_user: user?.id,
+        id_user: id_user,
       },
-      include: {
-        address: true,
-      },
+      include: {},
     });
 
     if (!order) {
-      throw new Error('Order not found or does not belong to this user');
+      throw new Error("Order not found or does not belong to this user");
     }
 
-    return order
+    return order;
   } catch (error) {
     console.error(error);
     throw error;
@@ -389,8 +360,8 @@ export async function fetchShippingAddressOrder(id_order: string) {
 }
 
 export async function fetchTotalPriceOrder(id_order: string) {
-  const id = (Number(id_order))
-  const user = await getUserIDDB()
+  const id = Number(id_order);
+  const user = await getUserIDDB();
   try {
     const order = await prisma.order.findFirst({
       where: {
@@ -398,21 +369,20 @@ export async function fetchTotalPriceOrder(id_order: string) {
         id_user: user?.id,
       },
       select: {
-        total:true
-      }
+        total: true,
+      },
     });
 
     if (!order) {
-      throw new Error('Order not found or does not belong to this user');
+      throw new Error("Order not found or does not belong to this user");
     }
 
-    return order
+    return order;
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
-
 
 export async function fetchOrdersByUserId(userId: string | undefined) {
   if (userId == undefined) return [];
@@ -434,7 +404,7 @@ export async function fetchOrdersByUserId(userId: string | undefined) {
   }
 }
 
-export async function fetchInvoicesByUserId(userId: number) {
+export async function fetchInvoicesByUserId(userId: string) {
   return await prisma.invoice.findMany({
     where: {
       Order: {
@@ -504,8 +474,6 @@ export async function fetchTotalClients() {
     },
   });
 }
-
-
 
 //Gestión de Envíos
 // function calculateShipping(address: Address): ShippingRates {

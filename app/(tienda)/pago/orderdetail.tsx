@@ -36,7 +36,10 @@ export function PayPage({ user, address }: Props) {
 
   const handleFormSubmit = (values: any) => {
     console.log(values);
+    setIsLinkActive(true)
   };
+
+  const [isLinkActive, setIsLinkActive] = useState(false);
 
   return (
     <Card className="overflow-hidden w-9/12 mx-auto">
@@ -131,8 +134,20 @@ export function PayPage({ user, address }: Props) {
           </div>
           <Separator className="my-6" />
           <div className="flex justify-end">
-          <Link href={"/pago/stripePay"}>
-          <Button>Ve a pagar</Button></Link>
+            <>
+            {!isLinkActive && (
+              <Button
+                disabled
+              >
+                Ve a pagar
+              </Button>
+                )}
+              {isLinkActive && (
+                <Link href="/pago/stripePay">
+                  <Button>Ve a pagar</Button>
+                </Link>
+              )}
+            </>
           </div>
         </div>
       </CardContent>
