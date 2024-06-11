@@ -5,74 +5,117 @@ const optionalNullableString = z.string().nullable().optional();
 const optionalNullableNumber = z.number().nullable().optional();
 
 // Esquema para el código ISO
-const isoCodeSchema = z.string()
+const isoCodeSchema = z
+  .string()
   .length(2, "El código ISO debe tener 2 caracteres.")
-  .refine(code => /^[A-Z]{2}$/.test(code), "El código ISO debe estar en mayúsculas.");
+  .refine(
+    (code) => /^[A-Z]{2}$/.test(code),
+    "El código ISO debe estar en mayúsculas."
+  );
 
-  
 export const userSchema = z.object({
   id: z.number(),
-  first_name: z.string({ required_error: 'Ingrese su nombre' } ).min(2, {
+  first_name: z.string({ required_error: "Ingrese su nombre" }).min(2, {
     message: "El nombre de usuario debe ser más largo",
   }),
   id_address: z.number(),
   postcode: z.string(),
   phone: z.string(),
-  email: z.string({ required_error: 'Ingrese su email' }).email("Introduce un email válido"),
-  password: z.string({ required_error: 'Ingrese su contraseña' }).min(6, "La contraseña debe tener al menos 6 caracteres"),
-  confirmPassword: z.string({ required_error: 'Repita su contraseña' }).min(1, "La confirmación de la contraseña es obligatoria"),
+  email: z
+    .string({ required_error: "Ingrese su email" })
+    .email("Introduce un email válido"),
+  password: z
+    .string({ required_error: "Ingrese su contraseña" })
+    .min(6, "La contraseña debe tener al menos 6 caracteres"),
+  confirmPassword: z
+    .string({ required_error: "Repita su contraseña" })
+    .min(1, "La confirmación de la contraseña es obligatoria"),
   created_at: z.date(),
 });
 
 export const addressFormschema = z.object({
-  address: z.string({ required_error: 'La dirección no puede estar en blanco' })
-    .min(1, { message: 'La dirección no puede estar en blanco' })
-    .max(100, { message: 'La dirección no puede exceder los 100 caracteres' }),
-  number: z.string({ required_error: 'El número no puede estar en blanco' })
-    .min(1, { message: 'El número no puede estar en blanco' })
-    .regex(/^\d+$/, { message: 'El número debe ser un número entero' }),
-  letter: z.string()
-  .max(1, { message: 'La letra debe ser un solo carácter' })
-  .regex(/^[A-Za-z]$/, { message: 'La letra debe ser una sola letra' })
-  .optional(),
-  staircase: z.enum(['left', 'right', 'izquierda', 'derecha'])
+  id: z.string().optional(),
+  address: z
+    .string({ required_error: "La dirección no puede estar en blanco" })
+    .min(1, { message: "La dirección no puede estar en blanco" })
+    .max(100, { message: "La dirección no puede exceder los 100 caracteres" }),
+  // number: z
+  //   .string({ required_error: "El número no puede estar en blanco" })
+  //   .min(1, { message: "El número no puede estar en blanco" })
+  //   .regex(/^\d+$/, { message: "El número debe ser un número entero" }),
+  number: z
+    .string({ required_error: "El número no puede estar en blanco" })
+    .min(1, { message: "El número no puede estar en blanco" })
+    .regex(/^\d+$/, { message: "El número debe ser un número entero" }),
+  letter: z
+    .string()
+    .max(1, { message: "La letra debe ser un solo carácter" })
+    .regex(/^[A-Za-z]$/, { message: "La letra debe ser una sola letra" })
     .optional(),
-  block: z.union([
-    z.string().regex(/^\d+$/, { message: 'El bloque debe ser un número positivo' }),
-    z.number().int().positive({ message: 'El bloque debe ser un número positivo' })
-  ]).optional(),
-  postalCode: z.string({ required_error: 'El código postal no puede estar en blanco' })
-    .regex(/^\d{5}$/, { message: 'El código postal debe tener exactamente 5 dígitos' }),
-  shippingMethod: z.enum(["standard", "express", "premium"], { required_error: 'El método de envío es obligatorio' }),
-  save: z.boolean()
-    .optional()
+  staircase: z.enum(["izquierda", "derecha"]).optional(),
+  block: z
+    .string()
+    .regex(/^\d+$/, { message: "El bloque debe ser un número positivo" })
+    .optional(),
+  postalCode: z
+    .string({ required_error: "El código postal no puede estar en blanco" })
+    .regex(/^\d{5}$/, {
+      message: "El código postal debe tener exactamente 5 dígitos",
+    }),
+  city: z.string({ required_error: "La ciudad no puede estar en blanco" }),
+  province: z
+    .string()
+    .nonempty({ message: "La provincia no puede estar en blanco" }),
+  save: z.boolean().optional(),
 });
-  // number: z.number({ required_error: 'El número no puede estar en blanco' }).min(1, "El número debe ser mayor que 0"),
-  // city: z.string({ required_error: 'La ciudad no puede estar en blanco' }),
-  // province: z.string({ required_error: 'La provincia no puede estar en blanco' }),
-// });
+
+export const deleveryTypeSchema = z.object({
+  shippingMethod: z.enum(["standard", "express", "premium"], {
+    required_error: "El método de envío es obligatorio",
+  }),
+});
 
 export const citySchema = z.object({
-  id_city: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  id_city: z
+    .number()
+    .positive()
+    .refine((id) => Number.isInteger(id), "El ID debe ser un número entero."),
   city: z.string().nonempty("El nombre de la ciudad no puede estar vacío."),
-  id_province: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  id_province: z
+    .number()
+    .positive()
+    .refine((id) => Number.isInteger(id), "El ID debe ser un número entero."),
 });
 
 export const provinceSchema = z.object({
-  id_province: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  id_province: z
+    .number()
+    .positive()
+    .refine((id) => Number.isInteger(id), "El ID debe ser un número entero."),
   iso_code: isoCodeSchema,
-  province: z.string().nonempty("El nombre de la provincia no puede estar vacío."),
-  id_country: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  province: z
+    .string()
+    .nonempty("El nombre de la provincia no puede estar vacío."),
+  id_country: z
+    .number()
+    .positive()
+    .refine((id) => Number.isInteger(id), "El ID debe ser un número entero."),
 });
 
 export const countrySchema = z.object({
-  id_country: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  id_country: z
+    .number()
+    .positive()
+    .refine((id) => Number.isInteger(id), "El ID debe ser un número entero."),
   iso_code: isoCodeSchema,
   country: z.string().nonempty("El nombre del país no puede estar vacío."),
 });
 
 export const productSchema = z.object({
-  id_product: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  id_product: z
+    .number()
+    .positive()
+    .refine((id) => Number.isInteger(id), "El ID debe ser un número entero."),
   code: optionalNullableString,
   name: z.string().nonempty("El nombre del producto no puede estar vacío."),
   description: optionalNullableString,
@@ -85,13 +128,17 @@ export const productSchema = z.object({
 
 export const addProductSchema = z.object({
   name: z.string().nonempty("El nombre del producto no puede estar vacío."),
-  description: z.string().nonempty("La descripción del producto no puede estar vacía."),
+  description: z
+    .string()
+    .nonempty("La descripción del producto no puede estar vacía."),
   price: z.number().nonnegative(),
   material: optionalNullableString,
   stock: optionalNullableNumber,
   color: optionalNullableString,
   size: optionalNullableNumber,
-  category: z.string().nonempty("La categoría del producto no puede estar vacía."),
+  category: z
+    .string()
+    .nonempty("La categoría del producto no puede estar vacía."),
   state: z.string().nonempty("El estado del producto no puede estar vacío."),
   image: z.instanceof(File).optional(),
 });
@@ -101,16 +148,28 @@ export const editProductSchema = addProductSchema.extend({
 });
 
 export const addVariantProductSchema = z.object({
-  id_product: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  id_product: z
+    .number()
+    .positive()
+    .refine((id) => Number.isInteger(id), "El ID debe ser un número entero."),
   code: z.string().nonempty("El código del producto no puede estar vacío."),
   stock: z.number().nonnegative(),
-  id_color: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  id_color: z
+    .number()
+    .positive()
+    .refine((id) => Number.isInteger(id), "El ID debe ser un número entero."),
   size: z.number().positive(),
 });
 
 export const cartDetailSchema = z.object({
-  id_cart: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
-  id_product: z.number().positive().refine(id => Number.isInteger(id), "El ID debe ser un número entero."),
+  id_cart: z
+    .number()
+    .positive()
+    .refine((id) => Number.isInteger(id), "El ID debe ser un número entero."),
+  id_product: z
+    .number()
+    .positive()
+    .refine((id) => Number.isInteger(id), "El ID debe ser un número entero."),
   quantity: z.number().positive(),
 });
 
@@ -131,7 +190,7 @@ export const UserRegisterFormSchema = userSchema
     path: ["confirmPassword"],
   });
 
-  // SETTING
+// SETTING
 export const profileFormSchema = z.object({
   username: z
     .string()
@@ -140,22 +199,22 @@ export const profileFormSchema = z.object({
     })
     .max(30, {
       message: "Username must not be longer than 30 characters.",
-    }),
-  email: z
-    .string({
-      required_error: "Please select an email to display.",
     })
-    .email(),
-  bio: z.string().max(160).min(4),
-  urls: z
-    .array(
-      z.object({
-        value: z.string().url({ message: "Please enter a valid URL." }),
-      }),
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      "El nombre de usuario solo puede contener letras, números y guiones bajos"
+    ),
+  bio: z
+    .string()
+    .max(160)
+    .min(4)
+    .refine(
+      (value) => value.trim().length > 0,
+      "La biografía no puede estar vacía o contener solo espacios en blanco."
     )
     .optional(),
 });
-  
+
 export const accountFormSchema = z.object({
   name: z
     .string()
@@ -173,7 +232,7 @@ export const accountFormSchema = z.object({
   }),
   email: z.string({
     required_error: "Please select a language.",
-  })
+  }),
 });
 
 export const displayFormSchema = z.object({
@@ -202,7 +261,6 @@ export const notificationsFormSchema = z.object({
   marketing_emails: z.boolean().default(false).optional(),
   security_emails: z.boolean(),
 });
-
 
 export const formSchema = z.object({
   username: z
@@ -263,8 +321,6 @@ export const formSchema = z.object({
   }),
 });
 
-
-
 const ciudadesPorProvincia: { [key: string]: string[] } = {
   Alava: ["Vitoria-Gasteiz", "Llodio", "Amurrio"],
   Albacete: ["Albacete", "Hellín", "Villarrobledo"],
@@ -290,7 +346,11 @@ const ciudadesPorProvincia: { [key: string]: string[] } = {
   Jaen: ["Jaén", "Linares", "Úbeda"],
   La_coruna: ["La Coruña", "Santiago de Compostela", "Ferrol"],
   La_rioja: ["Logroño", "Calahorra", "Arnedo"],
-  Las_palmas: ["Las Palmas de Gran Canaria", "Telde", "Santa Lucía de Tirajana"],
+  Las_palmas: [
+    "Las Palmas de Gran Canaria",
+    "Telde",
+    "Santa Lucía de Tirajana",
+  ],
   Leon: ["León", "Ponferrada", "San Andrés del Rabanedo"],
   Lerida: ["Lérida", "Tárrega", "Balaguer"],
   Lugo: ["Lugo", "Villalba", "Monforte de Lemos"],
@@ -313,18 +373,59 @@ const ciudadesPorProvincia: { [key: string]: string[] } = {
   Valladolid: ["Valladolid", "Medina del Campo", "Laguna de Duero"],
   Vizcaya: ["Bilbao", "Barakaldo", "Getxo"],
   Zamora: ["Zamora", "Benavente", "Toro"],
-  Zaragoza: ["Zaragoza", "Calatayud", "Ejea de los Caballeros"]
+  Zaragoza: ["Zaragoza", "Calatayud", "Ejea de los Caballeros"],
 };
 
 // Definir el esquema de provincias y ciudades de manera explícita
 const provinciaSchema = z.enum([
-  "Alava", "Albacete", "Alicante", "Almeria", "Asturias", "Avila", "Barcelona",
-  "Burgos", "Cadiz", "Cantabria", "Castellon", "Ciudad_real", "Cordoba", "Cuenca",
-  "Girona", "Granada", "Guadalajara", "Guipuzcoa", "Huelva", "Huesca", "Islas_baleares",
-  "Jaen", "La_coruna", "La_rioja", "Las_palmas", "Leon", "Lerida", "Lugo", "Madrid",
-  "Malaga", "Murcia", "Navarra", "Ourense", "Palencia", "Pontevedra", "Salamanca",
-  "Segovia", "Sevilla", "Soria", "Tarragona", "Tenerife", "Teruel", "Toledo", "Valencia",
-  "Valladolid", "Vizcaya", "Zamora", "Zaragoza"
+  "Alava",
+  "Albacete",
+  "Alicante",
+  "Almeria",
+  "Asturias",
+  "Avila",
+  "Barcelona",
+  "Burgos",
+  "Cadiz",
+  "Cantabria",
+  "Castellon",
+  "Ciudad_real",
+  "Cordoba",
+  "Cuenca",
+  "Girona",
+  "Granada",
+  "Guadalajara",
+  "Guipuzcoa",
+  "Huelva",
+  "Huesca",
+  "Islas_baleares",
+  "Jaen",
+  "La_coruna",
+  "La_rioja",
+  "Las_palmas",
+  "Leon",
+  "Lerida",
+  "Lugo",
+  "Madrid",
+  "Malaga",
+  "Murcia",
+  "Navarra",
+  "Ourense",
+  "Palencia",
+  "Pontevedra",
+  "Salamanca",
+  "Segovia",
+  "Sevilla",
+  "Soria",
+  "Tarragona",
+  "Tenerife",
+  "Teruel",
+  "Toledo",
+  "Valencia",
+  "Valladolid",
+  "Vizcaya",
+  "Zamora",
+  "Zaragoza",
 ]);
 
 const ciudadSchemaMap = {
@@ -352,7 +453,11 @@ const ciudadSchemaMap = {
   Jaen: z.enum(["Jaén", "Linares", "Úbeda"]),
   La_coruna: z.enum(["La Coruña", "Santiago de Compostela", "Ferrol"]),
   La_rioja: z.enum(["Logroño", "Calahorra", "Arnedo"]),
-  Las_palmas: z.enum(["Las Palmas de Gran Canaria", "Telde", "Santa Lucía de Tirajana"]),
+  Las_palmas: z.enum([
+    "Las Palmas de Gran Canaria",
+    "Telde",
+    "Santa Lucía de Tirajana",
+  ]),
   Leon: z.enum(["León", "Ponferrada", "San Andrés del Rabanedo"]),
   Lerida: z.enum(["Lérida", "Tárrega", "Balaguer"]),
   Lugo: z.enum(["Lugo", "Villalba", "Monforte de Lemos"]),
@@ -368,7 +473,11 @@ const ciudadSchemaMap = {
   Sevilla: z.enum(["Sevilla", "Dos Hermanas", "Alcalá de Guadaíra"]),
   Soria: z.enum(["Soria", "Almazán", "El Burgo de Osma"]),
   Tarragona: z.enum(["Tarragona", "Reus", "El Vendrell"]),
-  Tenerife: z.enum(["Santa Cruz de Tenerife", "San Cristóbal de La Laguna", "Arona"]),
+  Tenerife: z.enum([
+    "Santa Cruz de Tenerife",
+    "San Cristóbal de La Laguna",
+    "Arona",
+  ]),
   Teruel: z.enum(["Teruel", "Alcañiz", "Calamocha"]),
   Toledo: z.enum(["Toledo", "Talavera de la Reina", "Illescas"]),
   Valencia: z.enum(["Valencia", "Torrent", "Gandía"]),
@@ -378,28 +487,32 @@ const ciudadSchemaMap = {
   Zaragoza: z.enum(["Zaragoza", "Calatayud", "Ejea de los Caballeros"]),
 };
 
-
-export const addressSchema = z.object({
-  address: z.string().nonempty(),
-  number: z.number().int().positive(),
-  letter: z.string().optional(),
-  block: z.string().optional(),
-  staircase: z.string().optional(),
-  postalCode: z.string().nonempty(),
-  city: z.string().nonempty(),
-  province: provinciaSchema,
-}).refine((data) => {
-  const citySchema = ciudadSchemaMap[data.province];
-  try {
-    citySchema.parse(data.city);
-    return true;
-  } catch {
-    return false;
-  }
-}, {
-  message: "La ciudad no corresponde a la provincia indicada",
-  path: ['city'],
-});
+export const addressSchema = z
+  .object({
+    address: z.string().nonempty(),
+    number: z.number().int().positive(),
+    letter: z.string().optional(),
+    block: z.string().optional(),
+    staircase: z.string().optional(),
+    postalCode: z.string().nonempty(),
+    city: z.string().nonempty(),
+    province: provinciaSchema,
+  })
+  .refine(
+    (data) => {
+      const citySchema = ciudadSchemaMap[data.province];
+      try {
+        citySchema.parse(data.city);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    {
+      message: "La ciudad no corresponde a la provincia indicada",
+      path: ["city"],
+    }
+  );
 
 // ! Deprecated addressschema
 // export const addressSchema = z.object({

@@ -4,7 +4,6 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
 
-
 export default function StripePayPage() {
   return (
     <Card className="overflow-hidden w-9/12 mx-auto">

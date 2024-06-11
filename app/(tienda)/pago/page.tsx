@@ -16,12 +16,12 @@ import {
 import { AddressForm } from "@/components/form/data-client/AddressForm";
 
 export default async function NamePage() {
-  const address: Address | null = await getAddresByUserLog();
+  const addresses = await getAddresByUserLog();
 
   const user: User | null = await getUserLogged();
   if (!user) redirect("/");
-console.log(address)
+console.log(addresses)
   return (
-    <PayPage user={user} address={address}></PayPage>
+    <PayPage user={user} addresses={addresses}></PayPage>
   );
 }

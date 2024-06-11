@@ -10,7 +10,6 @@ import { auth } from "@/auth";
 // function authenticateUser(token: string): User {
 export async function getUserLogged(): Promise<User | null> {
   const authentication = await auth();
-
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -92,13 +91,11 @@ export async function getAddresByUserLog() {
   const usuarioConDirecciones = await prisma.user.findUnique({
     where: { id: userId },
     select: {
-      addresses: {
-        take: 1,
-      },
+      addresses: true,
     },
   });
 
-  return usuarioConDirecciones?.addresses[0];
+  return usuarioConDirecciones?.addresses;
 }
 
 
@@ -195,6 +192,9 @@ export async function fetchProductsbyIDs(products_ids: Array<number> = [1]) {
         in: products_ids,
       },
     },
+    include: {
+      ProductImage: true
+    }
   });
   return products;
 }

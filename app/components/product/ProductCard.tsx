@@ -36,10 +36,8 @@ function asignarNumero(color: string) {
 
 export default function ProductCard({
   product,
-  id_user,
 }: {
   product: Product;
-  id_user: number;
 }) {
   const [fav, setFav] = useState(false);
 
@@ -86,7 +84,7 @@ export default function ProductCard({
       <CardHeader className="min-h-[160px]">
         <div className="flex justify-between">
           <div>
-            <CardTitle className="h-15 leading-relaxed line-clamp-2 text-balance py-3">
+            <CardTitle className="h-12 leading-relaxed line-clamp-1 text-balance py-3">
               <Link
                 href={`/catalogo/product/${product.id}`}
                 className="text-2xl font-semibold mb-2"
@@ -94,7 +92,7 @@ export default function ProductCard({
                 {product.name}
               </Link>
             </CardTitle>
-            <CardDescription className="text-lg">
+            <CardDescription className="text-lg leading-relaxed line-clamp-2 text-balance">
               {product.description}
             </CardDescription>
           </div>

@@ -17,7 +17,7 @@ import {
   Button,
   Checkbox,
 } from "@/components/shadcn";
-import { useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { addressFormschema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,41 +25,121 @@ import { z } from "zod";
 import { CityAndProvinceSelector } from "./CityAndProvinceSelector";
 import { useRouter } from "next/navigation";
 import { Address } from "@prisma/client";
-
+import { createAddress } from "@/lib/actionscommands";
+import { saveAddressLocalStorage } from "@/lib/localStorage";
 type AddressFormInputs = z.infer<typeof addressFormschema>;
-
 interface AddressFormProps {
   address?: Address | null;
-  onSubmitForm: (values: AddressFormInputs) => void;
+  onSubmitForm?: (values: AddressFormInputs) => void;
+  type?: string;
 }
 
 export const AddressForm: React.FC<AddressFormProps> = ({
   onSubmitForm,
   address,
+  type,
 }) => {
-
   const form = useForm<AddressFormInputs>({
     resolver: zodResolver(addressFormschema),
   });
-  const { control, handleSubmit } = form;
 
-  function onSubmit(values: AddressFormInputs) {
-    if(values.save){
-      // Añadir la dir al usuario
-      return 0
+  const { control, handleSubmit, setValue, reset } = form;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setIsSubmitting(false);
+    if (address) {
+      reset({
+        id: String(address.id),
+        address: address.name,
+        number: String(address.number),
+        letter: address.letter ? String(address.letter) : '',
+        staircase: address.staircase as "izquierda" | "derecha" | undefined,
+        block: address.block ? String(address.block) : '',
+        postalCode: String(address.postalcode)
+      });
+    } else {
+      reset({
+        id: '',
+        address: '',
+        number: '',
+        // letter:'',
+        // staircase: '' as "izquierda" | "derecha" | undefined,
+        // block: '',
+        postalCode: ''
+      });
     }
-    console.log(values);
-    onSubmitForm(values)
+    
+    // Luego, resetea el formulario con los nuevos valores predeterminados
+   
+  
+  }, [address, setValue, reset]);
+
+  async function onSubmit(values: AddressFormInputs) {
+    setIsSubmitting(true);
+    try {
+      if (values.save) {
+        await createAddress(values);
+      } else {
+        saveAddressLocalStorage(values);
+      }
+      console.log(values);
+      if (onSubmitForm) onSubmitForm(values);
+      else await createAddress(values);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
+
+  const [city, setCity] = useState("");
+  const [province, setProvince] = useState("");
+  const [selectedValue, setSelectedValue] = useState("");
+
+  useEffect(() => {
+    setValue("province", province);
+  }, [province, setValue]);
+
+  // useEffect(() => {
+  //   setValue("province", province);
+  // }, [province]);
+
+  useEffect(() => {
+    setValue("city", city);
+  }, [city, setValue]);
+
+  useEffect(() => {
+    console.log(address?.id);
+    setValue("id", address?.id ? "" : "0");
+  }, []);
+
+  const handleCity = (province: string, city: string) => {
+    setProvince(province);
+    setCity(city);
+    console.log(province, city);
+  };
 
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <FormField
+          control={control}
+          name="id"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input type="hidden" value={address?.id ?? 0}></Input>
+              </FormControl>
+            </FormItem>
+          )}
+        />
         <div className="flex gap-5">
           <div className="w-full">
             <div className="grid gap-4 mb-5">
-              <div className="font-semibold">Información de Envío</div>
-
+              {!type && (
+                <div className="font-semibold">Información de Envío</div>
+              )}
               <FormField
                 control={control}
                 name="address"
@@ -67,7 +147,12 @@ export const AddressForm: React.FC<AddressFormProps> = ({
                   <FormItem className="grid gap-2">
                     <FormLabel>Dirección</FormLabel>
                     <FormControl>
-                      <Input placeholder="C/, Avda, ctra ...." defaultValue={address?.name} {...field} />
+                      <Input
+                        placeholder="C/, Avda, ctra ...."
+                        {...field}
+                        defaultValue={address?.name}
+                        readOnly={!!address?.name}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -82,7 +167,13 @@ export const AddressForm: React.FC<AddressFormProps> = ({
                     <FormItem className="grid gap-2">
                       <FormLabel>Número</FormLabel>
                       <FormControl>
-                        <Input type="number" defaultValue={address?.number} {...field} />
+                        <Input
+                          type="number"
+                          {...field}
+                          min={1}
+                          defaultValue={address?.number}
+                          readOnly={!!address?.number}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -96,7 +187,12 @@ export const AddressForm: React.FC<AddressFormProps> = ({
                     <FormItem className="grid gap-2">
                       <FormLabel>Letra</FormLabel>
                       <FormControl>
-                        <Input placeholder="Letra" defaultValue={address?.letter} {...field} />
+                        <Input
+                          {...field}
+                          placeholder="Letra"
+                          defaultValue={address ? address?.letter : ''}
+                          readOnly={!!address?.name}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -110,7 +206,33 @@ export const AddressForm: React.FC<AddressFormProps> = ({
                     <FormItem className="grid gap-2">
                       <FormLabel>Escalera</FormLabel>
                       <FormControl>
-                        <Input type="text" defaultValue={address?.staircase} {...field} />
+                        <Input
+                          {...field}
+                          type="text"
+                          defaultValue={address ? (address?.staircase) ? 'esca' : ''  : ''}
+                          readOnly={!!address?.name}
+                        />
+                        {/* <Select onValueChange={setSelectedValue}>
+                          <SelectTrigger className="w-full lg:w-auto">
+                            <SelectValue
+                              placeholder={"Escalera"}
+                              // value={address?.staircase!}
+                              defaultValue=''
+                                                    readOnly={!!address?.name}
+
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="izquierda">Izquierda</SelectItem>
+                            defaultValue=''
+                                                  readOnly={!!address?.name}
+
+                            <SelectItem value="derecha">Derecha</SelectItem>
+                            defaultValue=''
+                                                  readOnly={!!address?.name}
+
+                          </SelectContent>
+                        </Select> */}
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -124,7 +246,13 @@ export const AddressForm: React.FC<AddressFormProps> = ({
                     <FormItem className="grid gap-2">
                       <FormLabel>Bloque</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <Input
+                          {...field}
+                          type="number"
+                          min={1}
+                          defaultValue={address?.block ? address?.block : ''}
+                          readOnly={!!address?.name}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -133,7 +261,33 @@ export const AddressForm: React.FC<AddressFormProps> = ({
               </div>
 
               <div className="flex gap-4 items-center">
-                <CityAndProvinceSelector />
+                <div>
+                  <CityAndProvinceSelector onSelection={handleCity} />
+                  <FormField
+                    control={control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem className="grid gap-2">
+                        <FormControl>
+                          <Input type="hidden" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name="province"
+                    render={({ field }) => (
+                      <FormItem className="grid gap-2">
+                        <FormControl>
+                          <Input type="hidden" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 <FormField
                   control={control}
                   name="postalCode"
@@ -142,9 +296,11 @@ export const AddressForm: React.FC<AddressFormProps> = ({
                       <FormLabel>Código Postal</FormLabel>
                       <FormControl>
                         <Input
+                          {...field}
                           className="w-6/12"
                           placeholder="C. P "
-                          {...field}
+                          defaultValue={address?.postalcode}
+                          readOnly={!!address?.name}
                         />
                       </FormControl>
                       <FormMessage />
@@ -154,59 +310,62 @@ export const AddressForm: React.FC<AddressFormProps> = ({
               </div>
             </div>
 
-            <FormField
-              control={control}
-              name="save"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 mb-5">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Guardar la información de envío</FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
+            {!type && !address && (
+              <FormField
+                control={control}
+                name="save"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 mb-5">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>Guardar la información de envío</FormLabel>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            )}
 
-            <div className="flex justify-between items-center mt-12 mb-6 ">
-              <div className="grid gap-5">
-                <Label htmlFor="shippingMethod">
-                  Selecciona tu método de envío:
-                </Label>
-                <FormField
-                  control={control}
-                  name="shippingMethod"
-                  render={({ field }) => (
-                    <Select
-                      value={field.value}
-                      onValueChange={(value) => {
-                        field.onChange(value);
-                      }}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Elige un método" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white rounded-md shadow-md">
-                        <SelectItem value="standard">
-                          Envío Estándar (3-5 días hábiles)
-                        </SelectItem>
-                        <SelectItem value="express">
-                          Envío Exprés (1-2 días hábiles)
-                        </SelectItem>
-                        <SelectItem value="premium">
-                          Envío Premium (Entrega prioritaria)
-                        </SelectItem>
-                      </SelectContent>
-                      <FormMessage></FormMessage>
-                    </Select>
-                  )}
-                />
-              </div>
-              <Button className="mt-10">Guardar</Button>
+            <div className="flex justify-end">
+              {isSubmitting ? (
+                <Button
+                  type="button"
+                  className="inline-flex items-center  transition ease-in-out duration-150 cursor-not-allowed"
+                  disabled
+                >
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                </Button>
+              ) : (
+                !address && (
+                  <Button type="submit" className="mb-6 sm:mb-0">
+                    {!type && "Guardar"}
+                    {type === "config" && "Añadir"}
+                  </Button>
+                )
+              )}
             </div>
           </div>
         </div>

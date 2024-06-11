@@ -67,7 +67,6 @@ export default async function FavsTable({ favorites }: Props) {
             <ProductCard
               key={product.id}
               product={product}
-              id_user={1}
             ></ProductCard>
           ))
         ) : (

@@ -16,7 +16,7 @@ export default async function SettingsProfilePage() {
       <div>
         <h3 className="text-lg font-medium">Perfil</h3>
         <p className="text-sm text-muted-foreground">
-          Este son los datos de tu perfil que podrán ver otros usuarios.
+          Este son los datos de tu perfil.
         </p>
       </div>
       <Separator className="my-5" />

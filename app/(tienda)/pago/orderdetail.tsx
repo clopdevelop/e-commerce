@@ -7,11 +7,16 @@ import {
   CardHeader,
   CardTitle,
   Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   Separator,
 } from "@/components/shadcn";
 import { useCart } from "@/context/CartProvider";
 import { CartItem } from "@/lib/definitions";
-import { loadFromLocalStorage } from "@/lib/localStorage";
 import { Address, User } from "@prisma/client";
 import { ChevronLeft, XCircleIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -20,26 +25,40 @@ import { AddressForm } from "@/components/form/data-client/AddressForm";
 
 interface Props {
   user: User;
-  address?: Address | null;
+  addresses?: any;
 }
 
-export function PayPage({ user, address }: Props) {
+export function PayPage({ user, addresses }: Props) {
   const [shippingPrice, setShippingPrice] = useState(0);
 
-  const productInCart = loadFromLocalStorage();
-
-  const [products, setProducts] = useState<CartItem[]>(productInCart);
   const { items, updateItemQuantity, removeItem } = useCart();
-  useEffect(() => {
-    setProducts(products);
-  }, [products]);
+
+  const [isLinkActive, setIsLinkActive] = useState(addresses ? true : false);
 
   const handleFormSubmit = (values: any) => {
     console.log(values);
-    setIsLinkActive(true)
+    setIsLinkActive(true);
   };
 
-  const [isLinkActive, setIsLinkActive] = useState(false);
+  const handleDeliveryType = (newData: string) => {
+    if (newData == "standard") setShippingPrice(1);
+
+    if (newData == "express") setShippingPrice(2);
+
+    if (newData == "premium") setShippingPrice(3);
+  };
+
+  const [selectedAddressId, setSelectedAddressId] = useState('');
+  const [selectValue, setSelectValue] = useState("");
+
+  const handleAddressChange = (value) => {
+    setSelectedAddressId(value);
+    setSelectValue(value);
+    (value === '-1') ? 
+    setIsLinkActive(false):setIsLinkActive(true)
+  };
+
+  console.log(addresses)
 
   return (
     <Card className="overflow-hidden w-9/12 mx-auto">
@@ -52,10 +71,67 @@ export function PayPage({ user, address }: Props) {
       </CardHeader>
       <CardContent className="p-6 text-sm flex gap-10">
         <div className="w-full">
-          <AddressForm
-            onSubmitForm={handleFormSubmit}
-            address={address}
-          ></AddressForm>
+          <Select value={selectValue} onValueChange={handleAddressChange}>
+            <SelectTrigger className="my-5 w-auto" aria-placeholder="">
+              <SelectValue placeholder="Direcciones Guardadas" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="-1">
+                <div className="max-w-200">Nueva Dirreción</div>
+              </SelectItem>
+              {addresses &&
+                addresses.map((address,i) => (
+                  <div className="flex items-center" key={address?.id}>
+                    <SelectItem value={i+1}>
+                      <div className="max-w-200">{address.name}</div>
+                    </SelectItem>
+                  </div>
+                ))}
+            </SelectContent>
+          </Select>
+        {selectedAddressId && selectedAddressId !== '-1' ? 
+        <><div>
+          {addresses[Number(selectedAddressId)-1].name}</div></> :
+        <AddressForm
+        // onSubmitForm={handleFormSubmit}
+        // address={
+        //   selectedAddressId
+        //     ? addresses.find(
+        //         (address) => address.id === Number(selectedAddressId)
+        //       )
+        //     : null
+        // }
+      ></AddressForm>}
+          <div className="grid gap-5  mb-12 ">
+            <Label htmlFor="shippingMethod">
+              Selecciona tu método de envío:
+            </Label>
+            {/* name="shippingMethod" */}
+            <Select
+              // value={field.value}
+              // onValueChange={(value) => {
+              //   field.onChange(value);
+              // }}
+              onValueChange={(value) => {
+                handleDeliveryType(value);
+              }}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Elige un método" />
+              </SelectTrigger>
+              <SelectContent className="bg-white rounded-md shadow-md">
+                <SelectItem value="standard">
+                  Envío Estándar (3-5 días hábiles)
+                </SelectItem>
+                <SelectItem value="express">
+                  Envío Exprés (1-2 días hábiles)
+                </SelectItem>
+                <SelectItem value="premium">
+                  Envío Premium (Entrega prioritaria)
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <Separator className="my-2 mb-6" />
           <div className="grid gap-3">
             <div className="font-semibold">Detalles del Pedido</div>
@@ -135,18 +211,14 @@ export function PayPage({ user, address }: Props) {
           <Separator className="my-6" />
           <div className="flex justify-end">
             <>
-            {!isLinkActive && (
-              <Button
-                disabled
-              >
-                Ve a pagar
-              </Button>
-                )}
-              {isLinkActive && (
+              {(!isLinkActive || !shippingPrice) && (
+                <Button disabled>Ve a pagar</Button>
+              )}
+              {isLinkActive && shippingPrice ? (
                 <Link href="/pago/stripePay">
                   <Button>Ve a pagar</Button>
                 </Link>
-              )}
+              ) : null}
             </>
           </div>
         </div>
@@ -157,62 +229,3 @@ export function PayPage({ user, address }: Props) {
     </Card>
   );
 }
-
-// <div className="w-full">
-// <div className="flex flex-col gap-4">
-//   <div className="grid gap-3">
-//     <div className="font-semibold">Información de envío</div>
-//     <address className="grid gap-0.5 not-italic text-muted-foreground">
-//       <div className="flex justify-between">
-//         <strong>Nombre:</strong> {user?.name}
-//       </div>
-//       <div className="flex">
-//         <strong>Dirección:</strong> {address?.name}
-//         {address?.number}
-//         {address?.letter && <span> letra: {address?.letter}</span>}
-//         {address?.staircase && (
-//           <span>, escalera: {address?.staircase}</span>
-//         )}
-//         {address?.block && <span>, bloque: {address?.block}</span>}
-//       </div>
-//       <div className="flex justify-between">
-//         <strong>Código Postal:</strong>
-//         {/* todo {address?.postcode} */}
-//       </div>
-//     </address>
-//   </div>
-// </div>
-// <Separator className="my-4" />
-// <div className="grid gap-3">
-//   <div className="font-semibold">Información del cliente</div>
-//   <dl className="grid gap-3">
-//     <div className="flex items-center justify-between">
-//       <dt className="text-muted-foreground">Cliente</dt>
-//       <dd>{user.name}</dd>
-//     </div>
-//     <div className="flex items-center justify-between">
-//       <dt className="text-muted-foreground">Correo electrónico</dt>
-//       <dd>
-//         <a href="mailto:">{user.email}</a>
-//       </dd>
-//     </div>
-//     <div className="flex items-center justify-between">
-//       <dt className="text-muted-foreground">Teléfono</dt>
-//       <dd>
-//         <a href="tel:">
-//           123456789
-//           {/* todo {user?.phone} */}
-//         </a>
-//       </dd>
-//     </div>
-//   </dl>
-// </div>
-// <Separator className="my-4" />
-// <div className="grid gap-3">
-//   <div className="font-semibold">Información de pago</div>
-//   <dl className="grid gap-3">
-//    <Link href='/pago/stripePay'>CLICK AQUI</Link>
-//   </dl>
-// </div>
-// <div className="flex justify-end mt-8"></div>
-// </div>

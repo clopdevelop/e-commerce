@@ -11,13 +11,13 @@ import MyPagination from "../utils/myPagination";
 import { ProductSkeletonCard } from "../skeletons/ProductSkeletonCard";
 
 export default async function ProductsTable({
-   query,
+  query,
   currentPage,
   productsOnPage,
   category,
   id_user,
   min,
-  max
+  max,
 }: {
   query: string;
   currentPage: number;
@@ -27,9 +27,9 @@ export default async function ProductsTable({
   min: number;
   max: number;
 }) {
-  if(!category) category=''
+  if (!category) category = "";
 
-  const priceRange = { min:min, max:max }
+  const priceRange = { min: min, max: max };
 
   const products = await fetchfilteredProducts(
     query,
@@ -38,7 +38,6 @@ export default async function ProductsTable({
     category,
     priceRange
   );
-  console.log(products)
 
   return (
     <div className="grid  lg:grid-cols-3 gap-2 md:w-3/4">
@@ -53,7 +52,19 @@ export default async function ProductsTable({
       ) : (
         <div className="flex flex-col p-2 text-xl">No hay resultados </div>
       )}
-      <Toaster richColors></Toaster>
+      <div className="absolute">
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            style: {
+              width: "500px",
+              height: "100px", 
+              fontSize: '20px',
+            },
+          }}
+          richColors
+        ></Toaster>
+      </div>
     </div>
   );
 }

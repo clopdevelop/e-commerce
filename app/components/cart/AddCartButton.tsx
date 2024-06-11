@@ -39,8 +39,8 @@ export default function AddCartButton({
         
         throw new Error('items are undefined');
       }
-      if(!product.ProductImage)
-        return 0;
+      if(size==0)
+        throw Error("Escoge la talla");
       const num = coloresANumeros[color]
 
       const newItem: CartItem = {
@@ -57,6 +57,9 @@ export default function AddCartButton({
       addItem(newItem, 1);
       toast.success("Producto agregado al carrito!");
     } catch (error) {
+      if(error!=="")
+      toast.error("Escoge la talla.");
+    else
       toast.error("No se pudo agregar el producto al carrito.");
     }
   }

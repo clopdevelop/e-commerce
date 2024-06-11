@@ -9,8 +9,10 @@ import {
   UserRegisterFormSchema,
   addProductSchema,
   addVariantProductSchema,
+  addressFormschema,
   addressSchema,
   editProductSchema,
+  profileFormSchema,
 } from "./schemas";
 import { sleep } from "./utils";
 
@@ -101,24 +103,26 @@ export async function registerUser(
   }
 }
 
-
-export async function createAddress(formData: FormData) {
+export async function createAddress(
+  formData: z.infer<typeof addressFormschema>
+) {
   try {
-    const id = await getUserIDDB();
-    if (!id) return; // Obtener el ID del usuario (supongo que tienes una función así)
+    const id_user = await getUserIDDB();
+    if (!id_user) return;
 
-    const address = formData.get("address")?.toString();
-    const numberString = formData.get("number")?.toString();
-    if (numberString === undefined) return 0;
-    const number = parseInt(numberString);
-    const letter = formData.get("letter")?.toString();
-    const block = formData.get("block")?.toString();
-    const staircase = formData.get("staircase")?.toString();
-    const postalCode = formData.get("postalCode")?.toString();
-    const city = formData.get("city")?.toString();
-    const province = formData.get("province")?.toString();
+    // const address = formData.get("address")?.toString();
+    // const numberString = formData.get("number")?.toString();
+    // if (numberString === undefined) return 0;
+    // const number = parseInt(numberString);
+    // const letter = formData.get("letter")?.toString();
+    // const block = formData.get("block")?.toString();
+    // const staircase = formData.get("staircase")?.toString();
+    // const postalCode = formData.get("postalCode")?.toString();
+    // const city = formData.get("city")?.toString();
+    // const province = formData.get("province")?.toString();
 
-    const addressData = {
+    const {
+      id,
       address,
       number,
       letter,
@@ -127,11 +131,11 @@ export async function createAddress(formData: FormData) {
       postalCode,
       city,
       province,
-    };
+    } = formData;
 
     try {
-      addressSchema.parse(addressData);
-      console.log("Validación exitosa:", addressData);
+      addressSchema.parse(formData);
+      console.log("Validación exitosa:", formData);
     } catch (e) {
       if (e instanceof z.ZodError) {
         console.error("Validación fallida:", e.errors);
@@ -139,19 +143,73 @@ export async function createAddress(formData: FormData) {
         console.error("Error Inesperado:", e);
       }
     }
-
-    const existingAddress = await prisma.address.findFirst({
+    const count = await prisma.address.count({
       where: {
-        users: { some: { id: id } },
-      },
+        users: {
+          some: {
+            id: id_user
+          }
+        }
+      }
     });
     
-    if (existingAddress) {
-      return 0
-    }
+    if(count >=5)
+      throw Error('El usuario no puede tener más de 5 direcciónes guardadas')
+    
 
-     // Find or create the province
-     let provinceRecord = await prisma.province.findUnique({
+    const provincias: { [nombre: string]: number } = {
+      'Alava': 1,
+      'Albacete': 2,
+      'Alicante': 3,
+      'Almeria': 4,
+      'Asturias': 5,
+      'Avila': 6,
+      'Barcelona': 7,
+      'Burgos': 8,
+      'Cadiz': 9,
+      'Cantabria': 10,
+      'Castellon': 11,
+      'Ciudad_real': 12,
+      'Cordoba': 13,
+      'Cuenca': 14,
+      'Girona': 15,
+      'Granada': 16,
+      'Guadalajara': 17,
+      'Guipuzcoa': 18,
+      'Huelva': 19,
+      'Huesca': 20,
+      'Islas_baleares': 21,
+      'Jaen': 22,
+      'La_coruna': 23,
+      'La_rioja': 24,
+      'Las_palmas': 25,
+      'Leon': 26,
+      'Lerida': 27,
+      'Lugo': 28,
+      'Madrid': 29,
+      'Malaga': 30,
+      'Murcia': 31,
+      'Navarra': 32,
+      'Ourense': 33,
+      'Palencia': 34,
+      'Pontevedra': 35,
+      'Salamanca': 36,
+      'Segovia': 37,
+      'Sevilla': 38,
+      'Soria': 39,
+      'Tarragona': 40,
+      'Tenerife': 41,
+      'Teruel': 42,
+      'Toledo': 43,
+      'Valencia': 44,
+      'Valladolid': 45,
+      'Vizcaya': 46,
+      'Zamora': 47,
+      'Zaragoza': 48
+    };
+    
+    // Find or create the province
+    let provinceRecord = await prisma.province.findUnique({
       where: {
         name: province,
       },
@@ -160,16 +218,18 @@ export async function createAddress(formData: FormData) {
       provinceRecord = await prisma.province.create({
         data: {
           name: province,
-          iso_code: "ISO_CODE_HERE", // Asegúrate de proporcionar el código ISO de la provincia
+          iso_code: String(provincias[province]), // Asegúrate de proporcionar el código ISO de la provincia
         },
       });
     }
-    
+
     // Find or create the city
     let cityRecord = await prisma.city.findUnique({
       where: {
-        name: city,
-        id_province: provinceRecord.id_province
+        name_id_province: {
+          name: city,
+          id_province: provinceRecord.id_province,
+        },
       },
     });
     if (!cityRecord) {
@@ -182,30 +242,39 @@ export async function createAddress(formData: FormData) {
         },
       });
     }
+    let newAddress
+console.log(id)
+    if ((id === '0' || id==='')) {
+console.log(id)
+//Crear
+      // Create the address
+      newAddress = await prisma.address.create({
+        data: {
+          name: address!,
+          number: Number(number),
+          letter: letter || undefined,
+          block: String(block) || undefined,
+          staircase: staircase || undefined,
+          city: {
+            connect: { id: cityRecord.id },
+          },
+          postalcode: Number(postalCode)
+        },
+      });
 
-    // Create the address
-    const newAddress = await prisma.address.create({
-      data: {
-        name: address!,
-        number: number,
-        letter: letter || undefined,
-        block: block || undefined,
-        staircase: staircase || undefined,
-        city: {
-          connect: { id: cityRecord.id },
+      // Associate the address with the user
+      await prisma.user.update({
+        where: { id: id_user },
+        data: {
+          addresses: {
+            connect: { id: newAddress.id },
+          },
         },
-      },
-    });
-    
-    // Associate the address with the user
-    await prisma.user.update({
-      where: { id: userId },
-      data: {
-        addresses: {
-          connect: { id: newAddress.id },
-        },
-      },
-    });
+      });
+    } else {
+      //Actualizar existente
+      // newAddress = updateUserAddress();
+    }
 
     console.log(
       `Dirección actualizada: ${address}, ${number}, ${letter},${staircase}, ${block},
@@ -216,10 +285,48 @@ export async function createAddress(formData: FormData) {
     revalidatePath("/dashboard/profile/dir");
 
     return newAddress;
-    
   } catch (error) {
     console.error("Error al guardar la dirección:", error);
     console.log("Faltan datos obligatorios o son inválidos.");
+  }
+}
+
+export async function deleteAddress(formData: FormData) {
+  const id_address = formData.get('id')
+  console.log(id_address)
+  const deletedAddress = await prisma.address.delete({
+    where: {
+      id: Number(id_address)
+    }
+  });
+
+  revalidatePath("/dashboard/profile/dir");
+
+}
+
+// todo revisar
+export async function updateUserAddress(
+  id_user: string,
+  newAddress: string,
+  id_city: number
+): Promise<void> {
+  const addresses = await prisma.user.findUnique({
+    where: { id: id_user },
+    include: { addresses: true },
+  });
+
+  if (addresses) {
+    await prisma.address.update({
+      where: {
+        id_address: user.id_address,
+      },
+      data: {
+        address: newAddress,
+        id_city,
+      },
+    });
+  } else {
+    console.log("El usuario no tiene una dirección asociada.");
   }
 }
 
@@ -307,7 +414,6 @@ export async function updateUserEmail(formData: FormData) {
 
 import bcrypt from "bcrypt";
 export async function updatePass(prevState: any, formData: FormData) {
-  console.log("hola");
   const actualPass = formData.get("actual-pass")?.toString();
   const newPass = formData.get("new-pass")?.toString();
   const newPassRepeat = formData.get("new-pass-repeat")?.toString();
@@ -342,97 +448,58 @@ export async function updatePass(prevState: any, formData: FormData) {
   return { error: false, message: "Contraseña actualizada con éxito" };
 }
 
-// todo revisar
-export async function updateUserAddress(
-  id_user: number,
-  newAddress: string,
-  id_city: number
-): Promise<void> {
-  const user = await prisma.user.findUnique({
-    where: { id: id_user },
-    include: { address: true },
-  });
-
-  if (user && user.id_address) {
-    await prisma.address.update({
-      where: {
-        id_address: user.id_address,
-      },
-      data: {
-        address: newAddress,
-        id_city,
-      },
-    });
-  } else {
-    console.log("El usuario no tiene una dirección asociada.");
-  }
-
-  // Actualizar la dirección del usuario en la base de datos utilizando Prisma
-  // const updatedUser = await prisma.user.update({
-  //   where: {
-  //     id: id,
-  //   },
-  //   include: {
-  //     address: true,
-  //   },
-  //   data: {
-  //     address: {
-  //       upsert: {
-  //         create: {
-  //           name: address ?? '',
-  //           number: number,
-  //           letter: letter,
-  //           block: block,
-  //           staircase: staircase,
-  //           city: {
-
-  //           },
-  //           // postalCode: postalCode,
-  //         },
-  //         update: {
-  //           name: address,
-  //           number: number,
-  //           letter: letter,
-  //           block: block,
-  //           staircase: staircase,
-  //           // postalCode: postalCode,
-  //         },
-  //         where: {
-  //           id: ,
-  //         },
-  //       },
-  //     },
-  //   },
-  // });
-}
-
-export async function updateProfile(formData: FormData) {
+export async function updateProfile(prevState: any, formData: FormData) {
   try {
     const username = formData.get("username");
     const bio = formData.get("bio");
+
+    // Transformamos los datos para asegurarnos de que sean cadenas
+    const data = {
+      username: username ? String(username) : undefined,
+      bio: bio ? String(bio) : undefined,
+    };
+    console.log(data);
+
+    const validatedData = profileFormSchema.parse({
+      ...data,
+    });
+
+    console.log("Datos validados correctamente:", validatedData);
+
     const id = await getUserIDDB();
+    const prevusername = await prisma.user.findFirst({
+      where: {
+        id: id,
+      },
+      select: {
+        username: true,
+      },
+    });
+    if (prevusername?.username === validatedData.username)
+      throw Error("Ya tienes este nombre de perfil");
 
-    if (typeof username !== "string" || typeof bio !== "string") {
-      throw new Error("Faltan datos obligatorios o son inválidos.");
-    }
+    // Preparar los datos para la actualización
+    const updateData = {
+      username: validatedData.username,
+      ...(validatedData.bio !== undefined && { bio: validatedData.bio }),
+    };
 
+    // Actualizamos el perfil del usuario en la base de datos
     const newUser = await prisma.user.update({
       where: {
         id: id,
       },
-      data: {
-        username: username,
-        bio: bio,
-      },
+      data: updateData,
     });
 
-    revalidatePath("/dashboard/profile");
-    console.log(
-      `USUARIO ACTUALIZADO : username -> ${username} | bio -> ${bio}`
-    );
+    revalidatePath("/dashboard");
+    return { error: false, message: "Perfil Actualizado" };
   } catch (error) {
-    console.error("Error al actualizar datos del usuario:", error);
-    throw error;
+    console.log(error);
+    if (error.message == "Ya tienes este nombre de perfil")
+      return { error: true, message: error.message };
+
+    return { error: true, message: "Error al actualizar el Perfil" };
   }
 }
 
@@ -906,7 +973,7 @@ export async function stripePay(formdata: FormData) {
 //     const paymentIntent = await stripe.paymentIntents.create({
 //         amount: 1099,
 //         currency: "eur",
-//         description: '',
+//         description: ,
 //         // Aquí se pueden agregar los datos del formulario al objeto metadata
 //         metadata: {
 //             integration_check: "accept_a_payment",
@@ -945,7 +1012,7 @@ export async function stripePay(formdata: FormData) {
 //           integration_check: "accept_a_payment",
 //           email: user.email,
 //           phone: user.phone,
-//           address: `${address.name} ${address.number} ${address.letter ? 'letra: ' + address.letter : ''} ${address.staircase ? ', escalera: ' + address.staircase : ''} ${address.block ? ', bloque: ' + address.block : ''}`,
+//           address: `${address.name} ${address.number} ${address.letter ? letra:  + address.letter : ''} ${address.staircase ? ', escalera: ' + address.staircase : ''} ${address.block ? ', bloque: ' + address.block : ''}`,
 //           shippingPrice,
 //           paymentMethod: payment[0].name,
 //           cardLastFourDigits: payment[0].cardNumber.substring(payment[0].cardNumber.length - 4)

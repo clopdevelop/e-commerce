@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Label } from "@/components/shadcn/label";
 import { updatePass } from "@/lib/actionscommands";
-import { CircleAlert } from "lucide-react";
+import { CheckCircle2, CircleAlert } from "lucide-react";
 import Link from "next/link";
 import { useFormState, useFormStatus } from "react-dom";
 
@@ -73,19 +73,30 @@ export function ChangePassDialog() {
               </Link>
             </div>
           </div>
-          {state?.error && (
-            <div
-              className="flex items-end"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              <>
-                <CircleAlert size={20} className="text-red-500 mr-2" />
-                <p className="text-sm text-red-500">{state?.message}</p>
-              </>
-            </div>
-
-          )}
+          {state?.error == true && (
+      <div
+        className="flex"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <>
+          <CircleAlert size={20} className="text-red-500 mr-2" />
+          <p className="text-sm text-red-500">{state?.message}</p>
+        </>
+      </div>
+    )}
+    {state?.error == false && (
+      <div
+        className="flex mt-4"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <>
+          <CheckCircle2 size={20} className="text-green-500 mr-2" />
+          <p className="text-sm text-green-500">{state?.message}</p>
+        </>
+      </div>
+    )}
           <DialogFooter>
             <SubmitButton></SubmitButton>
           </DialogFooter>

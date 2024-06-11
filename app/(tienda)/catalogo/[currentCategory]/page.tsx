@@ -10,7 +10,7 @@ import {
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Categories from "@/components/products/Categories";
-import { Card, CardContent } from "@/components/shadcn";
+import { Card, CardContent, CardFooter } from "@/components/shadcn";
 import { Filters } from "@/components/products/Filters";
 import { ProductSkeletonCard } from "@/components/skeletons/ProductSkeletonCard";
 
@@ -99,10 +99,12 @@ export default async function Home({
             />
           </Suspense>
         </CardContent>
+        <CardFooter>
+          <div className="mt-5 mx-auto pb-8 overflow-auto w-3/4 flex-none">
+            <MyPagination totalPages={totalPages}></MyPagination>
+          </div>
+        </CardFooter>
       </Card>
-      <div className="mt-5 flex w-full justify-center">
-        <MyPagination totalPages={totalPages}></MyPagination>
-      </div>
     </>
   );
 }

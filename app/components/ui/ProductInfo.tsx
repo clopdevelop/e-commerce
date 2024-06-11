@@ -83,8 +83,20 @@ export default function ProductInfo({ product }: { product: Product }) {
             size={Number(size)}
           ></AddCartButton>
         </div>
-        <Toaster richColors></Toaster>
       </div>
+      <div className="absolute">
+      <Toaster
+          position="bottom-center"
+          toastOptions={{
+            style: {
+              width: "500px",
+              height: "100px", 
+              fontSize: '20px',
+            },
+          }}
+          richColors
+        ></Toaster>      </div>
+        
     </div>
   );
 }

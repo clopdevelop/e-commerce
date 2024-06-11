@@ -6,7 +6,7 @@ export default function AvatarUser({value}: {value:string}) {
     <Avvvatars 
           value={value}
           shadow
-          size={90}
+          size={50}
           borderColor="#000"
           style="shape"
                 />

@@ -1,10 +1,3 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/qi0pnZTYeaT
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
-// import Link from "next/link"
-import { Card, CardHeader, CardContent } from "@/components/shadcn/card"
 import { fetchProductsbyIDs } from "@/lib/data";
 
 import { HeartIcon, StarIcon } from "lucide-react"
@@ -27,7 +20,7 @@ export default async function FavsTable({ favorites }: Props) {
   } else {
     Products = []
   }
-
+  
   return (
     <>
       <div className="flex items-center justify-between">
@@ -45,7 +38,7 @@ export default async function FavsTable({ favorites }: Props) {
             }
           }).map((product) => (
             <div key={product.id} className="shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:-translate-y-2 overflow-hidden">
-            <ProductCard product={product} id_user={1}></ProductCard>
+            <ProductCard product={product}></ProductCard>
             </div>
           ))
           : <h2>No has añadido productos a tus Favoritos</h2>

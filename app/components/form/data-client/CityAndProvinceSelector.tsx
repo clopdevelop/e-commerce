@@ -70,7 +70,10 @@ const ciudadesPorProvincia: { [key: string]: string[] } = {
   Zaragoza: ["Zaragoza", "Calatayud", "Ejea de los Caballeros"]
 };
 
-export function CityAndProvinceSelector() {
+export function CityAndProvinceSelector({
+  onSelection,}: {
+    onSelection: any;
+  }) {
   const [open1, setOpen1] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [value1, setValue1] = React.useState("");
@@ -81,6 +84,8 @@ export function CityAndProvinceSelector() {
   const obtenerCiudadesPorProvincia = (provincia: string) => {
     return ciudadesPorProvincia[provincia] || [];
   };
+
+  
 
   return (
     <div className="grid md:grid-cols-2 my-1 gap-4">
@@ -113,6 +118,7 @@ export function CityAndProvinceSelector() {
                         setValue1(currentValue === value1 ? "" : currentValue);
                         setValue2(""); // Limpiar la ciudad seleccionada cuando cambia la provincia
                         setOpen1(false);
+                        onSelection(currentValue === value1 ? "" : currentValue)
                       }}
                     >
                       {provincia}
@@ -153,6 +159,7 @@ export function CityAndProvinceSelector() {
                       onSelect={(currentValue) => {
                         setValue2(currentValue === value2 ? "" : currentValue);
                         setOpen2(false);
+                        onSelection(value1,currentValue === value2 ? "" : currentValue)
                       }}
                     >
                       {ciudad}

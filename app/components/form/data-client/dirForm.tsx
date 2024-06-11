@@ -9,22 +9,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn";
-import { saveAddress } from "@/lib/actionscommands";
+import { createAddress } from "@/lib/actionscommands";
 import { CityAndProvinceSelector } from "./CityAndProvinceSelector";
 import { Address } from "@prisma/client";
 import { useFormStatus } from "react-dom";
 import { useState } from "react";
+import { Toaster } from "sonner";
 
 export default function DirForm(addr: { address: any }) {
   const { address } = addr;
   const [selectedValue, setSelectedValue] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
+  function handler() {}
 
   return (
-    <form action={saveAddress} className="grid gap-4">
+    <form action={createAddress} className="grid gap-4">
       <div className="grid gap-2">
         <Label>Dirección</Label>
+        <Input type="hidden" name='id' value={address?.id ?? 0}></Input>
         <Input
           name="address"
           placeholder={"C/, Avda, ctra ...."}
@@ -48,18 +51,7 @@ export default function DirForm(addr: { address: any }) {
             defaultValue={address?.letter!}
             type="text"
           />
-          <Select onValueChange={setSelectedValue}>
-            <SelectTrigger className="w-full lg:w-auto">
-              <SelectValue
-                placeholder={"Escalera"}
-                defaultValue={address?.staircase!}
-              />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="left">Izquierda</SelectItem>
-              <SelectItem value="right">Derecha</SelectItem>
-            </SelectContent>
-          </Select>
+      
           <Input
             name="block"
             placeholder={"Bloque"}
@@ -75,10 +67,25 @@ export default function DirForm(addr: { address: any }) {
         <div className="lg:flex lg:gap-2 mt-1">
           <Input name="city" type="hidden" value={selectedCity}></Input>
           <Input name="province" type="hidden" value={selectedProvince}></Input>
-          <CityAndProvinceSelector></CityAndProvinceSelector>
+          <CityAndProvinceSelector
+            onSelection={handler}
+          ></CityAndProvinceSelector>
         </div>
       </div>
       <SubmitButton />
+      <div className="absolute">
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            style: {
+              width: "500px",
+              height: "100px", 
+              fontSize: '20px',
+            },
+          }}
+          richColors
+        ></Toaster>
+      </div>
     </form>
   );
 }

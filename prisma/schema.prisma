@@ -128,23 +128,22 @@ enum DeliveryType {
   PREMIUM
 }
 
-
 //USUARIO
 model User {
-  id            String    @id @default(cuid())
-  name          String
-  username      String
-  bio           String?
-  email         String    @unique
-  password      String
-  role          String    @default("user")
-  phone         String?
-  created_at    DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id         String   @id @default(cuid())
+  name       String
+  username   String   @unique
+  bio        String?
+  email      String   @unique
+  password   String
+  role       String   @default("user")
+  phone      String?
+  created_at DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  addresses      Address[]
-  Authenticator  Authenticator[]
-  Order          Order[]
+  addresses     Address[]
+  Authenticator Authenticator[]
+  Order         Order[]
 }
 
 //DIRECCION
@@ -153,13 +152,16 @@ model Address {
   name        String
   number      Int
   letter      String?
-  block       String?
+  block       Int
   staircase   String?
+  postalcode  Int
   last_update DateTime @default(now()) @updatedAt
-  city        City     @relation(fields: [id_city], references: [id])
-  id_city     Int
-  users       User[]
-  orders      Order[]
+
+  city    City @relation(fields: [id_city], references: [id])
+  id_city Int
+
+  users  User[]
+  orders Order[]
 }
 
 model City {
@@ -168,6 +170,8 @@ model City {
   province    Province  @relation(fields: [id_province], references: [id_province])
   id_province Int
   Address     Address[]
+
+  @@unique([name, id_province])
 }
 
 model Province {

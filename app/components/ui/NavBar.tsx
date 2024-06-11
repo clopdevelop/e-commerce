@@ -57,7 +57,7 @@ export async function NavBar() {
           <div className="flex justify-center items-center">
             <ModeToggle></ModeToggle>
           </div>
-          <Profile></Profile>
+          {session && <Profile></Profile>}
         </div>
         
       </Menubar>
