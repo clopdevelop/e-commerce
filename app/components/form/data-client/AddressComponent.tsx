@@ -13,8 +13,10 @@ import {
   Separator,
 } from "@/components/shadcn";
 import { useState } from "react";
+import { DisplayAddress } from './DisplayAddress'
+import { Address } from "@prisma/client";
 
-const DirComponent = ({ addresses }) => {
+const DirComponent = ({ addresses }:{addresses:(Address & { cityName: string; provinceName: string; })[]}) => {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [selectValue, setSelectValue] = useState("");
 
@@ -58,7 +60,7 @@ const DirComponent = ({ addresses }) => {
           {addresses &&
             addresses.map((address, i) => (
               <div className="flex items-center" key={address?.id}>
-                <SelectItem value={i + 1}>
+                <SelectItem value={String(i + 1)}>
                   <div className="max-w-200">{address.name}</div>
                 </SelectItem>
                 <DeleteAddressForm id={address.id} />
@@ -68,7 +70,7 @@ const DirComponent = ({ addresses }) => {
       </Select>
       {selectedAddressId && selectedAddressId !== "-1" ? (
         <>
-          <div>{addresses[Number(selectedAddressId) - 1].name}</div>
+          <DisplayAddress address={addresses[Number(selectedAddressId) - 1]}></DisplayAddress>
         </>
       ) : (
         <AddressForm

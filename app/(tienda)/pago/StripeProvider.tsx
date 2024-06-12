@@ -6,8 +6,9 @@ import CheckoutForm from "@/components/form/pay/checkoutForm";
 import {  Product, User } from "@prisma/client";
 import { useCart } from "@/context/CartProvider";
 import { loadAddressLocalStorage } from "@/lib/localStorage";
+import { getAddressSessionStorage } from "@/lib/sessionStorage";
 
-const address = loadAddressLocalStorage();
+const address = getAddressSessionStorage();
 console.log(address)
 
 // const stripePromise = loadStripe(

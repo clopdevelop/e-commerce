@@ -22,6 +22,7 @@ import { ChevronLeft, XCircleIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AddressForm } from "@/components/form/data-client/AddressForm";
+import { DisplayAddress } from "@/components/form/data-client/DisplayAddress";
 
 interface Props {
   user: User;
@@ -48,17 +49,16 @@ export function PayPage({ user, addresses }: Props) {
     if (newData == "premium") setShippingPrice(3);
   };
 
-  const [selectedAddressId, setSelectedAddressId] = useState('');
+  const [selectedAddressId, setSelectedAddressId] = useState("");
   const [selectValue, setSelectValue] = useState("");
 
   const handleAddressChange = (value) => {
     setSelectedAddressId(value);
     setSelectValue(value);
-    (value === '-1') ? 
-    setIsLinkActive(false):setIsLinkActive(true)
+    value === "-1" ? setIsLinkActive(false) : setIsLinkActive(true);
   };
 
-  console.log(addresses)
+  console.log(addresses);
 
   return (
     <Card className="overflow-hidden w-9/12 mx-auto">
@@ -77,32 +77,36 @@ export function PayPage({ user, addresses }: Props) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="-1">
-                <div className="max-w-200">Nueva Dirreción</div>
+                <div className="max-w-200">Nueva Direción</div>
               </SelectItem>
               {addresses &&
-                addresses.map((address,i) => (
+                addresses.map((address, i) => (
                   <div className="flex items-center" key={address?.id}>
-                    <SelectItem value={i+1}>
+                    <SelectItem value={i + 1}>
                       <div className="max-w-200">{address.name}</div>
                     </SelectItem>
                   </div>
                 ))}
             </SelectContent>
           </Select>
-        {selectedAddressId && selectedAddressId !== '-1' ? 
-        <><div>
-          {addresses[Number(selectedAddressId)-1].name}</div></> :
-        <AddressForm
-        // onSubmitForm={handleFormSubmit}
-        // address={
-        //   selectedAddressId
-        //     ? addresses.find(
-        //         (address) => address.id === Number(selectedAddressId)
-        //       )
-        //     : null
-        // }
-      ></AddressForm>}
-          <div className="grid gap-5  mb-12 ">
+          {selectedAddressId && selectedAddressId !== "-1" ? (
+            <DisplayAddress
+              address={addresses[Number(selectedAddressId) - 1]}
+            ></DisplayAddress>
+          ) : (
+            <AddressForm
+            // onSubmitForm={handleFormSubmit}
+            // address={
+            //   selectedAddressId
+            //     ? addresses.find(
+            //         (address) => address.id === Number(selectedAddressId)
+            //       )
+            //     : null
+            // }
+            ></AddressForm>
+          )}
+          <Separator className="my-5" />
+          <div className="grid gap-5 my-10 ">
             <Label htmlFor="shippingMethod">
               Selecciona tu método de envío:
             </Label>
@@ -166,7 +170,7 @@ export function PayPage({ user, addresses }: Props) {
               <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span>
-                  {items
+                  {(items
                     .reduce(
                       (
                         acumulador: number,
@@ -174,9 +178,9 @@ export function PayPage({ user, addresses }: Props) {
                       ) => {
                         return acumulador + item.unit_price * item.quantity;
                       },
-                      0
+                      0) *0.71
                     )
-                    .toFixed(2)}{" "}
+                    .toFixed(2)} 
                   €
                 </span>
               </li>
@@ -191,7 +195,7 @@ export function PayPage({ user, addresses }: Props) {
                     items.reduce((acumulador, item) => {
                       return acumulador + item.unit_price * item.quantity;
                     }, 0) * 0.21
-                  ).toFixed(2)}{" "}
+                  ).toFixed(2)}
                   €
                 </span>
               </li>
@@ -201,7 +205,7 @@ export function PayPage({ user, addresses }: Props) {
                   {(
                     items.reduce((acumulador, item) => {
                       return acumulador + item.unit_price * item.quantity;
-                    }, 0) * 1.21
+                    }, 0)
                   ).toFixed(2)}{" "}
                   €
                 </span>

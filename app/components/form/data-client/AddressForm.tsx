@@ -21,12 +21,13 @@ import { SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { addressFormschema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { boolean, z } from "zod";
 import { CityAndProvinceSelector } from "./CityAndProvinceSelector";
 import { useRouter } from "next/navigation";
 import { Address } from "@prisma/client";
 import { createAddress } from "@/lib/actionscommands";
 import { saveAddressLocalStorage } from "@/lib/localStorage";
+import { saveAddressSessionStorage } from "@/lib/sessionStorage";
 type AddressFormInputs = z.infer<typeof addressFormschema>;
 interface AddressFormProps {
   address?: Address | null;
@@ -40,70 +41,77 @@ export const AddressForm: React.FC<AddressFormProps> = ({
   type,
 }) => {
   const form = useForm<AddressFormInputs>({
+    defaultValues: {
+      save: false // Valor por defecto para el campo 'save'
+    },
     resolver: zodResolver(addressFormschema),
   });
 
   const { control, handleSubmit, setValue, reset } = form;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(false);
+  const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
-    setIsSubmitting(false);
     if (address) {
       reset({
         id: String(address.id),
         address: address.name,
         number: String(address.number),
-        letter: address.letter ? String(address.letter) : '',
+        letter: address.letter ? String(address.letter) : "",
         staircase: address.staircase as "izquierda" | "derecha" | undefined,
-        block: address.block ? String(address.block) : '',
-        postalCode: String(address.postalcode)
+        block: address.block ? String(address.block) : "",
+        postalCode: String(address.postalcode),
       });
     } else {
       reset({
-        id: '',
-        address: '',
-        number: '',
+        id: "",
+        address: "",
+        number: "",
         // letter:'',
         // staircase: '' as "izquierda" | "derecha" | undefined,
         // block: '',
-        postalCode: ''
+        postalCode: "",
       });
     }
-    
+
     // Luego, resetea el formulario con los nuevos valores predeterminados
-   
-  
   }, [address, setValue, reset]);
 
   async function onSubmit(values: AddressFormInputs) {
+    setError(false)
+    setCompleted(false)
     setIsSubmitting(true);
     try {
-      if (values.save) {
-        await createAddress(values);
-      } else {
-        saveAddressLocalStorage(values);
-      }
+      console.log(values.save)
+      console.log(typeof(values.save))
+      if (typeof(values.save) === "boolean")
+        if (values.save === true) {
+          await createAddress(values);
+        } else {
+          console.log('a')
+          saveAddressSessionStorage(values);
+        }
       console.log(values);
       if (onSubmitForm) onSubmitForm(values);
       else await createAddress(values);
     } catch (error) {
       console.error(error);
+      setError(true);
     } finally {
       setIsSubmitting(false);
+      setCompleted(true);
     }
   }
 
   const [city, setCity] = useState("");
   const [province, setProvince] = useState("");
+
   const [selectedValue, setSelectedValue] = useState("");
 
   useEffect(() => {
     setValue("province", province);
   }, [province, setValue]);
-
-  // useEffect(() => {
-  //   setValue("province", province);
-  // }, [province]);
 
   useEffect(() => {
     setValue("city", city);
@@ -112,6 +120,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({
   useEffect(() => {
     console.log(address?.id);
     setValue("id", address?.id ? "" : "0");
+      setValue('save', false);
   }, []);
 
   const handleCity = (province: string, city: string) => {
@@ -190,7 +199,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({
                         <Input
                           {...field}
                           placeholder="Letra"
-                          defaultValue={address ? address?.letter : ''}
+                          defaultValue={address ? address?.letter : ""}
                           readOnly={!!address?.name}
                         />
                       </FormControl>
@@ -209,7 +218,9 @@ export const AddressForm: React.FC<AddressFormProps> = ({
                         <Input
                           {...field}
                           type="text"
-                          defaultValue={address ? (address?.staircase) ? 'esca' : ''  : ''}
+                          defaultValue={
+                            address ? (address?.staircase ? "esca" : "") : ""
+                          }
                           readOnly={!!address?.name}
                         />
                         {/* <Select onValueChange={setSelectedValue}>
@@ -250,7 +261,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({
                           {...field}
                           type="number"
                           min={1}
-                          defaultValue={address?.block ? address?.block : ''}
+                          defaultValue={address?.block ? address?.block : ""}
                           readOnly={!!address?.name}
                         />
                       </FormControl>
@@ -330,42 +341,50 @@ export const AddressForm: React.FC<AddressFormProps> = ({
               />
             )}
 
-            <div className="flex justify-end">
-              {isSubmitting ? (
-                <Button
-                  type="button"
-                  className="inline-flex items-center  transition ease-in-out duration-150 cursor-not-allowed"
-                  disabled
-                >
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      stroke-width="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                </Button>
-              ) : (
-                !address && (
-                  <Button type="submit" className="mb-6 sm:mb-0">
-                    {!type && "Guardar"}
-                    {type === "config" && "Añadir"}
-                  </Button>
-                )
+            <div className="flex justify-end gap-4 items-center">
+              {error && <div className="text-red-500">Se produjo un Error</div>}
+              {completed && (
+                <div className="text-green-500">
+                  Completado satisfactoriamente
+                </div>
               )}
+              <div>
+                {isSubmitting ? (
+                  <Button
+                    type="button"
+                    className="inline-flex items-center  transition ease-in-out duration-150 cursor-not-allowed"
+                    disabled
+                  >
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  </Button>
+                ) : (
+                  !address && (
+                    <Button type="submit" className="mb-6 sm:mb-0">
+                      {!type && "Guardar"}
+                      {type === "config" && "Añadir"}
+                    </Button>
+                  )
+                )}
+              </div>
             </div>
           </div>
         </div>

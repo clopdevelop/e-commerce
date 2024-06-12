@@ -7,15 +7,10 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from "@/components/shadcn/menubar";
-
 import Link from "next/link";
-
 import { auth } from "@/auth";
-
 import Profile from "@/components/utils/Profile";
-
 import { NavigationMenuDemo } from "@/components/ui/nav-links";
-
 import { ModeToggle } from "../utils/ModeToggle";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import {
@@ -27,7 +22,6 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/shadcn/navigation-menu";
-
 import {
   Sheet,
   SheetClose,

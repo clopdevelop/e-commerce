@@ -2,7 +2,7 @@
 import prisma from "@/lib/prisma";
 import { Category } from "./definitions";
 import { sleep } from "./utils";
-import { Prisma, User } from "@prisma/client";
+import { Address, Prisma, User } from "@prisma/client";
 import { auth } from "@/auth";
 
 // Gestión de usuarios
@@ -70,32 +70,29 @@ export async function getUserIDSession(): Promise<number> {
   return id_user;
 }
 
-export async function getAddresByUserLog() {
+export async function getAddresByUserLog(): Promise<(Address & { cityName: string; provinceName: string; })[]> {
   const userId = await getUserIDDB();
-  // try {
-  //   const user = await prisma.user.findUnique({
-  //     where: { id: userId },
-  //     include: { address: true },
-  //   });
 
-  //   if (!user) {
-  //     throw new Error(`User with id ${userId} not found`);
-  //   }
-
-  //   return user.address;
-  // } catch (error) {
-  //   console.error("Error al obtener la dirección del usuario:", error);
-  //   throw error;
-  // }
-// }
-  const usuarioConDirecciones = await prisma.user.findUnique({
+    const usuarioConDirecciones = await prisma.user.findUnique({
     where: { id: userId },
     select: {
-      addresses: true,
+      addresses: {
+        include: {
+          city: {
+            include: {
+              province: true,
+            },
+          },
+        },
+      },
     },
   });
 
-  return usuarioConDirecciones?.addresses;
+  return usuarioConDirecciones?.addresses.map(address => ({
+    ...address,
+    cityName: address.city.name,
+    provinceName: address.city.province.name,
+  }));
 }
 
 
@@ -452,7 +449,31 @@ export async function fetchAllCategories() {
 // todo
 export async function fetchProvinces() {}
 
-export async function fetchCitiesFromProvinces() {}
+export async function fetchCitiesFromID({id_city}:{id_city:number}) {
+    try {
+      const city = await prisma.city.findUnique({
+        where: {
+          id: id_city,
+        },
+        include: {
+          province: true,
+        },
+      });
+  
+      if (!city) {
+        throw new Error('City not found');
+      }
+  
+      return {
+        cityName: city.name,
+        provinceName: city.province.name,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error retrieving city and province');
+    }
+}
+
 
 // Gestión Administrativa
 export async function fetchTotalRevenues() {

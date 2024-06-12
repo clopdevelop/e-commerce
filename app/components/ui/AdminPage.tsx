@@ -35,24 +35,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/shadcn/table";
-import { fetchTotalRevenues, fetchTotalSales, fetchTotalClients } from "@/lib/data";
+import { fetchTotalRevenues, fetchTotalSales, fetchTotalClients, getUserLogged } from "@/lib/data";
+import { auth } from "@/auth";
 
 export async function AdminPage() {
+  const user = await getUserLogged();
+  if(!user || user.role !='admin')
+    return null
+console.log(user)
   const totalRevenue = await fetchTotalRevenues();
   const totalSales = await fetchTotalSales();
   const totalClients = await fetchTotalClients();
-  const joke= ''
-  // const joke = fetch('https://icanhazdadjoke.com/',
-  //   {
-  //     headers: {
-  //       Accept: 'text/plain',
-  //     },
-  //   }
-  // )
-  //   .then(res => res.text())
-  //   .then(data => {
-  //     return data;
-  //   });
+  const joke = fetch('https://icanhazdadjoke.com/',
+    {
+      headers: {
+        Accept: 'text/plain',
+      },
+    }
+  )
+    .then(res => res.text())
+    .then(data => {
+      return data;
+    });
 
   return (
     <div className="flex w-full flex-col">

@@ -243,9 +243,7 @@ export async function createAddress(
       });
     }
     let newAddress
-console.log(id)
     if ((id === '0' || id==='')) {
-console.log(id)
 //Crear
       // Create the address
       newAddress = await prisma.address.create({
@@ -253,7 +251,7 @@ console.log(id)
           name: address!,
           number: Number(number),
           letter: letter || undefined,
-          block: String(block) || undefined,
+          block: Number(block) || undefined,
           staircase: staircase || undefined,
           city: {
             connect: { id: cityRecord.id },
@@ -281,7 +279,7 @@ console.log(id)
       ${postalCode}, ${city}, ${province}
       `
     );
-
+console.log(Number(number))
     revalidatePath("/dashboard/profile/dir");
 
     return newAddress;
