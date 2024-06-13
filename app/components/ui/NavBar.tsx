@@ -36,15 +36,14 @@ import { Button, buttonVariants } from "../shadcn/button";
 import Cart from "@/components/cart/Cart";
 import { MobileMenu } from "./mobile-menu";
 import Image from 'next/image'
+import Logo from "./Logo";
 
 export async function NavBar() {
   const session = await auth();
-  //todo si lo hago  con el id no funciona google auth
-  const email = session ? session.user?.email ?? "" : "";
 
   return (
       <Menubar className="py-12 flex w-full items-center justify-between px-4 sm:px-6 lg:px-8">
-<Image src='/3.jpg' width={100} height={150} alt="logo"></Image>
+          <Logo></Logo>
         <NavigationMenuDemo></NavigationMenuDemo>
        <MobileMenu></MobileMenu>
         <div className="flex gap-4">

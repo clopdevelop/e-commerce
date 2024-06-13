@@ -47,8 +47,12 @@
 import { AlertCircle, CheckCircle } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/shadcn/alert";
+import { useCart } from "@/context/CartProvider";
+import { useEffect } from "react";
 
 export function StripeMessage({type}:{type:string}) {
+  const { clearCart} = useCart()
+  useEffect(()=>{clearCart()},[])
   return (
     <div className="flex justify-center">
       {type === "true" ? (

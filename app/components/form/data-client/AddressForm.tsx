@@ -121,7 +121,7 @@ export const AddressForm: React.FC<AddressFormProps> = ({
     console.log(address?.id);
     setValue("id", address?.id ? "" : "0");
       setValue('save', false);
-  }, []);
+  }, [address?.id , setValue]);
 
   const handleCity = (province: string, city: string) => {
     setProvince(province);

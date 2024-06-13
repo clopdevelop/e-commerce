@@ -14,7 +14,7 @@ async function getData() {
 
 export default async function DemoPage() {
   const data = await getData()
- 
+ console.log(data)
   return (
     <div className="container mx-auto">
         {data && <DataTable columns={columns} data={data} />}

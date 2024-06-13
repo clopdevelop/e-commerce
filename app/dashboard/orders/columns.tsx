@@ -1,10 +1,10 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/shadcn/button";
-import { Order } from "@/lib/definitions";
 import { ArrowUpDown } from "lucide-react";
 import { ActionUserOrder } from "@/components/order/ActionsUserOrder";
 import { Badge,  TableCell } from "@/components/shadcn";
+import { Order } from "@prisma/client";
 
 const formatDate = (date: Date) => {
   const year = date.getFullYear();
@@ -20,7 +20,7 @@ export const columns: ColumnDef<Order>[] = [
     cell: ({ row }) => <TableCell>{row.original.code}</TableCell>,
   },
   {
-    accessorKey: "type",
+    accessorKey: "order_type",
     header: ({ column }) => {
       return <p className="text-sm text-gray-500 dark:text-gray-400">Tipo</p>;
     },
@@ -28,14 +28,14 @@ export const columns: ColumnDef<Order>[] = [
       <TableCell>
         <span
           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-            row.original.type === "Compra"
+            row.original.order_type === "Pedido"
               ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
-              : row.original.type === "Subscripción"
+              : row.original.order_type === "Subscripcion"
               ? "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
               : "bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100"
           }`}
         >
-          {row.original.type}
+          {row.original.order_type}
         </span>
       </TableCell>
     ),
@@ -67,9 +67,9 @@ export const columns: ColumnDef<Order>[] = [
         <Badge
           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full`}
           variant={`${
-            row.original.status === "Entregado"
+            row.original.status === "Procesando"
               ? "secondary"
-              : row.original.status === "Devuelto"
+              : row.original.status === "Cancelado"
               ? "outline"
               : "destructive"
           }`}

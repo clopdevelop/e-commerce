@@ -827,27 +827,8 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
   console.log(payment);
 
   const amount = payment.amount;
-
   const metadata = payment.metadata;
-
   const paid = payment.status;
-
-  const lastInvoice = await prisma.invoice.findFirst({
-    orderBy: {
-      id: "desc",
-    },
-    select: {
-      invoice_n: true,
-    },
-  });
-
-  const nextInvoiceNumber = lastInvoice
-    ? parseInt(lastInvoice.invoice_n.replace("INV-", ""), 10) + 1
-    : 1;
-
-  const formattedInvoiceNumber = `INV-${nextInvoiceNumber
-    .toString()
-    .padStart(3, "0")}`;
 
   const lastOrder = await prisma.order.findFirst({
     orderBy: {
@@ -866,9 +847,6 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
   // Formateamos el número con ceros a la izquierda
   const formattedOrder = `INV-${nextOrderNumber.toString().padStart(3, "0")}`;
 
-  console.log(formattedOrder); // Para verificar el resultado
-
-  console.log(formattedInvoiceNumber);
   console.log(formattedOrder);
 
   // DATOS DEL PRODUCTO
@@ -898,9 +876,8 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
     const newOrder = await prisma.order.create({
       data: {
         code: formattedOrder,
-        type: "BUY", // SUBCRIPTION, BUY, REGRET
         total: amount,
-        status: paid, // Sería comprobar si se setá procesando, enviando o llegando o completado
+        status: 'Procesando',  //paid, // Sería comprobar si se setá procesando, enviando o llegando o completado// 
         paid: false, // Asume que el pedido inicialmente no está pagado
         id_user: metadata.id,
         id_delivery_type: 1, // habría que ver como se determina cual es el 1
@@ -909,21 +886,12 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
             data: productData,
           },
         },
-        invoice: {
-          create: [
-            {
-              invoice_n: formattedInvoiceNumber, //"INV-001"
-              type: "A",
-              amount: amount,
-              id_payment_method: 1,
-              state: "ok",
-            },
-          ],
-        },
+        deliveryType: "EXPRESS",
+        order_type: 'Compra',  // "Compra" "Devolución" "Subscripción"
+        
       },
       include: {
         OrderItem: true,
-        invoice: true,
       },
     });
 
@@ -933,7 +901,75 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
   } catch (error) {
     console.error("Error guardando la orden en la base de datos:", error);
   }
+
+  //   id: 'pi_3PRJhFRxuIsR3WCz0iR6iGKf',
+  //   object: 'payment_intent',
+  //   amount: 2999,
+  //   amount_capturable: 0,
+  //   amount_details: { tip: {} },
+  //   amount_received: 2999,
+  //   application: null,
+  //   application_fee_amount: null,
+  //   automatic_payment_methods: { allow_redirects: 'always', enabled: true },
+  //   canceled_at: null,
+  //   cancellation_reason: null,
+  //   capture_method: 'automatic_async',
+  //   client_secret: 'pi_3PRJhFRxuIsR3WCz0iR6iGKf_secret_wJ5fUJhXJLAiurUwWjjLgBqIE',
+  //   confirmation_method: 'automatic',
+  //   created: 1718308353,
+  //   currency: 'eur',
+  //   customer: null,
+  //   description: null,
+  //   invoice: null,
+  //   last_payment_error: null,
+  //   latest_charge: 'ch_3PRJhFRxuIsR3WCz0ZEx48F5',
+  //   livemode: false,
+  //   metadata: {
+  //     item1_price: '29.99',
+  //     id: 'clxdjvfnu000013l603jqjyzb',
+  //     item1_id: '0'
+  //   },
+  //   next_action: null,
+  //   on_behalf_of: null,
+  //   payment_method: 'pm_1PRJhPRxuIsR3WCzJFNaHcGy',
+  //   payment_method_configuration_details: { id: 'pmc_1PI6fARxuIsR3WCz6oQtY9yE', parent: null },
+  //   payment_method_options: {
+  //     card: {
+  //       installments: null,
+  //       mandate_options: null,
+  //       network: null,
+  //       request_three_d_secure: 'automatic'
+  //     },
+  //     link: { persistent_token: null }
+  //   },
+  //   payment_method_types: [ 'card', 'link' ],
+  //   processing: null,
+  //   receipt_email: 'usuario@gmail.com',
+  //   review: null,
+  //   setup_future_usage: null,
+  //   shipping: {
+  //     address: {
+  //       city: null,
+  //       country: null,
+  //       line1: null,
+  //       line2: 'undefined',
+  //       postal_code: 'undefined',
+  //       state: null
+  //     },
+  //     carrier: null,
+  //     name: 'Usuario',
+  //     phone: null,
+  //     tracking_number: null
+  //   },
+  //   source: null,
+  //   statement_descriptor: null,
+  //   statement_descriptor_suffix: null,
+  //   status: 'succeeded',
+  //   transfer_data: null,
+  //   transfer_group: null
+  // }
 }
+
 
 // function updateOrderStatus(orderId: string, status: OrderStatus): void {
 
@@ -1028,7 +1064,7 @@ import { EmailTemplate } from "@/components/contact/email-template";
 import { Resend } from "resend";
 import { revalidatePath } from "next/cache";
 import { Address, CartItem } from "./definitions";
-import { getUserIDDB, getUserLogged } from "./data";
+import { getUserByEmail, getUserIDDB, getUserLogged } from "./data";
 import { z } from "zod";
 import { User } from "@prisma/client";
 
@@ -1039,14 +1075,16 @@ const EmailDataSchema = z.object({
 });
 
 export async function enviarEmail(prevState: any, formData: FormData) {
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  const user = await getUserLogged()
 
-  // return { error: true, message: "No estás logueado" };
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  
 
   try {
     const { name, email, text } = EmailDataSchema.parse({
-      name: formData.get("name"),
-      email: formData.get("email"),
+      name: user?.name,
+      email: user?.email,
       text: formData.get("text"),
     });
 
@@ -1056,12 +1094,17 @@ export async function enviarEmail(prevState: any, formData: FormData) {
       text: text,
     });
 
-    const data = await resend.emails.send({
+    await resend.emails.send({
       from: "Eh, un Comercio <onboarding@resend.dev>",
       to: ["yakiiloop@gmail.com"],
-      subject: text,
+      subject: 'Atención al Cliente',
       react: emailContent,
-      text: "",
+      text: text,
+    });
+
+    await prisma.user.update({
+      where: { id: user?.id },
+      data: { ticket_send: true },
     });
 
     return { error: false, message: "Mensaje enviado con éxito" };

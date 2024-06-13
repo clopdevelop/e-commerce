@@ -10,21 +10,6 @@ function ContactForm() {
   return (
     <>
     <form className="grid grid-cols-1 gap-4" action={formAction}>
-      <Input
-        type="text"
-        name="name"
-        pattern="[A-Za-z]+"
-        required
-        placeholder="Nombre"
-        className="block w-full border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-400"
-      />
-      <Input
-        name="email"
-        type="email"
-        required
-        placeholder="Correo Electrónico"
-        className="block w-full border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-400"
-      />
       <Textarea
         name="text"
         placeholder="Mensaje"

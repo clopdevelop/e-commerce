@@ -10,6 +10,8 @@ type CartContextType = {
   updateItemColor: (itemId: number, color: string) => void;
   updateItemSize: (itemId: number, size: number) => void;
   updateItemQuantity: (itemId: number, quantity: number) => void;
+  clearCart: () => void;
+  
 };
 
 export const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -83,8 +85,14 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     );
   };
 
+  const clearCart = () => {
+    console.log('a')
+    setItems([]);
+    localStorage.removeItem('shopping-cart');
+  };
+
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateItemColor, updateItemSize, updateItemQuantity }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateItemColor, updateItemSize, updateItemQuantity ,  clearCart}}>
       {children}
     </CartContext.Provider>
   );

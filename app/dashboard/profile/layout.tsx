@@ -22,10 +22,6 @@ const sidebarNavItems = [
     title: "Dirección",
     href: "/dashboard/profile/dir",
   },
-  {
-    title: "Método de Pago",
-    href: "/dashboard/profile/payment-method",
-  },
 ];
 
 interface SettingsLayoutProps {

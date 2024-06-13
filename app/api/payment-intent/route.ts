@@ -1,5 +1,7 @@
 import { addOrder } from "@/lib/actionscommands";
 import { getUserLogged } from "@/lib/data";
+import { getAddressSessionStorage } from "@/lib/sessionStorage";
+import { Address } from "@prisma/client";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -8,14 +10,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   typescript: true,
 });
 
-const calculateOrderAmount = (items: any) => {
-  return 1500;
-};
-
 
 export async function POST(req: Request) {
   const customer = await getUserLogged();
-  
+  const address: Address = getAddressSessionStorage();
+  console.log('a')
   const body = await req.json();
 
   const { items } = body;
@@ -29,55 +28,51 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
+  console.log('a')
 
-  const amount = items.reduce((total: any, item: { price: any; id: any }) => {
-    if (!item.price) {
-      throw new Error(`Item ${item.id} is missing a price`);
-    }
-    return total + item.price;
-  }, 0);
+  
+  const amount = items.reduce((acc: number, item: { unit_price: number; quantity: number; }) => acc + item.unit_price * item.quantity * 100, 0);
+  console.log('a')
 
   console.log(items);
   // { items: [ { id: 'xl-tshirt' } ] }
-  const itemdata = items.reduce(
-    (
-      acc: { [x: string]: any },
-      item: { id: any; price: any },
-      index: number
-    ) => {
-      acc[`item${index + 1}_id`] = item.id;
-      acc[`item${index + 1}_price`] = item.price;
-      return acc;
-    },
-    {}
-  );
+  const itemdata = items.reduce((acc: { [x: string]: any; }, item: { id: any; unit_price: any; }, index: number) => {
+    acc[`item${index + 1}_id`] = item.id;
+    acc[`item${index + 1}_price`] = item.unit_price;
+    return acc;
+  }, {});
 
   const metadata = { ...itemdata, id: customer.id };
+  console.log('a')
+  // const metadata = { ...itemdata, id: customer.id };
+
 
   try {
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency: "eur",
-      // metadata: metadata,
+      metadata: metadata,
       // description: "Product name",
       // // payment_method: ID DEL PAYMENTMETHOD FRONTEND,
-      // receipt_email: customer.email, // Email del cliente para el recibo
-      // shipping: {
-      //   name: customer.name,
-      //   address: {
-      //     line1: customer.address.line1, //e.g., street, PO Box, or company name
-      //     line2: customer.address.line2, // (e.g., apartment, suite, unit, or building).
-      //     city: customer.address.city,
-      //     state: customer.address.state, //State, county, province, or region.
-      //     postal_code: customer.address.postal_code,
-      //   },
-      //   phone: "+34 123 123 123" //Recipient phone (including extension).
-      // },
+      receipt_email: customer.email, // Email del cliente para el recibo
+      shipping: {
+        name: customer.name,
+        address: {
+          line1: address.name, //e.g., street, PO Box, or company name
+          line2: String(address.number), // (e.g., apartment, suite, unit, or building).
+          // city: address.,
+          // state: address.state, //State, county, province, or region.
+          postal_code: String(address.postalcode),
+        },
+        // phone: "+34 123 123 123" //Recipient phone (including extension).
+      },
       // // CON ESTO SOLO SE ACTUALIZA EL ESTADO PARA PODER CONFIRMARLO
       // // PARA CONFIRMARLO ⬇
       // // confirmation_method: 'manual'
       // confirm: true,
+      // return_url: "http://localhost:3000/catalogo", // Reemplaza con tu URL de retorno
+
     });
     console.log(paymentIntent);
    

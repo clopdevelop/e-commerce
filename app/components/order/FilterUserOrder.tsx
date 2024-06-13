@@ -28,7 +28,7 @@ export function FilterUserOrderType({ table }:Props) {
   const handleFilterChange = (filterType: string) => {
     setSelectedFilter(filterType);
     // Aquí podrías llamar a alguna función para aplicar el filtro a tu tabla
-    table.getColumn("type")?.setFilterValue(filterType);
+    table.getColumn("order_type")?.setFilterValue(filterType);
   };
 
   return (
@@ -40,9 +40,9 @@ export function FilterUserOrderType({ table }:Props) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuRadioGroup value={selectedFilter} onValueChange={handleFilterChange}>
-          <DropdownMenuRadioItem value="BUY">Compra</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="Devolución">Devolución</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="Subscripción">Subscripción</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="Compra">Compra</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="Devolucion">Devolución</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="Subscripcion">Subscripción</DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -55,7 +55,7 @@ export function FilterUserOrderStatus({ table }:Props) {
   const handleFilterChange = (filterType: string) => {
     setSelectedFilter(filterType);
     // Aquí podrías llamar a alguna función para aplicar el filtro a tu tabla
-    table.getColumn("type")?.setFilterValue(filterType);
+    table.getColumn("status")?.setFilterValue(filterType);
   };
 
   return (

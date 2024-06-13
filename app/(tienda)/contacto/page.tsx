@@ -1,6 +1,7 @@
 import Contact from '@/components/form/ContactForm';
 import { Metadata } from "next";
 import { Card } from "@/components/shadcn"
+import { getUserLogged } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: "Contacto",
@@ -8,7 +9,8 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-
+  const user = await getUserLogged()
+  console.log(user)
   return (
     <>
       <div className="flex flex-col items-center justify-between p-24">
@@ -30,7 +32,7 @@ export default async function Home() {
                 <h3 className="text-xl font-semibold mb-4">
                   Formulario de Contacto
                 </h3>
-        <Contact />
+        {!user?.ticket_send && <Contact />}
         </div>
             </div>
           </div>

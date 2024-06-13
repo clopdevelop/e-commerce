@@ -47,6 +47,10 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0, //initial page index
+    pageSize: 3, //default page size
+  });
 
   const table = useReactTable({
     data,
@@ -57,27 +61,29 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onPaginationChange: setPagination, 
     state: {
       sorting,
       columnFilters,
+      pagination,
     },
   });
 
   const orders = [
     {
       id: "1",
-      type: "Compra",
+      order_type: "Compra",
       date: "2023-06-01",
       items: [
         { name: "Camiseta", quantity: 2, price: 19.99 },
         { name: "Pantalones", quantity: 1, price: 39.99 },
       ],
       total: 79.97,
-      status: "Entregado",
+      status: "Procesando",
     },
     {
       id: "2",
-      type: "Devolución",
+      order_type: "Devolucion",
 
       date: "2023-05-15",
       items: [
@@ -85,15 +91,15 @@ export function DataTable<TData, TValue>({
         { name: "Chaqueta", quantity: 1, price: 79.99 },
       ],
       total: 139.98,
-      status: "Devuelto",
+      status: "Cancelado",
     },
     {
       id: "3",
-      type: "Subscripción",
+      order_type: "Subscripcion",
       date: "2023-04-30",
       items: [{ name: "Vestido", quantity: 1, price: 49.99 }],
       total: 49.99,
-      status: "Pendiente",
+      status: "Cancelado",
     },
   ];
   // ].sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -112,8 +118,6 @@ export function DataTable<TData, TValue>({
         <CardContent>
           <div className="flex items-center py-4 gap-4">
             Tipo: <FilterUserOrderType table={table}></FilterUserOrderType>
-            Estado:{" "}
-            <FilterUserOrderStatus table={table}></FilterUserOrderStatus>
           </div>
          <div>
          <Table>
@@ -177,7 +181,7 @@ export function DataTable<TData, TValue>({
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          Previous
+          Anterior
         </Button>
         <Button
           variant="outline"
@@ -185,7 +189,7 @@ export function DataTable<TData, TValue>({
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          Next
+          Siguiente
         </Button>
       </div>
     </>

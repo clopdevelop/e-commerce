@@ -124,7 +124,7 @@ export default function SideBar() {
                         ${
                           pathname.startsWith("/dashboard/profile")
                             ? "text-white !hover:font-bold  "
-                            : "!bg-transparent hover:text-foregroundhover:text-foreground"
+                            : "!bg-transparent hover:text-foreground"
                         }`}
                   >
                     <Settings className="h-5 w-5 transition-all group-hover:scale-110" />

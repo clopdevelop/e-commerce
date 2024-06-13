@@ -7,6 +7,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { Button } from "@/components/shadcn";
 import { useState} from "react";
+import { useCart } from "@/context/CartProvider";
 
 
 export default function CheckoutForm() {
@@ -14,6 +15,7 @@ export default function CheckoutForm() {
   const elements = useElements();
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -28,7 +30,7 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:3000/?success=true",
+        return_url: "http://localhost:3000/catalogo?success=true",
         // receipt_email: 'correo electrónico',
       },
     });
@@ -39,13 +41,14 @@ export default function CheckoutForm() {
     } else {
       setMessage("An unexpected error occured.");
     }
-
+ 
+    
     setIsLoading(false);
   };
 
   return (
           <form id="payment-form" onSubmit={handleSubmit}>
-            <LinkAuthenticationElement id="link-authentication-element"
+            {/* <LinkAuthenticationElement id="link-authentication-element"
             className="mb-6"
         // Access the email value like so:
         // onChange={(event) => {
@@ -54,7 +57,7 @@ export default function CheckoutForm() {
         //
         // Prefill the email field like so:
         options={{defaultValues: {email: 'foo@bar.com'}}}
-        />
+        /> */}
             <PaymentElement
               id="payment-element"
             />

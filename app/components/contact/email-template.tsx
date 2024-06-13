@@ -41,13 +41,13 @@ export const EmailTemplateClient: React.FC<Readonly<EmailTemplateProps>> = ({
     <main className="space-y-4">
       <h2 className="text-2xl font-bold">Hello, Friend!</h2>
       <p className="text-gray-600 dark:text-gray-400">
-        We hope this email finds you well. We wanted to reach out and share some
-        exciting news about our latest product updates.
+      Esperamos que este correo electrónico te encuentre bien. Queríamos acercarnos y compartir algunos
+      Emocionantes noticias sobre nuestras últimas actualizaciones de productos.
       </p>
       <p className="text-gray-600 dark:text-gray-400">
-        Our team has been working hard to improve the user experience and add
-        new features that we think you'll love. We're confident that these
-        changes will help you get more out of our platform.
+      Nuestro equipo ha estado trabajando arduamente para mejorar la experiencia del usuario y agregar
+        Nuevas funciones que creemos que te encantarán. Estamos seguros de que estos
+        Los cambios te ayudarán a sacar más provecho de nuestra plataforma.
       </p>
       <div className="flex justify-center">
         <Link
@@ -111,13 +111,13 @@ export const EmailTemplateOrderProduct: React.FC<
     <main className="space-y-4">
       <h2 className="text-2xl font-bold">Hello, Friend!</h2>
       <p className="text-gray-600 dark:text-gray-400">
-        We hope this email finds you well. We wanted to reach out and share some
-        exciting news about your recent order.
+      Esperamos que este correo electrónico te encuentre bien. Queríamos acercarnos y compartir algunos
+        Emocionantes noticias sobre su pedido reciente.
       </p>
       <p className="text-gray-600 dark:text-gray-400">
-        Our team has been working hard to get your order ready for delivery.
-        We're confident that you'll love your new products and we can't wait for
-        you to try them out.
+      Nuestro equipo ha estado trabajando arduamente para que su pedido esté listo para su entrega.
+        Estamos seguros de que le encantarán sus nuevos productos y estamos ansiosos por
+        para que los pruebes.
       </p>
       <div className="flex justify-center">
         <Link
