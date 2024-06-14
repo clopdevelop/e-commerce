@@ -13,8 +13,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
 
 export async function POST(req: Request) {
   const customer = await getUserLogged();
-  const address: Address = getAddressSessionStorage();
-  console.log('a')
+  // const address: Address = getAddressSessionStorage();
+
   const body = await req.json();
 
   const { items } = body;
@@ -36,16 +36,15 @@ export async function POST(req: Request) {
 
   console.log(items);
   // { items: [ { id: 'xl-tshirt' } ] }
-  const itemdata = items.reduce((acc: { [x: string]: any; }, item: { id: any; unit_price: any; }, index: number) => {
-    acc[`item${index + 1}_id`] = item.id;
-    acc[`item${index + 1}_price`] = item.unit_price;
+  const itemdata = items.reduce((acc: { [x: string]: any; }, item: { id_product: any; quantity: any; }, index: number) => {
+    acc[`item${index + 1}_id`] = item.id_product;
+    acc[`item${index + 1}_quantity`] = item.quantity;
     return acc;
   }, {});
 
   const metadata = { ...itemdata, id: customer.id };
-  console.log('a')
   // const metadata = { ...itemdata, id: customer.id };
-
+console.log(metadata)
 
   try {
     // Create a PaymentIntent with the order amount and currency
@@ -55,18 +54,18 @@ export async function POST(req: Request) {
       metadata: metadata,
       // description: "Product name",
       // // payment_method: ID DEL PAYMENTMETHOD FRONTEND,
-      receipt_email: customer.email, // Email del cliente para el recibo
-      shipping: {
-        name: customer.name,
-        address: {
-          line1: address.name, //e.g., street, PO Box, or company name
-          line2: String(address.number), // (e.g., apartment, suite, unit, or building).
-          // city: address.,
-          // state: address.state, //State, county, province, or region.
-          postal_code: String(address.postalcode),
-        },
+      // receipt_email: customer.email, // Email del cliente para el recibo
+      // shipping: {
+      //   name: customer.name,
+      //   address: {
+      //     line1: address.name, //e.g., street, PO Box, or company name
+      //     line2: String(address.number), // (e.g., apartment, suite, unit, or building).
+      //     // city: address.,
+      //     // state: address.state, //State, county, province, or region.
+      //     postal_code: String(address.postalcode),
+      //   },
         // phone: "+34 123 123 123" //Recipient phone (including extension).
-      },
+      // },
       // // CON ESTO SOLO SE ACTUALIZA EL ESTADO PARA PODER CONFIRMARLO
       // // PARA CONFIRMARLO ⬇
       // // confirmation_method: 'manual'
@@ -74,7 +73,7 @@ export async function POST(req: Request) {
       // return_url: "http://localhost:3000/catalogo", // Reemplaza con tu URL de retorno
 
     });
-    console.log(paymentIntent);
+    // console.log(paymentIntent);
    
     // addOrder(paymentIntent);
 

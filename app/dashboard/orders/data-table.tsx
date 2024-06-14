@@ -116,9 +116,6 @@ export function DataTable<TData, TValue>({
           <CardDescription>Estos son todos tus pedidos.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center py-4 gap-4">
-            Tipo: <FilterUserOrderType table={table}></FilterUserOrderType>
-          </div>
          <div>
          <Table>
             <TableHeader className="bg-gray-100 dark:bg-gray-800">

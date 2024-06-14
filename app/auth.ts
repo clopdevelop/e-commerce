@@ -18,6 +18,8 @@ const authConfig: NextAuthConfig = {
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
+      console.log('a')
+
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
       if (isOnDashboard) {
@@ -26,13 +28,15 @@ const authConfig: NextAuthConfig = {
       }
       return true;
     },
-    // async signIn({ user, account, profile }) {
-    //   return true
-    // },
-    // async redirect({ url, baseUrl }) {
-    //   return baseUrl + '/dashboard';
-    // },
+    async signIn({ user, account, profile }) {
+      console.log('a')
+      return true
+    },
+    async redirect({ url, baseUrl }) {
+      return '/catalogo';
+    },
     jwt({ token, trigger, session, account }) {
+      console.log('a')
       if (trigger === "update") token.name = session.user.name;
       if (account?.provider === "keycloak") {
         return { ...token, accessToken: account.access_token };
@@ -40,14 +44,13 @@ const authConfig: NextAuthConfig = {
       return token;
     },
     async session({ session, token }) {
+      console.log('a')
+
       if (token?.accessToken) {
         session.accessToken = token.accessToken;
       }
       return session;
     },
-  },
-  experimental: {
-    enableWebAuthn: true,
   },
   providers: [
     Credentials({
@@ -93,7 +96,7 @@ const authConfig: NextAuthConfig = {
   trustHost: true,
   // useSecureCookies: true,
   // adapter: PrismaAdapter(prisma),
-  // basePath?: string, // La ruta base de los puntos de conexión de la API de Auth.js.
+  basePath: '/', // La ruta base de los puntos de conexión de la API de Auth.js.
   // cookies?: Partial< CookiesOptions >,
   // events?: Partial< EventCallbacks >,
   // jwt?: Partial< JWTOptions >,

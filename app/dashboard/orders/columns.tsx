@@ -28,7 +28,7 @@ export const columns: ColumnDef<Order>[] = [
       <TableCell>
         <span
           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-            row.original.order_type === "Pedido"
+            row.original.order_type === "Compra"
               ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
               : row.original.order_type === "Subscripcion"
               ? "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
@@ -67,7 +67,7 @@ export const columns: ColumnDef<Order>[] = [
         <Badge
           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full`}
           variant={`${
-            row.original.status === "Procesando"
+            row.original.status === "En camino"
               ? "secondary"
               : row.original.status === "Cancelado"
               ? "outline"

@@ -283,9 +283,6 @@ export async function countProductsCatalog(
 
 //Gestión de Pedidos
 
-// function getOrderById(orderId: string): Order {
-
-// function listOrders(userId: string): Order[] {
 export async function fetchAllOrders() {
   try {
     const orders = await prisma.order.findMany();
@@ -323,7 +320,11 @@ export async function fetchOrderDetails(id_order: string) {
         id_user: id_user,
       },
       include: {
-        OrderItem: true,
+        OrderItem: {
+          include: {
+            product: true
+          }
+        },
       },
     });
     return order;
@@ -332,6 +333,7 @@ export async function fetchOrderDetails(id_order: string) {
     throw error;
   }
 }
+
 
 export async function fetchShippingAddressOrder(id_order: string) {
   const id = Number(id_order);
@@ -363,7 +365,7 @@ export async function fetchTotalPriceOrder(id_order: string) {
     const order = await prisma.order.findFirst({
       where: {
         id: id,
-        id_user: user?.id,
+        id_user: user,
       },
       select: {
         total: true,

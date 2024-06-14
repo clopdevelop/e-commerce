@@ -5,7 +5,6 @@ import { DeliveryType } from '../app/lib/definitions';
 async function main() {
   // 1. Borrar registros previos
   await Promise.all([
-    await prisma.authenticator.deleteMany(),
 
     await prisma.orderItem.deleteMany(),
     await prisma.order.deleteMany(),

@@ -25,10 +25,6 @@ export function ActionUserOrder({order} : {order: string}) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem className="flex justify-between items-center">
-                Pedir <Repeat2Icon className="h-4 w-4"></Repeat2Icon>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="flex justify-between items-center">
                 <a href={`/dashboard/orders/${order}`}>Detalles</a>
                 <ScrollText className="h-4 w-4"></ScrollText>
               </DropdownMenuItem>

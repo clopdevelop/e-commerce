@@ -3,13 +3,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import React, { useEffect, useState } from "react";
 import CheckoutForm from "@/components/form/pay/checkoutForm";
-import {  Product, User } from "@prisma/client";
 import { useCart } from "@/context/CartProvider";
-import { loadAddressLocalStorage } from "@/lib/localStorage";
-import { getAddressSessionStorage } from "@/lib/sessionStorage";
 
-const address = getAddressSessionStorage();
-console.log(address)
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "",

@@ -39,18 +39,11 @@ export async function authenticate(
   };
   console.log(obj); //  { email: 'usuario@gmail.com', password: 'usuario' }
 
-  try {
-    await signIn("credentials", {
-      ...obj,
-      redirect: false,
-    });
+  await signIn("credentials", {
+    ...obj,
+  });
 
-    return "Success";
-  } catch (error) {
-    console.log(error);
-
-    return "CredentialsSignin";
-  }
+  return "Success";
 }
 
 /**
@@ -91,16 +84,11 @@ export async function registerUser(
   };
   console.log(obj); //  { email: 'usuario@gmail.com', password: 'usuario' }
 
-  try {
-    await signIn("credentials", {
-      ...obj,
-      redirect: false,
-    });
-    return "Success";
-  } catch (error) {
-    console.log(error);
-    return "CredentialsSignin";
-  }
+  await signIn("credentials", {
+    ...obj,
+  });
+
+  return "Success";
 }
 
 export async function createAddress(
@@ -147,67 +135,66 @@ export async function createAddress(
       where: {
         users: {
           some: {
-            id: id_user
-          }
-        }
-      }
+            id: id_user,
+          },
+        },
+      },
     });
-    
-    if(count >=5)
-      throw Error('El usuario no puede tener más de 5 direcciónes guardadas')
-    
+
+    if (count >= 5)
+      throw Error("El usuario no puede tener más de 5 direcciónes guardadas");
 
     const provincias: { [nombre: string]: number } = {
-      'Alava': 1,
-      'Albacete': 2,
-      'Alicante': 3,
-      'Almeria': 4,
-      'Asturias': 5,
-      'Avila': 6,
-      'Barcelona': 7,
-      'Burgos': 8,
-      'Cadiz': 9,
-      'Cantabria': 10,
-      'Castellon': 11,
-      'Ciudad_real': 12,
-      'Cordoba': 13,
-      'Cuenca': 14,
-      'Girona': 15,
-      'Granada': 16,
-      'Guadalajara': 17,
-      'Guipuzcoa': 18,
-      'Huelva': 19,
-      'Huesca': 20,
-      'Islas_baleares': 21,
-      'Jaen': 22,
-      'La_coruna': 23,
-      'La_rioja': 24,
-      'Las_palmas': 25,
-      'Leon': 26,
-      'Lerida': 27,
-      'Lugo': 28,
-      'Madrid': 29,
-      'Malaga': 30,
-      'Murcia': 31,
-      'Navarra': 32,
-      'Ourense': 33,
-      'Palencia': 34,
-      'Pontevedra': 35,
-      'Salamanca': 36,
-      'Segovia': 37,
-      'Sevilla': 38,
-      'Soria': 39,
-      'Tarragona': 40,
-      'Tenerife': 41,
-      'Teruel': 42,
-      'Toledo': 43,
-      'Valencia': 44,
-      'Valladolid': 45,
-      'Vizcaya': 46,
-      'Zamora': 47,
-      'Zaragoza': 48
+      Alava: 1,
+      Albacete: 2,
+      Alicante: 3,
+      Almeria: 4,
+      Asturias: 5,
+      Avila: 6,
+      Barcelona: 7,
+      Burgos: 8,
+      Cadiz: 9,
+      Cantabria: 10,
+      Castellon: 11,
+      Ciudad_real: 12,
+      Cordoba: 13,
+      Cuenca: 14,
+      Girona: 15,
+      Granada: 16,
+      Guadalajara: 17,
+      Guipuzcoa: 18,
+      Huelva: 19,
+      Huesca: 20,
+      Islas_baleares: 21,
+      Jaen: 22,
+      La_coruna: 23,
+      La_rioja: 24,
+      Las_palmas: 25,
+      Leon: 26,
+      Lerida: 27,
+      Lugo: 28,
+      Madrid: 29,
+      Malaga: 30,
+      Murcia: 31,
+      Navarra: 32,
+      Ourense: 33,
+      Palencia: 34,
+      Pontevedra: 35,
+      Salamanca: 36,
+      Segovia: 37,
+      Sevilla: 38,
+      Soria: 39,
+      Tarragona: 40,
+      Tenerife: 41,
+      Teruel: 42,
+      Toledo: 43,
+      Valencia: 44,
+      Valladolid: 45,
+      Vizcaya: 46,
+      Zamora: 47,
+      Zaragoza: 48,
     };
-    
+
     // Find or create the province
     let provinceRecord = await prisma.province.findUnique({
       where: {
@@ -242,9 +229,9 @@ export async function createAddress(
         },
       });
     }
-    let newAddress
-    if ((id === '0' || id==='')) {
-//Crear
+    let newAddress;
+    if (id === "0" || id === "") {
+      //Crear
       // Create the address
       newAddress = await prisma.address.create({
         data: {
@@ -256,7 +243,7 @@ export async function createAddress(
           city: {
             connect: { id: cityRecord.id },
           },
-          postalcode: Number(postalCode)
+          postalcode: Number(postalCode),
         },
       });
 
@@ -279,7 +266,7 @@ export async function createAddress(
       ${postalCode}, ${city}, ${province}
       `
     );
-console.log(Number(number))
+    console.log(Number(number));
     revalidatePath("/dashboard/profile/dir");
 
     return newAddress;
@@ -290,16 +277,15 @@ console.log(Number(number))
 }
 
 export async function deleteAddress(formData: FormData) {
-  const id_address = formData.get('id')
-  console.log(id_address)
+  const id_address = formData.get("id");
+  console.log(id_address);
   const deletedAddress = await prisma.address.delete({
     where: {
-      id: Number(id_address)
-    }
+      id: Number(id_address),
+    },
   });
 
   revalidatePath("/dashboard/profile/dir");
-
 }
 
 // todo revisar
@@ -824,12 +810,9 @@ export async function editVariantProduct(formData: FormData) {
 // ! Esto se debe ejecutar en el webHook una vez que el pago está completado
 
 export async function addOrder(payment: Stripe.PaymentIntent) {
-  console.log(payment);
-
   const amount = payment.amount;
   const metadata = payment.metadata;
-  const paid = payment.status;
-
+console.log('a')
   const lastOrder = await prisma.order.findFirst({
     orderBy: {
       id: "desc",
@@ -850,26 +833,19 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
   console.log(formattedOrder);
 
   // DATOS DEL PRODUCTO
-  const productData = [
-    {
-      id_product: 1,
-      name: "Sandalia de verano",
-      quantity: 1,
-      unit_price: 40,
-    },
-    {
-      id_product: 2,
-      name: "Bota de montaña",
-      quantity: 1,
-      unit_price: 1000,
-    },
-    {
-      id_product: 3,
-      name: "Zapatilla deportiva",
-      quantity: 26,
-      unit_price: 3333,
-    },
-  ];
+
+  const productEntries = Object.entries(metadata).filter(([key]) =>
+    key.includes("_id")
+  );
+  const productData = productEntries.map(([key, value]) => {
+    const quantityKey = key.replace("_id", "_quantity");
+    return {
+      name: "",
+      unit_price: 0,
+      id_product: Number(value),
+      quantity: Number(metadata[quantityKey]),
+    };
+  });
 
   // Crear la orden con detalles y factura en la base de datos.
   try {
@@ -877,18 +853,17 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
       data: {
         code: formattedOrder,
         total: amount,
-        status: 'Procesando',  //paid, // Sería comprobar si se setá procesando, enviando o llegando o completado// 
+        status: "En camino", // Sería comprobar si se setá procesando, enviando o llegando o completado//
         paid: false, // Asume que el pedido inicialmente no está pagado
         id_user: metadata.id,
-        id_delivery_type: 1, // habría que ver como se determina cual es el 1
+        id_delivery_type: 1, // Cambiar
         OrderItem: {
           createMany: {
             data: productData,
           },
         },
-        deliveryType: "EXPRESS",
-        order_type: 'Compra',  // "Compra" "Devolución" "Subscripción"
-        
+        deliveryType: "EXPRESS", // Cambiar
+        order_type: "Compra", // "Compra" "Devolución" "Subscripción"
       },
       include: {
         OrderItem: true,
@@ -969,7 +944,6 @@ export async function addOrder(payment: Stripe.PaymentIntent) {
   //   transfer_group: null
   // }
 }
-
 
 // function updateOrderStatus(orderId: string, status: OrderStatus): void {
 
@@ -1075,11 +1049,9 @@ const EmailDataSchema = z.object({
 });
 
 export async function enviarEmail(prevState: any, formData: FormData) {
-  const user = await getUserLogged()
-
+  const user = await getUserLogged();
 
   const resend = new Resend(process.env.RESEND_API_KEY);
-  
 
   try {
     const { name, email, text } = EmailDataSchema.parse({
@@ -1097,7 +1069,7 @@ export async function enviarEmail(prevState: any, formData: FormData) {
     await resend.emails.send({
       from: "Eh, un Comercio <onboarding@resend.dev>",
       to: ["yakiiloop@gmail.com"],
-      subject: 'Atención al Cliente',
+      subject: "Atención al Cliente",
       react: emailContent,
       text: text,
     });

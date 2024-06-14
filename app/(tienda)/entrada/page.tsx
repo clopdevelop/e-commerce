@@ -13,13 +13,11 @@ export default function Home() {
             </h1>
           </header>
           <LoginForm />
-          <div className="text-center text-sm">
+          <div className="text-center text-sm pb-5">
             ¿No tienes cuenta? {"     "}
             <Link href="/registro" className="underline">
               Regístrate
             </Link>
-          </div>
-          <div className="p-5">
           </div>
         </div>
       </div>

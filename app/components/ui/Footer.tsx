@@ -1,8 +1,3 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/AMMCQev2JCV
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
 import Link from "next/link"
 import { LucideGithub } from "lucide-react"
 
@@ -22,7 +17,7 @@ export default function Footer() {
           <div className="flex flex-col items-center space-y-4">
             <h4 className="text-gray-900 font-semibold dark:text-gray-50">Github</h4>
             <div className="flex space-x-4">
-              <Link className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50" href="#">
+              <Link className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50" href="https://github.com/clopdevelop">
                 <LucideGithub className="h-12 w-12" color="black" />
               </Link>
             </div>

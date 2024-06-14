@@ -7,6 +7,7 @@ import { CircleAlert, CheckCircle2 } from "lucide-react";
 
 function ContactForm() {
   const [state, formAction] = useFormState(enviarEmail, undefined);
+  console.log(state)
   return (
     <>
     <form className="grid grid-cols-1 gap-4" action={formAction}>
@@ -22,8 +23,8 @@ function ContactForm() {
     </form>
     {state?.error == true && (
       <div
-        className="flex"
-        aria-live="polite"
+      className="flex mt-4"
+      aria-live="polite"
         aria-atomic="true"
       >
         <>

@@ -79,7 +79,7 @@ export default async function OrderPage({
             </div>
             <div className="md:col-span-2 lg:col-span-1 flex flex-col gap-6">
               {/* <ShippingAddressCard id_order={params.order}></ShippingAddressCard> */}
-              <ShippingAddressSkeleton ></ShippingAddressSkeleton>
+              {/* <ShippingAddressSkeleton ></ShippingAddressSkeleton> */}
               <Total id_order={params.order}></Total>
               {/* <TotalSkeleton></TotalSkeleton> */}
             </div>

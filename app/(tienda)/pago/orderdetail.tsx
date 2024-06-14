@@ -42,11 +42,11 @@ export function PayPage({ user, addresses }: Props) {
   };
 
   const handleDeliveryType = (newData: string) => {
-    if (newData == "standard") setShippingPrice(1);
+    if (newData == "STANDAR") setShippingPrice(1);
 
-    if (newData == "express") setShippingPrice(2);
+    if (newData == "EXPRESS") setShippingPrice(4);
 
-    if (newData == "premium") setShippingPrice(3);
+    if (newData == "PREMIUM") setShippingPrice(10);
   };
 
   const [selectedAddressId, setSelectedAddressId] = useState("");
@@ -95,7 +95,7 @@ export function PayPage({ user, addresses }: Props) {
             ></DisplayAddress>
           ) : (
             <AddressForm
-            // onSubmitForm={handleFormSubmit}
+            onSubmitForm={handleFormSubmit}
             // address={
             //   selectedAddressId
             //     ? addresses.find(
@@ -124,13 +124,13 @@ export function PayPage({ user, addresses }: Props) {
                 <SelectValue placeholder="Elige un método" />
               </SelectTrigger>
               <SelectContent className="bg-white rounded-md shadow-md">
-                <SelectItem value="standard">
+                <SelectItem value="STANDAR">
                   Envío Estándar (3-5 días hábiles)
                 </SelectItem>
-                <SelectItem value="express">
+                <SelectItem value="EXPRESS">
                   Envío Exprés (1-2 días hábiles)
                 </SelectItem>
-                <SelectItem value="premium">
+                <SelectItem value="PREMIUM">
                   Envío Premium (Entrega prioritaria)
                 </SelectItem>
               </SelectContent>

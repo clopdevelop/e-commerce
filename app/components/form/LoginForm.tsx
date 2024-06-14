@@ -20,14 +20,7 @@ export function LoginForm() {
 
   return (
     <>
-        <form action={signInGoogle} className="text-center">
-          <Button type="submit" className="mt-3 mb-3">
-            <AtSign className="mr-2"></AtSign>
-            Continuar con Google
-          </Button>
-        </form>
         <form action={dispatch} className="grid gap-6 p-6 pt-0">
-          <Separator className="my-5"></Separator>
           <div className="grid gap-3">
             <div>
               <Label htmlFor="email">Correo electrónico</Label>

@@ -24,13 +24,11 @@ export function RegisterForm() {
   });
 
   function onSubmit(values: z.infer<typeof UserRegisterFormSchema>) {
-    console.log(values);
-
     registerUser(values);
   }
 
   return (
-    <div className="flex justify-center mt-5">
+    <div className="flex justify-center my-5">
       <div className="w-full max-w-sm rounded-xl border shadow">
         <header className="flex flex-col space-y-1.5 p-6">
           <h1 className="text-2xl font-semibold leading-none tracking-tight p-5 text-center">
@@ -117,15 +115,6 @@ export function RegisterForm() {
             </div>
           </form>
         </Form>
-        <div className="flex justify-center text-center text-sm">
-          o también puedes
-        </div>
-        <form action={signInGoogle} className="text-center pb-2">
-          <Button type="submit" className="mt-3 mb-3">
-            <AtSign className="mr-2"></AtSign>
-            Continuar con Google
-          </Button>
-        </form>
       </div>
     </div>
   );

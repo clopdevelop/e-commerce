@@ -24,7 +24,7 @@ export async function OrderDetails({ id_order }: { id_order: string }) {
       OrderItem,
       id,
       code,
-      type,
+      order_type,
       total,
       status,
       paid,
@@ -53,11 +53,7 @@ export async function OrderDetails({ id_order }: { id_order: string }) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[80px] hidden md:table-cell">
-                  Imagen
-                </TableHead>
                 <TableHead className="max-w-[150px]">Nombre</TableHead>
-                <TableHead>Talla</TableHead>
                 <TableHead>Cantidad</TableHead>
                 <TableHead>Precio / Unidad</TableHead>
               </TableRow>
@@ -65,19 +61,9 @@ export async function OrderDetails({ id_order }: { id_order: string }) {
             <TableBody>
               {orderDetails?.OrderItem.map((item, index) => (
                 <TableRow key={index}>
-                  <TableCell className="hidden md:table-cell">
-                    <Image
-                      alt="Product image"
-                      className="aspect-square rounded-md object-cover"
-                      height="64"
-                      src="/placeholder.svg"
-                      width="64"
-                    />
-                  </TableCell>
-                  <TableCell className="font-medium">{item.name}</TableCell>
-                  <TableCell>{item.name}</TableCell>
+                  <TableCell className="font-medium">{item.product.name}</TableCell>
                   <TableCell>{item.quantity}</TableCell>
-                  <TableCell>{item.unit_price} €</TableCell>
+                  <TableCell>{item.product.price} €</TableCell>
                 </TableRow>
               ))}
             </TableBody>

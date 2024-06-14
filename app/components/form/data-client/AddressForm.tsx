@@ -83,15 +83,14 @@ export const AddressForm: React.FC<AddressFormProps> = ({
     setCompleted(false)
     setIsSubmitting(true);
     try {
-      console.log(values.save)
-      console.log(typeof(values.save))
-      if (typeof(values.save) === "boolean")
-        if (values.save === true) {
-          await createAddress(values);
-        } else {
-          console.log('a')
-          saveAddressSessionStorage(values);
-        }
+      if (values.hasOwnProperty('save') && values.save === true) {
+        console.log('a');
+        await createAddress(values);
+      } else if (values.hasOwnProperty('save') && values.save === false) {
+        console.log('a');
+        saveAddressSessionStorage(values);
+      }
+      
       console.log(values);
       if (onSubmitForm) onSubmitForm(values);
       else await createAddress(values);
