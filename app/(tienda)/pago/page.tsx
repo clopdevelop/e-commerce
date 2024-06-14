@@ -2,7 +2,7 @@ import { PayPage } from "./orderdetail";
 import {
   getAddresByUserLog,
 } from "@/lib/data";
-import { Address, PaymentMethod,User } from "@prisma/client";
+import { Address,User } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { getUserLogged } from "@/lib/data";
 import {

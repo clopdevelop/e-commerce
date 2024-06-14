@@ -39,10 +39,6 @@ import { fetchTotalRevenues, fetchTotalSales, fetchTotalClients, getUserLogged }
 import { auth } from "@/auth";
 
 export async function AdminPage() {
-  const user = await getUserLogged();
-  if(!user || user.role !='admin')
-    return null
-console.log(user)
   const totalRevenue = await fetchTotalRevenues();
   const totalSales = await fetchTotalSales();
   const totalClients = await fetchTotalClients();

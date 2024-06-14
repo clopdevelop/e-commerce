@@ -132,7 +132,7 @@ enum DeliveryType {
 model User {
   id         String   @id @default(cuid())
   name       String
-  username   String   @unique
+  username   String?   @unique
   bio        String?
   email      String   @unique
   password   String
@@ -143,7 +143,6 @@ model User {
   updatedAt  DateTime @updatedAt
 
   addresses     Address[]
-  Authenticator Authenticator[]
   Order         Order[]
 }
 
@@ -182,20 +181,20 @@ model Province {
   City        City[]
 }
 
-// Optional for WebAuthn support
-model Authenticator {
-  id                   String  @id @default(cuid())
-  credentialID         String  @unique
-  userId               String
-  providerAccountId    String
-  credentialPublicKey  String
-  counter              Int
-  credentialDeviceType String
-  credentialBackedUp   Boolean
-  transports           String?
+// // Optional for WebAuthn support
+// model Authenticator {
+//   id                   String  @id @default(cuid())
+//   credentialID         String  @unique
+//   userId               String
+//   providerAccountId    String
+//   credentialPublicKey  String
+//   counter              Int
+//   credentialDeviceType String
+//   credentialBackedUp   Boolean
+//   transports           String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+// }
 
 // model Invoice {
 //   id                Int           @id @default(autoincrement())
