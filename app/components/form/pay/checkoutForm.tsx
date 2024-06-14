@@ -30,7 +30,7 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:3000/catalogo?success=true",
+        return_url: "https://e-commerce-gamma-opal.vercel.app/catalogo?success=true",
         // receipt_email: 'correo electrónico',
       },
     });
