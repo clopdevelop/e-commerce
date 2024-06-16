@@ -67,7 +67,7 @@ export async function AdminPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                ${totalRevenue._sum.total ?? 0}
+                ${(totalRevenue._sum.total) ? totalRevenue._sum.total/100 : 0 }
               </div>
               <p className="text-xs text-muted-foreground">Total facturado</p>
             </CardContent>

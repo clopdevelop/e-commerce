@@ -160,6 +160,7 @@ export async function fetchProduct(id: number) {
     include: {
       ProductImage: true,
       variants: true,
+      category: true,
     },
   });
 

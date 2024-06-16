@@ -512,79 +512,84 @@ cloudinary.config({
 });
 
 export async function addProduct(formData: FormData) {
-  // await sleep(3);
+  console.log("a");
   try {
-    // const rawFormData = Object.fromEntries(formData.entries());
     console.log(formData);
 
     const rawFormData = {
       name: formData.get("name"),
       description: formData.get("description"),
       price: Number(formData.get("price")),
-      material: formData.get("material"),
-      stock: Number(formData.get("stock")),
-      color: formData.get("color"),
-      size: Number(formData.get("size")),
-      category: formData.get("category"),
+      category: Number(formData.get("category")),
       state: formData.get("state"),
       image: formData.get("image"),
     };
 
     // const { name, price, description, material, color, size, category,state, stock, image } =
-    const { name, price, description, material, category, state } =
+    console.log(rawFormData);
+
+    const { name, price, description, category, state, image } =
       addProductSchema.parse(rawFormData);
 
-    console.log(formData);
+    console.log(rawFormData);
 
-    // console.log(image);
+    if (image && image?.size !== 0) {
+      const bytes = await image.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const filePath = path.join(process.cwd(), "public", image.name);
+      console.log(bytes, buffer, filePath);
+      writeFile(filePath, buffer, async (err) => {
+        if (err) {
+          console.error("Hubo un error al escribir el archivo:", err);
+        } else {
+          console.log("Archivo escrito con éxito");
+          const cloud = await cloudinary.uploader.upload(filePath);
 
-    // // const bytes = await image.arrayBuffer();
-    // // const buffer = Buffer.from(bytes);
+          unlink(filePath, (err) => {
+            err ? console.log("Hubo un error al eliminar el archivo") : "";
+          });
 
-    // // const filePath = path.join(process.cwd(), "public", image.name);
-    // // await writeFile(filePath, buffer, async (err) => {
-    // //   if (err) {
-    // //     console.error("Hubo un error al escribir el archivo:", err);
-    // //   } else {
-    // //     console.log("Archivo escrito con éxito");
-    // //     const cloud = await cloudinary.uploader.upload(filePath);
+          if (cloud) {
+            unlink(filePath, () => {
+              return 0;
+            });
+          }
+          console.log(cloud);
+          const newProduct = await prisma.product.create({
+            data: {
+              name: name,
+              price: price,
+              description: description,
+              state: state,
+              category: {
+                connect: { id: category },
+              },
+              ProductImage: {
+                create: {
+                  url: cloud.url,
+                },
+              },
+            },
+          });
+          console.log(newProduct);
+        }
+      });
+    } else {
+      const newProduct = await prisma.product.create({
+        data: {
+          name: name,
+          price: price,
+          description: description,
+          state: state,
+          category: {
+            connect: { id: Number(category) }, // Conecta con la categoría existente con id 1
+          },
+        },
+      });
+    }
 
-    // //     await unlink(filePath, (err) => {
-    // //       err ? console.log("Hubo un error al eliminar el archivo") : "";
-    // //     });
-
-    // //     if (cloud) {
-    // //       await unlink(filePath, () => {
-    // //         return 0;
-    // //       });
-    // //     }
-
-    // //     const newProduct = await prisma.product.create({
-    // //       data: {
-    // //         name: name,
-    // //         price: Number(price),
-    // //         description: description,
-    // //         ProductImage: {
-    // //           create: {
-    // //             url: cloud.url,
-    // //           },
-    // //         },
-    // //       },
-    // //     });
-    // //   }
-    // // });
-
-    //  const newProduct = await prisma.product.create({
-    //    data: {
-    //      name: name,
-    //      price: price,
-    //      description: description,
-    //      material: material,
-    //    },
-    //  });
-
-    //  revalidatePath("/admin/products");
-    //  redirect("/admin/products");
+    revalidatePath("/admin/products");
+    // redirect("/admin/products");
   } catch (err) {
     console.log(err);
   }
@@ -593,10 +598,9 @@ export async function addProduct(formData: FormData) {
 export async function addVariantProduct(formData: FormData) {
   try {
     console.log(formData);
-
+   
     const rawFormData = {
       id_product: Number(formData.get("id_product")),
-      code: formData.get("code"),
       stock: Number(formData.get("stock")),
       id_color: Number(formData.get("color")),
       size: Number(formData.get("size")),
@@ -604,37 +608,77 @@ export async function addVariantProduct(formData: FormData) {
 
     const variant = addVariantProductSchema.parse(rawFormData);
 
-    console.log(rawFormData);
+    const sizes = [35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46];
 
-    await prisma.productVariant.create({
+    
+    const colorMap: { [key: number]: Color } = {
+      1: Color.DEFAULT,
+      2: Color.BLUE,
+      3: Color.GREEN,
+      4: Color.RED,
+      5: Color.YELLOW
+    };
+    
+    const sizeMap: { [key: number]: Size } = {
+      1: Size.SIZE_35,
+      2: Size.SIZE_36,
+      3: Size.SIZE_37,
+      4: Size.SIZE_38,
+      5: Size.SIZE_39,
+      6: Size.SIZE_40,
+      7: Size.SIZE_41,
+      8: Size.SIZE_42,
+      9: Size.SIZE_43,
+      10: Size.SIZE_44,
+      11: Size.SIZE_45,
+      12: Size.SIZE_46
+    };
+    
+    let color = colorMap[variant.id_color];
+    let size = sizeMap[variant.size];
+
+
+    console.log(variant);
+
+    const newVariant =  await prisma.productVariant.create({
       data: {
-        code: variant.code,
         stock: variant.stock,
+        color: color,
+        size: size,
         product: {
           connect: {
             id: variant.id_product,
           },
         },
-        color: {
-          connect: {
-            id: variant.id_color,
-          },
-        },
-        size: {
-          connect: {
-            id: variant.size,
-          },
-        },
       },
     });
 
-    revalidatePath("/admin/products");
-    redirect(`/admin/products/edit/${rawFormData.id_product}`);
+    return newVariant
   } catch (err) {
     console.log(err);
   }
 }
 
+// Función para eliminar un ProductVariant
+export async function deleteProductVariant(id:number) {
+  const deletedProductVariant = await prisma.productVariant.delete({
+    where: { id: id },
+  });
+  return deletedProductVariant;
+}
+
+// Función para actualizar un ProductVariant
+export async function updateProductVariant(newValues: ProductVariant) {
+  const updatedProductVariant = await prisma.productVariant.update({
+    where: { id: newValues.id },
+    data: {
+      color:newValues.color,
+      size:newValues.size,
+      stock:Number(newValues.stock)
+    },
+  });
+  return updatedProductVariant;
+}
 // export async function addProductTEST(formData: FormData) {
 //   console.log(formData);
 
@@ -672,7 +716,6 @@ export async function addVariantProduct(formData: FormData) {
  */
 export async function editProduct(formData: FormData) {
   try {
-    // const rawFormData = Object.fromEntries(formData.entries());
     console.log(formData);
 
     const rawFormData = {
@@ -680,33 +723,85 @@ export async function editProduct(formData: FormData) {
       name: formData.get("name"),
       description: formData.get("description"),
       price: Number(formData.get("price")),
-      material: formData.get("material"),
-      stock: Number(formData.get("stock")),
-      color: formData.get("color"),
-      size: Number(formData.get("size")),
-      category: formData.get("category"),
+      category: Number(formData.get("category")),
       state: formData.get("state"),
       image: formData.get("image"),
     };
 
-    // const { name, price, description, material, color, size, category,state, stock, image } =
-    const { id, name, price, description, material, category, state } =
+    const { id, name, price, description, category, state, image } =
       editProductSchema.parse(rawFormData);
 
-    console.log(formData);
+    if (image && image?.size !== 0) {
+      const bytes = await image.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const filePath = path.join(process.cwd(), "public", image.name);
+      console.log(bytes, buffer, filePath);
+      writeFile(filePath, buffer, async (err) => {
+        if (err) {
+          console.error("Hubo un error al escribir el archivo:", err);
+        } else {
+          const cloud = await cloudinary.uploader.upload(filePath);
 
-    // console.log(image);
+          unlink(filePath, (err) => {
+            err ? console.log("Hubo un error al eliminar el archivo") : "";
+          });
 
-    const updatedProduct = await prisma.product.update({
-      where: { id: id },
-      data: {
-        name: name,
-        price: price,
-        description: description,
-      },
-    });
+          if (cloud) {
+            unlink(filePath, () => {
+              return 0;
+            });
+          }
+
+          // Primero, obtén el producto existente y su imagen
+          const existingProduct = await prisma.product.findUnique({
+            where: { id: id },
+            include: { ProductImage: true },
+          });
+
+          // Luego, si el producto tiene una imagen, elimínala
+          if (existingProduct && existingProduct.ProductImage) {
+            await prisma.productImage.delete({
+              where: { id: existingProduct.ProductImage[0].id },
+            });
+          }
+
+          // Finalmente, actualiza el producto y crea la nueva imagen
+          const updatedProduct = await prisma.product.update({
+            where: { id: id },
+            data: {
+              name: name,
+              price: price,
+              description: description,
+              state: state,
+              category: {
+                connect: { id: category },
+              },
+              ProductImage: {
+                create: {
+                  url: cloud.url,
+                },
+              },
+            },
+          });
+        }
+      });
+    } else {
+      const updatedProduct = await prisma.product.update({
+        where: { id: id },
+        data: {
+          name: name,
+          price: price,
+          description: description,
+          state: state,
+          category: {
+            connect: { id: category }, // Conecta con la categoría existente con id 1
+          },
+        },
+      });
+    }
 
     revalidatePath(`/admin/products/`);
+    revalidatePath(`/admin/products/edit/${id}`);
   } catch (err) {
     console.log(err);
   }
@@ -812,7 +907,7 @@ export async function editVariantProduct(formData: FormData) {
 export async function addOrder(payment: Stripe.PaymentIntent) {
   const amount = payment.amount;
   const metadata = payment.metadata;
-console.log('a')
+  console.log("a");
   const lastOrder = await prisma.order.findFirst({
     orderBy: {
       id: "desc",
@@ -1040,7 +1135,7 @@ import { revalidatePath } from "next/cache";
 import { Address, CartItem } from "./definitions";
 import { getUserByEmail, getUserIDDB, getUserLogged } from "./data";
 import { z } from "zod";
-import { User } from "@prisma/client";
+import { Color, ProductVariant, Size, User } from "@prisma/client";
 
 const EmailDataSchema = z.object({
   name: z.string(),

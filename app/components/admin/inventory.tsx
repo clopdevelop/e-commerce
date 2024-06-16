@@ -59,10 +59,7 @@ export default async function Inventory({ products }: { products: Product[] }) {
               </TableHead>
               <TableHead>Nombre</TableHead>
               <TableHead>Estado</TableHead>
-              {/* <TableHead>Precio</TableHead>
-              <TableHead className="hidden md:table-cell">
-                Stock
-              </TableHead> */}
+             <TableHead>Precio</TableHead>
               <TableHead className="hidden md:table-cell">ID</TableHead>
               <TableHead>
                 <span className="sr-only">Acciones</span>
@@ -70,7 +67,7 @@ export default async function Inventory({ products }: { products: Product[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product) => (
+          {products.slice().reverse().map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="hidden sm:table-cell">
                   {product.ProductImage && product.ProductImage[0] && (

@@ -23,33 +23,34 @@ import { useEffect, useState } from "react";
 const colores = [
   {
     value: 1,
-    label: "Blanco y Negro",
+    label: "Por defecto",
   },
   {
     value: 2,
-    label: "Blanco",
+    label: "Azul",
   },
   {
     value: 3,
-    label: "Negro",
+    label: "Verde",
   },
   {
     value: 4,
-    label: "Roja",
+    label: "Rojo",
   },
   {
     value: 5,
-    label: "Azul",
+    label: "Amarillo",
   },
 ];
 
 interface InputColorProps {
   value?: number;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (value: number) => void;
+  isEditing: boolean;
 }
 
-export const InputColor: React.FC<InputColorProps> = (
-  { value: propValue, onChange }) => {
+
+export const InputColor: React.FC<InputColorProps> = ({ value: propValue, onChange,isEditing }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(propValue);
 
@@ -59,60 +60,56 @@ export const InputColor: React.FC<InputColorProps> = (
 
   const handleSelect = (currentValue: number) => {
     const newValue = currentValue === value ? 0 : currentValue;
-    if (newValue == 0)
-      return 0;
+    if (newValue === 0) return;  // Ajuste aquí
     setValue(newValue);
     setOpen(false);
     if (onChange) {
-      onChange({
-        target: {
-          value: currentValue,
-          name: colores[newValue],
-        },
-      } as unknown as React.ChangeEvent<HTMLInputElement>)
+      onChange(newValue);  // Llamar onChange con el número
     }
   };
 
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between"
-        >
-          {value
-            ? colores.find((color) => color.value === value)?.label
-            : "Color"}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Buscar color..." />
-          <CommandEmpty>Color no encontrado.</CommandEmpty>
-          <CommandList>
-            <CommandGroup>
-              {colores.map((color) => (
-                <CommandItem
-                  key={color.value}
-                  value={color.label}
-                  onSelect={() => handleSelect(color.value)}
-                  >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === color.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {color.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <PopoverTrigger asChild>
+      <Button
+        variant="outline"
+        role="combobox"
+        aria-expanded={open}
+        className="w-full justify-between"
+        disabled={!isEditing} // Deshabilitar el botón si no está en modo edición
+      >
+        {value
+          ? colores.find((color) => color.value === value)?.label
+          : "Color"}
+        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent className="w-[200px] p-0">
+      <Command>
+        <CommandInput placeholder="Buscar color..." />
+        <CommandEmpty>Color no encontrado.</CommandEmpty>
+        <CommandList>
+          <CommandGroup>
+            {colores.map((color) => (
+              <CommandItem
+                key={color.value}
+                value={color.label}
+                onSelect={() => handleSelect(color.value)}
+              >
+                <Check
+                  className={cn(
+                    "mr-2 h-4 w-4",
+                    value === color.value ? "opacity-100" : "opacity-0"
+                  )}
+                />
+                {color.label}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+      </Command>
+    </PopoverContent>
+  </Popover>
   );
 }

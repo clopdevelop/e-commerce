@@ -1,30 +1,6 @@
 "use client";
-import {
-  ChevronLeft,
-  Home,
-  LineChart,
-  Package,
-  Package2,
-  PanelLeft,
-  Paperclip,
-  PlusCircle,
-  Search,
-  Settings,
-  ShoppingCart,
-  Upload,
-  Users2,
-} from "lucide-react";
-
-import { Badge } from "@/components/shadcn/badge";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/shadcn/breadcrumb";
-import { Button, buttonVariants } from "@/components/shadcn/button";
+import { ChevronLeft } from "lucide-react";
+import { Button } from "@/components/shadcn/button";
 import {
   Card,
   CardContent,
@@ -43,32 +19,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/shadcn/table";
 import { Textarea } from "@/components/shadcn/textarea";
-import { ToggleGroup, ToggleGroupItem } from "@/components/shadcn/toggle-group";
-
-import { useForm } from "react-hook-form";
 import { Key, SetStateAction, useEffect, useState } from "react";
 import { addProduct, editProduct } from "@/lib/actionscommands";
 import Image from "next/image";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { string } from "zod";
-import { ProductTags } from "./productsTagsInput";
-import { FancyMultiSelect } from "./fancy-multi-select";
-import { ImageUploader } from "@/components/file-uploader";
-import { InputColor } from "../form/admin/inputColor";
-import { InputMaterial } from "../form/admin/inputMaterial";
 import ProductState from "../form/admin/productState";
 import VariantForm from "./VariantForm";
-import { Product } from "@prisma/client";
+import { Product, ProductImage } from "@prisma/client";
 
 interface Props {
   product?: Product;
@@ -77,11 +36,13 @@ interface Props {
 
 export default function ProductForm({ product, categories }: Props) {
   const isEdditing = product ? true : false;
-  const [file, setFile] = useState<File | null>(null);
-  console.log(JSON.stringify(product))
-  console.log(product?.variants)
+  const productImageURL = product?.ProductImage[0]?.url;
+  const [file, setFile] = useState(productImageURL ? productImageURL : null);
+  const imageUrl = typeof file === "string" ? file : URL.createObjectURL(file);
 
-  // todo PROBLEMA AL ENVIAR LOS TAGS
+  console.log(JSON.stringify(product));
+  console.log(product?.id_category ? product?.id_category : "");
+  console.log(productImageURL);
 
   // addProduct(values);
 
@@ -95,30 +56,25 @@ export default function ProductForm({ product, categories }: Props) {
     setRows([...rows, { id: "", stock: "", price: "", size: "s" }]);
   };
 
-  const [label, setLabel] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(
+    product?.id_category ? product?.id_category : ""
+  );
   const [valorInput, setValorInput] = useState("Disponible");
-  const [material, setMaterial] = useState(product?.material ?? "");
 
-  const handleCategoryChange= (value: string) => {
-    setCategory(categories[Number(value) - 1]);
+  const handleCategoryChange = (value: string) => {
+    setCategory(Number(value));
+    console.log(value);
   };
-
-  const handleMaterialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMaterial(e.target.value);
-  };
-
-
-  const handleLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLabel(e.target.value);
-  };
-
+  console.log(product);
   return (
     <>
       <div className="flex min-h-screen w-full flex-col">
         <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
           <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-            <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
+            <form
+              action={product ? editProduct : addProduct}
+              className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4"
+            >
               <div className="flex items-center gap-4">
                 <Link href="/admin/products">
                   <Button
@@ -134,17 +90,12 @@ export default function ProductForm({ product, categories }: Props) {
                 <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
                   {product ? "Editar Producto" : "Nuevo Producto"}
                 </h1>
+
                 <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                  <Button variant="outline" size="sm">
-                    Cancelar
-                  </Button>
                   <LoginButton isEdditing={isEdditing}></LoginButton>
                 </div>
               </div>
               <div className="space-y-8">
-              <form
-                action={product ? editProduct : addProduct}
-              >
                 <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
                   <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
                     <Card x-chunk="dashboard-07-chunk-0">
@@ -189,19 +140,6 @@ export default function ProductForm({ product, categories }: Props) {
                                 defaultValue={String(product?.price)}
                               ></Input>
                             </div>
-                            <div className="flex items-center gap-4">
-                              <Label>Material</Label>
-                              <InputMaterial
-                                value={material}
-                                onChange={handleMaterialChange}
-                              ></InputMaterial>
-                              <Input
-                                id="material"
-                                name="material"
-                                type="hidden"
-                                value={material}
-                              ></Input>
-                            </div>
                           </div>
                         </div>
                       </CardContent>
@@ -221,8 +159,20 @@ export default function ProductForm({ product, categories }: Props) {
                             ></Input>
                             <Label htmlFor="category">Categoría</Label>
                             <Select onValueChange={handleCategoryChange}>
-                              <SelectTrigger aria-label="Selecciona la categoría">
-                                <SelectValue placeholder="Selecciona la categoría" />
+                              <SelectTrigger
+                                aria-label={
+                                  product?.id_category
+                                    ? categories[product?.id_category - 1]
+                                    : ""
+                                }
+                              >
+                                <SelectValue
+                                  placeholder={
+                                    product?.id_category
+                                      ? categories[product?.id_category - 1]
+                                      : ""
+                                  }
+                                />
                               </SelectTrigger>
                               <SelectContent>
                                 {categories.map((category, i) => (
@@ -232,14 +182,6 @@ export default function ProductForm({ product, categories }: Props) {
                                 ))}
                               </SelectContent>
                             </Select>
-                          </div>
-                          <div className="grid gap-4 w-full">
-                            <Label>Etiquetas</Label>
-                            <FancyMultiSelect
-                              value={label}
-                              onChange={handleLabelChange}
-                            />
-                            <Input type="hidden" value={label}></Input>
                           </div>
                         </div>
                       </CardContent>
@@ -269,7 +211,7 @@ export default function ProductForm({ product, categories }: Props) {
                               type="file"
                               className="w-52"
                               accept="image/jpeg"
-                              src={file ? URL.createObjectURL(file) : undefined} // Verifica si file es null antes de llamar a createObjectURL
+                              src={imageUrl}
                               onChange={(e) => {
                                 if (
                                   e.target.files &&
@@ -288,7 +230,7 @@ export default function ProductForm({ product, categories }: Props) {
                         {file && (
                           <Image
                             alt=""
-                            src={URL.createObjectURL(file)}
+                            src={imageUrl}
                             width={100}
                             height={100}
                             className="w-full"
@@ -299,15 +241,18 @@ export default function ProductForm({ product, categories }: Props) {
                   </div>
                 </div>
                 {/* Responsive Save */}
-                <div className="flex items-center justify-center gap-2 md:hidden">
-                  <Button variant="outline" size="sm">
-                    Discard
-                  </Button>
+                <div className="flex items-center justify-center pt-8 pb-4 md:hidden">
                   <LoginButton isEdditing={isEdditing}></LoginButton>
                 </div>
-              </form>
-              {product && <VariantForm product_id={product.id} variants={product.variants}></VariantForm>}
               </div>
+            </form>
+            <div className="mx-auto grid w-full max-w-[59rem] flex-1 auto-rows-max gap-4">
+              {product && (
+                <VariantForm
+                  product_id={product.id}
+                  variants={product.variants}
+                ></VariantForm>
+              )}
             </div>
           </main>
         </div>
@@ -323,7 +268,7 @@ function LoginButton(isEdditing: { isEdditing: boolean }) {
 
   return (
     <Button type="submit" size="sm" disabled={pending}>
-      {isEdditing
+      {isEdditing.isEdditing
         ? pending
           ? "Editando Producto..."
           : "Editar Producto"

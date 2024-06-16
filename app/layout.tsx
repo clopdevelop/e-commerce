@@ -5,6 +5,7 @@ import { ThemeProvider } from "./context/theme-provider";
 import CookieConsent from "@/components/cookie-consent";
 import type { Viewport } from "next";
 import Footer from "./components/ui/Footer";
+import { cookies } from 'next/headers';
 
 export const viewport: Viewport = {
   themeColor: "black",
@@ -75,6 +76,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookie = cookies()
+  const hasConsented = cookie.get('cookieConsent')?.value
   return (
     <html lang="es">
       <body className={inter.className}>
@@ -86,7 +89,7 @@ export default function RootLayout({
         >
            <div className="flex flex-col min-h-screen">
             <div className="flex flex-col flex-grow">{children}</div>
-            <CookieConsent />
+            {!hasConsented && <CookieConsent />}
             <Footer></Footer>
           </div>
         </ThemeProvider>

@@ -126,25 +126,19 @@ export const productSchema = z.object({
   price: z.number().nonnegative(),
 });
 
+
 export const addProductSchema = z.object({
-  name: z.string().nonempty("El nombre del producto no puede estar vacío."),
-  description: z
-    .string()
-    .nonempty("La descripción del producto no puede estar vacía."),
-  price: z.number().nonnegative(),
-  material: optionalNullableString,
-  stock: optionalNullableNumber,
-  color: optionalNullableString,
-  size: optionalNullableNumber,
-  category: z
-    .string()
-    .nonempty("La categoría del producto no puede estar vacía."),
-  state: z.string().nonempty("El estado del producto no puede estar vacío."),
+  name: z.string().min(1, "Ingrese el nombre del producto"),
+  description: z.string().min(1, "Ingrese la descripción del producto"),
+  price: z.number().nonnegative("El precio del producto no puede ser negativo"),
+  category: z.number().min(1, "Ingrese la categoría del producto"),
+  state: z.string().min(1, "Ingrese el estado del producto"),
   image: z.instanceof(File).optional(),
 });
 
+
 export const editProductSchema = addProductSchema.extend({
-  id: optionalNullableNumber,
+  id: z.number().min(1, "ID del producto no definido"),
 });
 
 export const addVariantProductSchema = z.object({
@@ -152,7 +146,6 @@ export const addVariantProductSchema = z.object({
     .number()
     .positive()
     .refine((id) => Number.isInteger(id), "El ID debe ser un número entero."),
-  code: z.string().nonempty("El código del producto no puede estar vacío."),
   stock: z.number().nonnegative(),
   id_color: z
     .number()

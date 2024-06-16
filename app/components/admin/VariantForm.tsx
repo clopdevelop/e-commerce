@@ -1,5 +1,10 @@
 "use client";
-import { addVariantProduct, editVariantProduct } from "@/lib/actionscommands";
+import {
+  addVariantProduct,
+  deleteProductVariant,
+  editVariantProduct,
+  updateProductVariant,
+} from "@/lib/actionscommands";
 import {
   Select,
   SelectTrigger,
@@ -28,6 +33,7 @@ import { useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { ProductVariant } from "@prisma/client";
 import { VariantRow } from "./VariantRow";
+import { redirect } from "next/navigation";
 const colores = [
   {
     value: 1,
@@ -59,39 +65,68 @@ export default function VariantForm({
 }) {
   const [product_variants, setProduct_Variants] = useState(variants);
 
-  const handleEdit = (editedVariant: any) => {
-    // Aquí puedes manejar la lógica para editar una variante
-    // Por ejemplo, podrías buscar la variante en tu estado y reemplazarla con la editada
-  };
-
-  const handleDelete = (id: any) => {
-    // Aquí puedes manejar la lógica para eliminar una variante
-    // Por ejemplo, podrías filtrar las variantes de tu estado para quitar la que tiene el id dado
+  const handleCreate = async (newVariant: any) => {
+    console.log(newVariant);
+    const createdVariant = await addVariantProduct(newVariant);
+  
+    if (!createdVariant) {
+      console.error("Error: createdVariant es undefined");
+      return;
+    }
+  
+    setProduct_Variants((prevVariants) => {
+      const exists = prevVariants.some((variant) => variant.id === createdVariant.id);
+      if (exists) {
+        return prevVariants.map((variant) =>
+          variant.id === createdVariant.id ? createdVariant : variant
+        );
+      } else {
+        return [...prevVariants, createdVariant];
+      }
+    });
   };
   
+  const handleEdit = async (editedVariant: any) => {
+    console.log(editedVariant)
+    const updatedVariant = await updateProductVariant(editedVariant);
+
+    setProduct_Variants((prevVariants) =>
+      prevVariants.map((variant) =>
+        variant.id === updatedVariant.id ? updatedVariant : variant
+      )
+    );
+  };
+
+  const handleDelete = async (id: any) => {
+    await deleteProductVariant(id);
+
+    console.log(id)
+    setProduct_Variants((prevVariants) =>
+      prevVariants.filter((variant) => variant.id !== id)
+    );
+  };
+
   const [color, setColor] = useState(0);
   const [size, setSize] = useState(0);
 
-  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-    setColor(Number(e.target.value));
+  const handleColorChange = (color: number) => {
+    setColor(color);
   };
+  
 
   const handleSizeChange = (value: string) => {
-    console.log(value)
     setSize(Number(value));
   };
 
   const [rows, setRows] = useState([
     { code: "001", stock: "", price: "", size: "s" },
-    // ... tus otras filas aquí
   ]);
 
   const addRow = () => {
     setRows([...rows, { code: "", stock: "", price: "", size: "s" }]);
   };
 
-  // on submit hay que limpiar los valores del input
+  const sizes = [35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46];
 
   return (
     <Card x-chunk="dashboard-07-chunk-1">
@@ -100,21 +135,26 @@ export default function VariantForm({
       </CardHeader>
       <CardContent>
         <form action={editVariantProduct}>
-      <Input type="hidden" name="id_product" value={String(product_id)}></Input>
+          <Input
+            type="hidden"
+            name="id_product"
+            value={String(product_id)}
+          ></Input>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-1/12">Código</TableHead>
-                <TableHead className="w-1/5">Color</TableHead>
-                <TableHead className="w-1/6">Talla</TableHead>
-                <TableHead className="w-1/6">Cantidad</TableHead>
-                <TableHead className="w-1/4">Accion</TableHead>
+                <TableHead className="w-2/12">Código</TableHead>
+                <TableHead className="w-3/12">Color</TableHead>
+                <TableHead className="w-1/12">Talla</TableHead>
+                <TableHead className="w-1/12">Cantidad</TableHead>
+                <TableHead className="w-2/6"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {product_variants.map((variant) => (
+              {product_variants.map((variant, i) => (
                 <VariantRow
-                  key={variant.id}
+                  key={i}
+                  code={i + 1}
                   variant={variant}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
@@ -123,15 +163,18 @@ export default function VariantForm({
             </TableBody>
           </Table>
         </form>
-        <form action={addVariantProduct}>
-      <Input type="hidden" name="id_product" value={String(product_id)}></Input>
+        <form action={handleCreate}>
+          <Input
+            type="hidden"
+            name="id_product"
+            value={String(product_id)}
+          ></Input>
           <Table>
             <TableBody>
-            <TableRow>
+              <TableRow>
                 <TableCell className="font-semibold w-1/12">
                   <Input
                     id="code"
-                    name="code"
                     type="text"
                     className="w-20 border-0 shadow-none"
                     min={0}
@@ -151,7 +194,7 @@ export default function VariantForm({
                   <InputColor
                     value={color}
                     onChange={handleColorChange}
-                  ></InputColor>
+                    isEditing={true}/>
                 </TableCell>
                 <Input id="size" name="size" type="hidden" value={size}></Input>
                 <TableCell className="w-1/6">
@@ -160,18 +203,11 @@ export default function VariantForm({
                       <SelectValue placeholder={size} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1">35</SelectItem>
-                      <SelectItem value="2">36</SelectItem>
-                      <SelectItem value="3">37</SelectItem>
-                      <SelectItem value="4">38</SelectItem>
-                      <SelectItem value="5">39</SelectItem>
-                      <SelectItem value="6">40</SelectItem>
-                      <SelectItem value="7">41</SelectItem>
-                      <SelectItem value="8">42</SelectItem>
-                      <SelectItem value="9">43</SelectItem>
-                      <SelectItem value="10">44</SelectItem>
-                      <SelectItem value="11">45</SelectItem>
-                      <SelectItem value="12">46</SelectItem>
+                      {sizes.map((size, index) => (
+                        <SelectItem key={index} value={String(index + 1)}>
+                          {size}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </TableCell>
@@ -186,7 +222,7 @@ export default function VariantForm({
                   />
                 </TableCell>
                 <TableCell className="w-1/4">
-                <LoginButton></LoginButton>                
+                  <LoginButton></LoginButton>
                 </TableCell>
               </TableRow>
             </TableBody>

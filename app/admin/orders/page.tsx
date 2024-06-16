@@ -1,5 +1,3 @@
-import Image from "next/image";
-import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
@@ -21,7 +19,6 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/shadcn/badge";
-import { Button } from "@/components/shadcn/button";
 import {
   Card,
   CardContent,
@@ -111,7 +108,7 @@ export default async function Dashboard() {
                   <TableCell className="hidden md:table-cell">
                     {String(order?.created_at)}
                   </TableCell>
-                  <TableCell className="text-right">{order?.total}€</TableCell>
+                  <TableCell className="text-right">{(order?.total)/100}€</TableCell>
                 </TableRow>
               ))}
             </TableBody>

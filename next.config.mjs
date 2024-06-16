@@ -35,8 +35,7 @@ const nextConfig = {
       ]
     },
     images: {
-        // domains: ['res.cloudinary.com'], // Esta línea es la antigua configuración
-        // remotePatterns: ['https://res.cloudinary.com/*'], // Nueva configuración utilizando 
+        domains: ['res.cloudinary.com'],
         remotePatterns: [
           {
             // cambiar a https cuando cambie la imagen que acabo de subir
