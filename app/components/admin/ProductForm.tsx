@@ -37,8 +37,8 @@ interface Props {
 export default function ProductForm({ product, categories }: Props) {
   const isEdditing = product ? true : false;
   const productImageURL = product?.ProductImage[0]?.url;
-  const [file, setFile] = useState(productImageURL ? productImageURL : null);
-  const imageUrl = typeof file === "string" ? file : URL.createObjectURL(file);
+const [file, setFile] = useState(productImageURL ? productImageURL : null);
+const imageUrl = file ? (typeof file === "string" ? file : URL.createObjectURL(file)) : null;
 
   console.log(JSON.stringify(product));
   console.log(product?.id_category ? product?.id_category : "");
